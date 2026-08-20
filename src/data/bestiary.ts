@@ -26,6 +26,7 @@ export interface MonsterSkill {
 
 interface RawMonster {
   id: string;
+  dungeonId: string;
   name: string;
   family: MonsterFamily;
   level: string;

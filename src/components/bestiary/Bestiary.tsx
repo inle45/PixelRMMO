@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { BESTIARY, FAMILY_LABELS, type MonsterFamily } from "../../data/bestiary";
+import { DUNGEONS } from "../../data/dungeons";
 import MonsterCard from "./MonsterCard";
 import MonsterModal from "./MonsterModal";
 
@@ -14,6 +15,8 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "guardian", label: FAMILY_LABELS.guardian },
   { id: "boss", label: FAMILY_LABELS.boss },
 ];
+
+const FAMILY_ORDER: MonsterFamily[] = ["vermin", "skeleton", "spectre", "guardian", "boss"];
 
 export default function Bestiary() {
   const [search, setSearch] = useState("");
@@ -34,6 +37,19 @@ export default function Bestiary() {
       return matchesFamily && matchesSearch;
     });
   }, [search, filter]);
+
+  const dungeonSections = useMemo(
+    () =>
+      DUNGEONS.map((dungeon) => {
+        const dungeonMonsters = filtered.filter((m) => m.dungeonId === dungeon.id);
+        const familyGroups = FAMILY_ORDER.map((family) => ({
+          family,
+          monsters: dungeonMonsters.filter((m) => m.family === family),
+        })).filter((g) => g.monsters.length > 0);
+        return { dungeon, familyGroups, count: dungeonMonsters.length };
+      }).filter((s) => s.count > 0),
+    [filtered]
+  );
 
   const selected = selectedId ? BESTIARY.find((m) => m.id === selectedId) ?? null : null;
 
@@ -59,7 +75,7 @@ export default function Bestiary() {
         />
       </div>
 
-      <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
+      <div className="mb-8 flex flex-wrap items-center justify-center gap-2">
         {FILTERS.map((f) => {
           const active = filter === f.id;
           return (
@@ -80,17 +96,44 @@ export default function Bestiary() {
         })}
       </div>
 
-      {filtered.length === 0 ? (
+      {dungeonSections.length === 0 ? (
         <p className="py-12 text-center text-sm text-white/45">Aucune créature ne correspond à ta recherche.</p>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          {filtered.map((monster) => (
-            <MonsterCard
-              key={monster.id}
-              monster={monster}
-              isOpen={monster.id === selectedId}
-              onOpen={() => setSelectedId(monster.id)}
-            />
+        <div className="flex flex-col gap-10">
+          {dungeonSections.map(({ dungeon, familyGroups, count }) => (
+            <section key={dungeon.id}>
+              <div className="mb-5 flex items-center gap-3 border-b border-white/10 pb-3">
+                <span className="text-2xl leading-none">{dungeon.icon}</span>
+                <div>
+                  <h2 className="text-sm font-bold uppercase tracking-wide text-lantern-glow">{dungeon.name}</h2>
+                  <p className="text-xs text-white/50">
+                    {dungeon.subtitle} · {count} créature{count > 1 ? "s" : ""}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-7">
+                {familyGroups.map(({ family, monsters }) => (
+                  <div key={family}>
+                    {filter === "all" && (
+                      <h3 className="mb-3 text-xs font-bold uppercase tracking-wide text-white/55">
+                        {FAMILY_LABELS[family]}
+                      </h3>
+                    )}
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                      {monsters.map((monster) => (
+                        <MonsterCard
+                          key={monster.id}
+                          monster={monster}
+                          isOpen={monster.id === selectedId}
+                          onOpen={() => setSelectedId(monster.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}
