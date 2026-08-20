@@ -11,7 +11,10 @@ type Screen = "auth" | "character-select" | "game";
 
 const COMING_SOON: Record<Exclude<TabId, "camp">, { title: string; text: string }> = {
   dungeon: { title: "Expéditions", text: "Les donjons ouvriront bientôt leurs portes, Mercenaire." },
-  forge: { title: "La Forge", text: "L'atelier du forgeron arrive bientôt." },
+  crafting: {
+    title: "Crafting",
+    text: "Forge, cuisine, bijouterie... l'atelier d'artisanat arrive bientôt.",
+  },
   market: { title: "Hôtel des Ventes", text: "Le marché C2C entre joueurs arrive bientôt." },
 };
 
