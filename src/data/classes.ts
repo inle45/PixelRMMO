@@ -8,6 +8,22 @@ import mageFemale from "../assets/characters/mage-female.png";
 export type Gender = "male" | "female";
 export type ClassId = "knight" | "archer" | "mage";
 
+const attackFrameModules = import.meta.glob("../assets/characters/attacks/*.png", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>;
+
+/** Collects the 8 numbered attack frames for a given `{class}-{gender}` sprite prefix, in order. */
+function getAttackFrames(prefix: string): string[] {
+  const frames: string[] = [];
+  for (let i = 1; i <= 8; i++) {
+    const entry = Object.entries(attackFrameModules).find(([path]) => path.endsWith(`/${prefix}-${i}.png`));
+    if (!entry) break;
+    frames.push(entry[1]);
+  }
+  return frames;
+}
+
 export interface StatBarDef {
   label: string;
   value: number;
@@ -23,6 +39,7 @@ export interface ClassDefinition {
   badge: string;
   names: Record<Gender, string>;
   sprites: Record<Gender, string>;
+  attackFrames: Record<Gender, string[]>;
   theme: {
     border: string;
     ring: string;
@@ -49,6 +66,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "TANK",
     names: { male: "Chevalier", female: "Chevalière" },
     sprites: { male: knightMale, female: knightFemale },
+    attackFrames: {
+      male: getAttackFrames("knight-male"),
+      female: getAttackFrames("knight-female"),
+    },
     theme: {
       border: "border-blue-400/30",
       ring: "ring-blue-400",
@@ -75,6 +96,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "DPS",
     names: { male: "Archer", female: "Archère" },
     sprites: { male: archerMale, female: archerFemale },
+    attackFrames: {
+      male: getAttackFrames("archer-male"),
+      female: getAttackFrames("archer-female"),
+    },
     theme: {
       border: "border-emerald-400/30",
       ring: "ring-emerald-400",
@@ -101,6 +126,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "BURST",
     names: { male: "Mage", female: "Magicienne" },
     sprites: { male: mageMale, female: mageFemale },
+    attackFrames: {
+      male: getAttackFrames("mage-male"),
+      female: getAttackFrames("mage-female"),
+    },
     theme: {
       border: "border-violet-400/30",
       ring: "ring-violet-400",

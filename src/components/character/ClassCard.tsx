@@ -1,5 +1,7 @@
+import { useState } from "react";
 import type { ClassDefinition, Gender } from "../../data/classes";
 import StatBar from "../ui/StatBar";
+import AnimatedSprite from "../ui/AnimatedSprite";
 
 interface ClassCardProps {
   classDef: ClassDefinition;
@@ -10,11 +12,20 @@ interface ClassCardProps {
 
 export default function ClassCard({ classDef, gender, selected, onSelect }: ClassCardProps) {
   const { theme } = classDef;
+  const [attacking, setAttacking] = useState(false);
+  const attackFrames = classDef.attackFrames[gender];
+
+  const handleClick = () => {
+    onSelect();
+    if (!attacking && attackFrames.length > 0) {
+      setAttacking(true);
+    }
+  };
 
   return (
     <button
       type="button"
-      onClick={onSelect}
+      onClick={handleClick}
       aria-pressed={selected}
       className={
         "group relative flex flex-col rounded-2xl border bg-white/[0.05] p-5 text-left backdrop-blur-2xl " +
@@ -30,12 +41,19 @@ export default function ClassCard({ classDef, gender, selected, onSelect }: Clas
         {classDef.icon} {classDef.badge}
       </span>
 
+      {attacking && (
+        <span className="absolute left-4 top-4 animate-[fadeIn_0.15s_ease-out] rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white/80">
+          ⚔️ Attaque !
+        </span>
+      )}
+
       <div className="mx-auto flex h-28 w-28 items-center justify-center">
-        <img
-          src={classDef.sprites[gender]}
+        <AnimatedSprite
+          idleSrc={classDef.sprites[gender]}
+          attackFrames={attackFrames}
+          playing={attacking}
+          onFinish={() => setAttacking(false)}
           alt={classDef.names[gender]}
-          className="h-full w-full object-contain drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]"
-          style={{ imageRendering: "pixelated" }}
         />
       </div>
 
