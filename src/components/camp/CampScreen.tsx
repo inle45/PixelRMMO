@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { CLASSES, type ClassId, type Gender } from "../../data/classes";
+import { getInventory, getOwnedMaterials } from "../../data/inventory";
 import StatBar from "../ui/StatBar";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import HeroProfileOverlay from "./HeroProfileOverlay";
@@ -63,6 +64,8 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
   const armor = hero ? STARTER_ARMOR[hero.classId] : null;
   const [openSlot, setOpenSlot] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const inventory = useMemo(() => getInventory(), []);
+  const ownedMaterials = useMemo(() => getOwnedMaterials(), []);
 
   const backpack: (BackpackItem | null)[] = useMemo(() => {
     const items: BackpackItem[] = [];
@@ -94,10 +97,18 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
       icon: potionIcon,
       description: "Restaure 50 PV instantanément.",
     });
+    for (const { material, count } of ownedMaterials) {
+      items.push({
+        id: `material-${material.id}`,
+        name: `${material.name} x${count}`,
+        icon: material.icon,
+        description: `${material.usage} Rapporté de la Crypte Ancestrale.`,
+      });
+    }
     const slots: (BackpackItem | null)[] = [...items];
     while (slots.length < 16) slots.push(null);
     return slots;
-  }, [weapon, armor]);
+  }, [weapon, armor, ownedMaterials]);
 
   const hpStat = classDef?.stats.find((s) => s.label === "PV");
 
@@ -107,7 +118,7 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
       <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-2xl">
         <div className="flex items-center gap-2">
           <img src={ecuIcon} alt="" className="h-7 w-7" style={{ imageRendering: "pixelated" }} />
-          <span className="text-sm font-bold text-white">250 Écus</span>
+          <span className="text-sm font-bold text-white">{inventory.ecus} Écus</span>
         </div>
         <div className="flex items-center gap-1.5 rounded-full border border-white/10 bg-black/25 px-3 py-1.5">
           <span className="text-[10px] uppercase tracking-wide text-white/45">Marché</span>
@@ -144,7 +155,7 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
                   {username && <p className="text-xs font-medium text-white/45">@{username}</p>}
                 </div>
                 <span className="rounded-full bg-lantern/15 px-2 py-0.5 text-[10px] font-bold text-lantern-glow">
-                  NIV. 1
+                  NIV. {inventory.level}
                 </span>
               </div>
               {hpStat && <StatBar {...hpStat} />}

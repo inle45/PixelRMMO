@@ -1,5 +1,7 @@
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { ClassDefinition, Gender } from "../../data/classes";
+import { getInventory, xpIntoLevel, XP_PER_LEVEL } from "../../data/inventory";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import StatBar from "../ui/StatBar";
 
@@ -10,14 +12,11 @@ interface HeroProfileOverlayProps {
   onClose: () => void;
 }
 
-// Demo progression data — there is no leveling/XP system yet.
-const DEMO_LEVEL = 1;
-const DEMO_XP = 340;
-const DEMO_XP_MAX = 1000;
-
 export default function HeroProfileOverlay({ classDef, gender, username, onClose }: HeroProfileOverlayProps) {
   const { theme } = classDef;
-  const xpPct = Math.min(100, Math.round((DEMO_XP / DEMO_XP_MAX) * 100));
+  const inventory = useMemo(() => getInventory(), []);
+  const xp = xpIntoLevel(inventory);
+  const xpPct = Math.min(100, Math.round((xp / XP_PER_LEVEL) * 100));
 
   return (
     <motion.div
@@ -73,9 +72,9 @@ export default function HeroProfileOverlay({ classDef, gender, username, onClose
 
           <div className="mt-5 w-full">
             <div className="flex items-center justify-between text-[11px] font-bold">
-              <span className="text-lantern-glow">NIVEAU {DEMO_LEVEL}</span>
+              <span className="text-lantern-glow">NIVEAU {inventory.level}</span>
               <span className="text-white/55">
-                {DEMO_XP} / {DEMO_XP_MAX} XP
+                {xp} / {XP_PER_LEVEL} XP
               </span>
             </div>
             <div className="mt-1.5 h-2.5 w-full overflow-hidden rounded-full border border-white/10 bg-black/40">
