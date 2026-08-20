@@ -3,7 +3,11 @@ import TabSwitcher, { type AuthTab } from "./TabSwitcher";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
-export default function AuthCard() {
+interface AuthCardProps {
+  onAuthenticated?: () => void;
+}
+
+export default function AuthCard({ onAuthenticated }: AuthCardProps) {
   const [tab, setTab] = useState<AuthTab>("login");
 
   return (
@@ -41,7 +45,11 @@ export default function AuthCard() {
           key={tab}
           className="col-start-1 row-start-1 animate-[fadeIn_0.25s_ease-out]"
         >
-          {tab === "login" ? <LoginForm /> : <RegisterForm />}
+          {tab === "login" ? (
+            <LoginForm onSubmit={() => onAuthenticated?.()} />
+          ) : (
+            <RegisterForm onSubmit={() => onAuthenticated?.()} />
+          )}
         </div>
       </div>
 
