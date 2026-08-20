@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { CLASSES, type ClassId, type Gender } from "../../data/classes";
 import StatBar from "../ui/StatBar";
+import AnimatedSprite from "../ui/AnimatedSprite";
 import ecuIcon from "../../assets/icons/ecu.png";
 import swordIcon from "../../assets/icons/items/sword.png";
 import bowIcon from "../../assets/icons/items/bow.png";
@@ -38,6 +39,7 @@ interface BackpackItem {
 }
 
 interface CampScreenProps {
+  username?: string | null;
   onOpenDungeon?: () => void;
 }
 
@@ -52,7 +54,7 @@ function readStoredHero(): StoredHero | null {
   }
 }
 
-export default function CampScreen({ onOpenDungeon }: CampScreenProps) {
+export default function CampScreen({ username, onOpenDungeon }: CampScreenProps) {
   const hero = useMemo(() => readStoredHero(), []);
   const classDef = hero ? CLASSES.find((c) => c.id === hero.classId) : undefined;
   const weapon = hero ? STARTER_WEAPON[hero.classId] : null;
@@ -115,16 +117,18 @@ export default function CampScreen({ onOpenDungeon }: CampScreenProps) {
         {classDef && hero ? (
           <div className="flex gap-4">
             <div className="flex h-20 w-20 flex-none items-center justify-center rounded-xl border border-white/10 bg-black/25">
-              <img
-                src={classDef.sprites[hero.gender]}
+              <AnimatedSprite
+                idleSrc={classDef.sprites[hero.gender]}
+                idleFrames={classDef.idleFrames[hero.gender]}
                 alt={classDef.names[hero.gender]}
-                className="h-full w-full object-contain"
-                style={{ imageRendering: "pixelated" }}
               />
             </div>
             <div className="flex flex-1 flex-col justify-center gap-2">
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-bold text-white">{classDef.names[hero.gender]}</h2>
+                <div>
+                  <h2 className="text-base font-bold text-white">{classDef.names[hero.gender]}</h2>
+                  {username && <p className="text-xs font-medium text-white/45">@{username}</p>}
+                </div>
                 <span className="rounded-full bg-lantern/15 px-2 py-0.5 text-[10px] font-bold text-lantern-glow">
                   NIV. 1
                 </span>

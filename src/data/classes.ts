@@ -24,6 +24,22 @@ function getAttackFrames(prefix: string): string[] {
   return frames;
 }
 
+const idleFrameModules = import.meta.glob("../assets/characters/idle/*.png", {
+  eager: true,
+  import: "default",
+}) as Record<string, string>;
+
+/** Collects the numbered idle-breathing frames (starting at 0) for a `{class}-{gender}` sprite prefix, in order. */
+function getIdleFrames(prefix: string): string[] {
+  const frames: string[] = [];
+  for (let i = 0; ; i++) {
+    const entry = Object.entries(idleFrameModules).find(([path]) => path.endsWith(`/${prefix}-${i}.png`));
+    if (!entry) break;
+    frames.push(entry[1]);
+  }
+  return frames;
+}
+
 export interface StatBarDef {
   label: string;
   value: number;
@@ -39,6 +55,7 @@ export interface ClassDefinition {
   badge: string;
   names: Record<Gender, string>;
   sprites: Record<Gender, string>;
+  idleFrames: Record<Gender, string[]>;
   attackFrames: Record<Gender, string[]>;
   theme: {
     border: string;
@@ -66,6 +83,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "TANK",
     names: { male: "Chevalier", female: "Chevalière" },
     sprites: { male: knightMale, female: knightFemale },
+    idleFrames: {
+      male: getIdleFrames("knight-male"),
+      female: getIdleFrames("knight-female"),
+    },
     attackFrames: {
       male: getAttackFrames("knight-male"),
       female: getAttackFrames("knight-female"),
@@ -96,6 +117,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "DPS",
     names: { male: "Archer", female: "Archère" },
     sprites: { male: archerMale, female: archerFemale },
+    idleFrames: {
+      male: getIdleFrames("archer-male"),
+      female: getIdleFrames("archer-female"),
+    },
     attackFrames: {
       male: getAttackFrames("archer-male"),
       female: getAttackFrames("archer-female"),
@@ -126,6 +151,10 @@ export const CLASSES: ClassDefinition[] = [
     badge: "BURST",
     names: { male: "Mage", female: "Magicienne" },
     sprites: { male: mageMale, female: mageFemale },
+    idleFrames: {
+      male: getIdleFrames("mage-male"),
+      female: getIdleFrames("mage-female"),
+    },
     attackFrames: {
       male: getAttackFrames("mage-male"),
       female: getAttackFrames("mage-female"),

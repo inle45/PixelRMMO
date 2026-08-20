@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
 interface AuthCardProps {
-  onAuthenticated?: () => void;
+  onAuthenticated?: (username: string) => void;
 }
 
 export default function AuthCard({ onAuthenticated }: AuthCardProps) {
@@ -46,9 +46,9 @@ export default function AuthCard({ onAuthenticated }: AuthCardProps) {
           className="col-start-1 row-start-1 animate-[fadeIn_0.25s_ease-out]"
         >
           {tab === "login" ? (
-            <LoginForm onSubmit={() => onAuthenticated?.()} />
+            <LoginForm onSubmit={(data) => onAuthenticated?.(data.identifier)} />
           ) : (
-            <RegisterForm onSubmit={() => onAuthenticated?.()} />
+            <RegisterForm onSubmit={(data) => onAuthenticated?.(data.username)} />
           )}
         </div>
       </div>

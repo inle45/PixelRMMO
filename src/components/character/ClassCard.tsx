@@ -50,6 +50,7 @@ export default function ClassCard({ classDef, gender, selected, onSelect }: Clas
       <div className="mx-auto flex h-28 w-28 items-center justify-center">
         <AnimatedSprite
           idleSrc={classDef.sprites[gender]}
+          idleFrames={classDef.idleFrames[gender]}
           attackFrames={attackFrames}
           playing={attacking}
           onFinish={() => setAttacking(false)}

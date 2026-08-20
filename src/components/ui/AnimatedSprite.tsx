@@ -2,47 +2,59 @@ import { useEffect, useRef, useState } from "react";
 
 interface AnimatedSpriteProps {
   idleSrc: string;
-  attackFrames: string[];
-  playing: boolean;
-  onFinish: () => void;
+  idleFrames?: string[];
+  attackFrames?: string[];
+  playing?: boolean;
+  onFinish?: () => void;
   alt: string;
   frameDuration?: number;
+  idleFrameDuration?: number;
 }
 
 export default function AnimatedSprite({
   idleSrc,
-  attackFrames,
-  playing,
+  idleFrames = [],
+  attackFrames = [],
+  playing = false,
   onFinish,
   alt,
   frameDuration = 90,
+  idleFrameDuration = 220,
 }: AnimatedSpriteProps) {
-  const [frameIndex, setFrameIndex] = useState(-1);
+  const [attackFrameIndex, setAttackFrameIndex] = useState(-1);
+  const [idleTick, setIdleTick] = useState(0);
   const preloaded = useRef(false);
 
   useEffect(() => {
-    if (preloaded.current || attackFrames.length === 0) return;
+    if (preloaded.current) return;
     preloaded.current = true;
-    attackFrames.forEach((src) => {
+    [...idleFrames, ...attackFrames].forEach((src) => {
       const img = new Image();
       img.src = src;
     });
-  }, [attackFrames]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (idleFrames.length < 2 || playing) return;
+    const id = setInterval(() => setIdleTick((t) => t + 1), idleFrameDuration);
+    return () => clearInterval(id);
+  }, [idleFrames.length, playing, idleFrameDuration]);
 
   useEffect(() => {
     if (!playing || attackFrames.length === 0) return;
 
     let frame = 0;
-    setFrameIndex(0);
+    setAttackFrameIndex(0);
 
     const id = setInterval(() => {
       frame += 1;
       if (frame >= attackFrames.length) {
         clearInterval(id);
-        setFrameIndex(-1);
-        onFinish();
+        setAttackFrameIndex(-1);
+        onFinish?.();
       } else {
-        setFrameIndex(frame);
+        setAttackFrameIndex(frame);
       }
     }, frameDuration);
 
@@ -50,7 +62,12 @@ export default function AnimatedSprite({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing]);
 
-  const src = frameIndex >= 0 ? attackFrames[frameIndex] : idleSrc;
+  const src =
+    attackFrameIndex >= 0
+      ? attackFrames[attackFrameIndex]
+      : idleFrames.length > 0
+        ? idleFrames[idleTick % idleFrames.length]
+        : idleSrc;
 
   return (
     <img

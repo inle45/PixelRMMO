@@ -9,6 +9,8 @@ import type { TabId } from "./data/tabs";
 
 type Screen = "auth" | "character-select" | "game";
 
+const USERNAME_KEY = "pixelrmmo:username";
+
 const COMING_SOON: Record<Exclude<TabId, "camp">, { title: string; text: string }> = {
   dungeon: { title: "Expéditions", text: "Les donjons ouvriront bientôt leurs portes, Mercenaire." },
   crafting: {
@@ -21,6 +23,13 @@ const COMING_SOON: Record<Exclude<TabId, "camp">, { title: string; text: string 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("auth");
   const [activeTab, setActiveTab] = useState<TabId>("camp");
+  const [username, setUsername] = useState<string | null>(() => localStorage.getItem(USERNAME_KEY));
+
+  const handleAuthenticated = (name: string) => {
+    localStorage.setItem(USERNAME_KEY, name);
+    setUsername(name);
+    setScreen("character-select");
+  };
 
   if (screen === "game") {
     return (
@@ -28,7 +37,7 @@ export default function App() {
         <DynamicBackground active={activeTab} />
         <main className="flex justify-center px-4 pb-28 pt-[calc(1.5rem+env(safe-area-inset-top))]">
           {activeTab === "camp" ? (
-            <CampScreen onOpenDungeon={() => setActiveTab("dungeon")} />
+            <CampScreen username={username} onOpenDungeon={() => setActiveTab("dungeon")} />
           ) : (
             <ComingSoonPanel {...COMING_SOON[activeTab]} />
           )}
@@ -43,7 +52,7 @@ export default function App() {
       <NightSceneBackground />
       <main className="flex w-full justify-center">
         {screen === "auth" ? (
-          <AuthCard onAuthenticated={() => setScreen("character-select")} />
+          <AuthCard onAuthenticated={handleAuthenticated} />
         ) : (
           <CharacterSelectScreen onConfirm={() => setScreen("game")} />
         )}
