@@ -27,18 +27,23 @@ export default function BottomNav({ active, onChange }: BottomNavProps) {
                 <motion.span
                   layoutId="activeTabDome"
                   transition={{ type: "spring", stiffness: 380, damping: 28 }}
-                  className="absolute -top-6 h-14 w-14 rounded-full bg-gradient-to-b from-lantern-glow to-mercenary shadow-[0_0_10px_rgba(255,207,107,0.9),0_0_28px_rgba(255,179,71,0.55)]"
+                  className="absolute -top-7 left-1/2 h-14 w-14 -translate-x-1/2 rounded-full border-2 border-white/50 bg-gradient-to-b from-lantern-glow to-mercenary shadow-[0_0_10px_rgba(255,207,107,0.9),0_0_28px_rgba(255,179,71,0.55)]"
                 />
               )}
               <motion.span
-                animate={{ y: isActive ? -22 : 0, scale: isActive ? 1.18 : 1 }}
+                animate={{ y: isActive ? -24 : 0, scale: isActive ? 1.15 : 1 }}
                 transition={{ type: "spring", stiffness: 380, damping: 22 }}
-                className={
-                  "relative z-10 text-xl leading-none " +
-                  (isActive ? "drop-shadow-[0_0_8px_rgba(255,207,107,0.95)]" : "")
-                }
+                className="relative z-10 flex h-6 w-6 items-center justify-center"
               >
-                {tab.icon}
+                <img
+                  src={tab.icon}
+                  alt=""
+                  className={
+                    "h-full w-full object-contain " +
+                    (isActive ? "drop-shadow-[0_0_6px_rgba(255,207,107,0.9)]" : "opacity-75")
+                  }
+                  style={{ imageRendering: "pixelated" }}
+                />
               </motion.span>
               <span
                 className={
