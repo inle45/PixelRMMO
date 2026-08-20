@@ -33,6 +33,8 @@ export const MATERIALS: MaterialDef[] = (rawMaterials as RawMaterial[]).map((m) 
   icon: getIcon(m.id),
 }));
 
+export const MATERIAL_BY_ID: Record<string, MaterialDef> = Object.fromEntries(MATERIALS.map((m) => [m.id, m]));
+
 export const CATEGORY_LABELS: Record<MaterialCategory, string> = {
   forge: "Forge",
   alchimie: "Alchimie",

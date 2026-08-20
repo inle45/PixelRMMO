@@ -6,14 +6,22 @@ import ecuIcon from "../../assets/icons/ecu.png";
 interface MaterialCardProps {
   material: MaterialDef;
   monsterName: string;
+  isOpen: boolean;
+  onOpen: () => void;
   onViewMonster: () => void;
 }
 
-export default function MaterialCard({ material, monsterName, onViewMonster }: MaterialCardProps) {
+export default function MaterialCard({ material, monsterName, isOpen, onOpen, onViewMonster }: MaterialCardProps) {
   const rarity = RARITY_BY_ID[material.rarity];
 
+  // Same FLIP trick as MonsterCard: while the modal twin (same layoutId) is mounted,
+  // this slot stays an inert placeholder so the two never coexist with the same layoutId.
+  if (isOpen) {
+    return <div className="rounded-2xl border border-transparent" aria-hidden />;
+  }
+
   return (
-    <RarityFrame rarity={material.rarity}>
+    <RarityFrame rarity={material.rarity} layoutId={`material-card-${material.id}`} onClick={onOpen}>
       <div className="flex h-full flex-col rounded-2xl bg-white/[0.05] p-3 backdrop-blur-2xl">
         <div className="flex items-start justify-between gap-1">
           <span className="rounded-full bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/60">
@@ -43,7 +51,10 @@ export default function MaterialCard({ material, monsterName, onViewMonster }: M
 
         <button
           type="button"
-          onClick={onViewMonster}
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewMonster();
+          }}
           className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/25 px-2.5 py-1.5 text-left transition-colors hover:border-lantern/40 hover:bg-black/35"
         >
           <span className="truncate text-[11px] font-medium text-white/70">{monsterName}</span>

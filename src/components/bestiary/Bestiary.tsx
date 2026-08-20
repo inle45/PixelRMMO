@@ -22,9 +22,11 @@ interface BestiaryProps {
   /** Set by CodexHub when a material card's provenance link is clicked, to jump straight to that monster. */
   requestedMonsterId?: string | null;
   onRequestHandled?: () => void;
+  /** Set by CodexHub — lets a monster's loot table jump to that material's page in the Matériaux tab. */
+  onViewMaterial?: (materialId: string) => void;
 }
 
-export default function Bestiary({ requestedMonsterId, onRequestHandled }: BestiaryProps = {}) {
+export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewMaterial }: BestiaryProps = {}) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterId>("all");
   // CodexHub only ever passes requestedMonsterId on a fresh mount (it unmounts this
@@ -154,7 +156,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled }: Besti
       )}
 
       <AnimatePresence>
-        {selected && <MonsterModal monster={selected} onClose={() => setSelectedId(null)} />}
+        {selected && <MonsterModal monster={selected} onClose={() => setSelectedId(null)} onViewMaterial={onViewMaterial} />}
       </AnimatePresence>
     </div>
   );

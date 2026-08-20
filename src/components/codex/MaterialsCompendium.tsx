@@ -1,13 +1,18 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { BESTIARY } from "../../data/bestiary";
 import { MATERIALS, CATEGORY_LABELS, CATEGORY_ICONS, type MaterialCategory } from "../../data/materials";
 import { RARITIES, type RarityId } from "../../data/rarity";
 import MaterialCard from "./MaterialCard";
+import MaterialModal from "./MaterialModal";
 
 type CategoryFilterId = "all" | MaterialCategory;
 
 interface MaterialsCompendiumProps {
   onViewMonster: (monsterId: string) => void;
+  /** Set by CodexHub when a monster's loot table icon is clicked, to jump straight to that material. */
+  requestedMaterialId?: string | null;
+  onRequestHandled?: () => void;
 }
 
 const CATEGORY_FILTERS: { id: CategoryFilterId; label: string; icon: string }[] = [
@@ -18,9 +23,18 @@ const CATEGORY_FILTERS: { id: CategoryFilterId; label: string; icon: string }[] 
   { id: "reliques", label: CATEGORY_LABELS.reliques, icon: CATEGORY_ICONS.reliques },
 ];
 
-export default function MaterialsCompendium({ onViewMonster }: MaterialsCompendiumProps) {
+export default function MaterialsCompendium({ onViewMonster, requestedMaterialId, onRequestHandled }: MaterialsCompendiumProps) {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilterId>("all");
   const [rarityFilter, setRarityFilter] = useState<RarityId | null>(null);
+  // Same one-time-jump pattern as Bestiary: CodexHub only passes requestedMaterialId on a fresh
+  // mount (this screen unmounts whenever the Bestiaire tab is active), so this is a lazy initial
+  // value, not something an effect needs to keep re-syncing.
+  const [selectedId, setSelectedId] = useState<string | null>(() => requestedMaterialId ?? null);
+
+  useEffect(() => {
+    if (requestedMaterialId) onRequestHandled?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const monsterNameById = useMemo(() => {
     const map: Record<string, string> = {};
@@ -37,6 +51,8 @@ export default function MaterialsCompendium({ onViewMonster }: MaterialsCompendi
       }),
     [categoryFilter, rarityFilter]
   );
+
+  const selected = selectedId ? MATERIALS.find((m) => m.id === selectedId) ?? null : null;
 
   return (
     <div>
@@ -114,11 +130,24 @@ export default function MaterialsCompendium({ onViewMonster }: MaterialsCompendi
               key={material.id}
               material={material}
               monsterName={monsterNameById[material.provenance.monsterId] ?? "?"}
+              isOpen={material.id === selectedId}
+              onOpen={() => setSelectedId(material.id)}
               onViewMonster={() => onViewMonster(material.provenance.monsterId)}
             />
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {selected && (
+          <MaterialModal
+            material={selected}
+            monsterName={monsterNameById[selected.provenance.monsterId] ?? "?"}
+            onClose={() => setSelectedId(null)}
+            onViewMonster={() => onViewMonster(selected.provenance.monsterId)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -14,6 +14,7 @@ const CODEX_TABS: { id: CodexTab; label: string }[] = [
 export default function CodexHub() {
   const [tab, setTab] = useState<CodexTab>("bestiary");
   const [jumpToMonsterId, setJumpToMonsterId] = useState<string | null>(null);
+  const [jumpToMaterialId, setJumpToMaterialId] = useState<string | null>(null);
 
   const activeIndex = CODEX_TABS.findIndex((t) => t.id === tab);
 
@@ -46,9 +47,18 @@ export default function CodexHub() {
       </div>
 
       {tab === "bestiary" ? (
-        <Bestiary requestedMonsterId={jumpToMonsterId} onRequestHandled={() => setJumpToMonsterId(null)} />
+        <Bestiary
+          requestedMonsterId={jumpToMonsterId}
+          onRequestHandled={() => setJumpToMonsterId(null)}
+          onViewMaterial={(materialId) => {
+            setJumpToMaterialId(materialId);
+            setTab("materials");
+          }}
+        />
       ) : (
         <MaterialsCompendium
+          requestedMaterialId={jumpToMaterialId}
+          onRequestHandled={() => setJumpToMaterialId(null)}
           onViewMonster={(monsterId) => {
             setJumpToMonsterId(monsterId);
             setTab("bestiary");

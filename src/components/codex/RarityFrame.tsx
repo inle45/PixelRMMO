@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { motion } from "framer-motion";
 import { RARITY_BY_ID, type RarityId } from "../../data/rarity";
 
 interface RarityFrameProps {
@@ -6,6 +7,9 @@ interface RarityFrameProps {
   radius?: string;
   className?: string;
   children: ReactNode;
+  /** When set, the bordered wrapper becomes a clickable motion.button sharing this layoutId with its FLIP twin. */
+  layoutId?: string;
+  onClick?: () => void;
 }
 
 const PULSE_DURATION: Partial<Record<RarityId, string>> = {
@@ -27,7 +31,14 @@ const SPARKLE_SPOTS = [
  * escalating from a static tint (poor/common) through a pulsing glow (uncommon-legendary, gold pulsing
  * slower/richer than the rest) and a flame-like flicker (mythic), to a multi-color layered halo plus
  * twinkling sparkles at the transcendent tier. */
-export default function RarityFrame({ rarity, radius = "rounded-2xl", className = "", children }: RarityFrameProps) {
+export default function RarityFrame({
+  rarity,
+  radius = "rounded-2xl",
+  className = "",
+  children,
+  layoutId,
+  onClick,
+}: RarityFrameProps) {
   const def = RARITY_BY_ID[rarity];
   const tier = def.tier;
   const isPrismatic = tier === 8;
@@ -46,11 +57,27 @@ export default function RarityFrame({ rarity, radius = "rounded-2xl", className 
     glowStyle = { boxShadow: `0 0 8px 0 ${def.color}55` };
   }
 
+  const borderStyle = { borderColor: def.color, ...glowStyle };
+  const borderClassName = `relative w-full ${radius} border-2 text-left ${glowClassName}`;
+
   return (
     <div className={`relative ${className}`}>
-      <div className={`relative ${radius} border-2 ${glowClassName}`} style={{ borderColor: def.color, ...glowStyle }}>
-        {children}
-      </div>
+      {onClick ? (
+        <motion.button
+          type="button"
+          layoutId={layoutId}
+          onClick={onClick}
+          transition={{ type: "spring", stiffness: 260, damping: 28 }}
+          className={borderClassName}
+          style={borderStyle}
+        >
+          {children}
+        </motion.button>
+      ) : (
+        <motion.div layoutId={layoutId} transition={{ type: "spring", stiffness: 260, damping: 28 }} className={borderClassName} style={borderStyle}>
+          {children}
+        </motion.div>
+      )}
       {isPrismatic &&
         SPARKLE_SPOTS.map((s, i) => (
           <span

@@ -1,19 +1,22 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FAMILY_LABELS, STAT_SCALE, type MonsterDef } from "../../data/bestiary";
+import { MATERIAL_BY_ID } from "../../data/materials";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import StatBar from "../ui/StatBar";
 import RarityBadge from "./RarityBadge";
 import { FAMILY_THEME } from "./theme";
+import ecuIcon from "../../assets/icons/ecu.png";
 
 type Posture = "idle" | "attack";
 
 interface MonsterModalProps {
   monster: MonsterDef;
   onClose: () => void;
+  onViewMaterial?: (materialId: string) => void;
 }
 
-export default function MonsterModal({ monster, onClose }: MonsterModalProps) {
+export default function MonsterModal({ monster, onClose, onViewMaterial }: MonsterModalProps) {
   const [posture, setPosture] = useState<Posture>("idle");
   const theme = FAMILY_THEME[monster.family];
   const frames = posture === "idle" ? monster.idleFrames : monster.attackFrames;
@@ -120,19 +123,47 @@ export default function MonsterModal({ monster, onClose }: MonsterModalProps) {
         <div className="mt-4">
           <h3 className="text-[11px] font-bold uppercase tracking-wide text-white/60">Butin</h3>
           <div className="mt-2 flex flex-col gap-1.5">
-            {monster.drops.map((drop) => (
-              <div
-                key={drop.name}
-                className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/20 px-2.5 py-1.5 text-xs"
-              >
-                <span className="text-white/75">
-                  {drop.currency && "🪙 "}
-                  {drop.name}
-                  {drop.currency && drop.min != null && ` (${drop.min}-${drop.max})`}
-                </span>
-                <span className={`font-bold ${theme.accentText}`}>{drop.chance}%</span>
-              </div>
-            ))}
+            {monster.drops.map((drop) => {
+              const material = drop.materialId ? MATERIAL_BY_ID[drop.materialId] : undefined;
+              const icon = drop.currency ? ecuIcon : material?.icon;
+              const rowContent = (
+                <>
+                  <span className="flex min-w-0 items-center gap-2 text-white/75">
+                    {icon && (
+                      <img
+                        src={icon}
+                        alt=""
+                        className="h-5 w-5 flex-none object-contain"
+                        style={{ imageRendering: "pixelated" }}
+                      />
+                    )}
+                    <span className="truncate">
+                      {drop.name}
+                      {drop.currency && drop.min != null && ` (${drop.min}-${drop.max})`}
+                    </span>
+                  </span>
+                  <span className={`flex-none font-bold ${theme.accentText}`}>{drop.chance}%</span>
+                </>
+              );
+
+              return material ? (
+                <button
+                  key={drop.name}
+                  type="button"
+                  onClick={() => onViewMaterial?.(material.id)}
+                  className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/20 px-2.5 py-1.5 text-left text-xs transition-colors hover:border-lantern/40 hover:bg-black/35"
+                >
+                  {rowContent}
+                </button>
+              ) : (
+                <div
+                  key={drop.name}
+                  className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/20 px-2.5 py-1.5 text-xs"
+                >
+                  {rowContent}
+                </div>
+              );
+            })}
           </div>
         </div>
       </motion.div>

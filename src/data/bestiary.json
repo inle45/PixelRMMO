@@ -24,8 +24,9 @@
     "lore": "Tapie dans les voûtes humides, elle fond sur les mercenaires isolés pour se repaître de leur sang.",
     "drops": [
       {
-        "name": "Aile membraneuse",
-        "chance": 90
+        "name": "Aile Membraneuse Impeccable",
+        "chance": 80,
+        "materialId": "membrane_wing"
       },
       {
         "name": "Écus",
@@ -65,8 +66,14 @@
         "chance": 85
       },
       {
-        "name": "Peau râpée",
-        "chance": 60
+        "name": "Lanière de Cuir Râpé",
+        "chance": 75,
+        "materialId": "scraped_leather"
+      },
+      {
+        "name": "Os Vermoulu Fissuré",
+        "chance": 90,
+        "materialId": "brittle_bone"
       },
       {
         "name": "Écus",
@@ -102,8 +109,9 @@
     "lore": "Une créature millénaire dotée d'une carapace dure comme l'acier forgé.",
     "drops": [
       {
-        "name": "Écaille de chitine",
-        "chance": 80
+        "name": "Écaille de Chitine Brune",
+        "chance": 80,
+        "materialId": "chitin_scale"
       },
       {
         "name": "Écus",
@@ -139,12 +147,14 @@
     "lore": "Elle tisse des toiles spectrales indestructibles au milieu des sarcophages.",
     "drops": [
       {
-        "name": "Soie nécrotique",
-        "chance": 75
+        "name": "Soie Nécrotique Tissée",
+        "chance": 60,
+        "materialId": "necrotic_silk"
       },
       {
-        "name": "Glande de venin",
-        "chance": 35
+        "name": "Glande de Venin Concentré",
+        "chance": 35,
+        "materialId": "venom_gland"
       },
       {
         "name": "Écus",
@@ -180,12 +190,18 @@
     "lore": "Les ossements ranimés d'un jeune milicien tombé lors d'un ancien siège.",
     "drops": [
       {
-        "name": "Os brisé",
-        "chance": 95
+        "name": "Éclat d'Os Blanchi",
+        "chance": 80,
+        "materialId": "bone_shard"
       },
       {
         "name": "Épée ébréchée",
         "chance": 25
+      },
+      {
+        "name": "Ferraille Rouillée",
+        "chance": 95,
+        "materialId": "rusty_scrap"
       },
       {
         "name": "Écus",
@@ -227,12 +243,14 @@
     "lore": "Ancien protecteur du tombeau royal, il ne baisse jamais sa lourde défense.",
     "drops": [
       {
-        "name": "Éclat de fer ancien",
-        "chance": 75
+        "name": "Lingot de Fer Ancien",
+        "chance": 65,
+        "materialId": "ancient_iron_scrap"
       },
       {
-        "name": "Plaque de bouclier",
-        "chance": 40
+        "name": "Plaque d'Écu Runique",
+        "chance": 35,
+        "materialId": "shield_plating"
       },
       {
         "name": "Écus",
@@ -270,8 +288,9 @@
     "lore": "Sa pique d'os taillée traverse aisément le cuir et la cotte de mailles.",
     "drops": [
       {
-        "name": "Hampe d'os durcie",
-        "chance": 70
+        "name": "Hampe d'Os Durcie",
+        "chance": 70,
+        "materialId": "hardened_bone_shaft"
       },
       {
         "name": "Pointe de lance",
@@ -364,8 +383,9 @@
     "lore": "Une lueur trompeuse guidant les voyageurs imprudents vers des fosses sans fond.",
     "drops": [
       {
-        "name": "Éther scintillant",
-        "chance": 75
+        "name": "Éther Scintillant Flottant",
+        "chance": 50,
+        "materialId": "shimmering_ether"
       },
       {
         "name": "Écus",
@@ -401,8 +421,9 @@
     "lore": "Une âme en peine dont le cri glace le sang et paralyse les plus braves guerriers.",
     "drops": [
       {
-        "name": "Ectoplasme froid",
-        "chance": 65
+        "name": "Ectoplasme de Givre Éternel",
+        "chance": 40,
+        "materialId": "cold_ectoplasm"
       },
       {
         "name": "Voile d'ombre",
@@ -446,8 +467,9 @@
         "chance": 80
       },
       {
-        "name": "Grimoire interdit",
-        "chance": 30
+        "name": "Feuillet de Nécromancie Interdite",
+        "chance": 25,
+        "materialId": "forbidden_grimoire_page"
       },
       {
         "name": "Écus",
@@ -489,8 +511,9 @@
     "lore": "Une condensation de pure noirceur qui se glisse dans les angles morts.",
     "drops": [
       {
-        "name": "Essence d'obscurité",
-        "chance": 50
+        "name": "Essence Pure d'Obscurité",
+        "chance": 30,
+        "materialId": "shadow_essence"
       },
       {
         "name": "Dague d'ombre",
@@ -530,8 +553,9 @@
     "lore": "Sculptée pour surveiller le sanctuaire, elle s'éveille dès qu'un intrus s'approche.",
     "drops": [
       {
-        "name": "Fragment de granit runique",
-        "chance": 60
+        "name": "Fragment de Granit Runique",
+        "chance": 45,
+        "materialId": "runic_granite_fragment"
       },
       {
         "name": "Rubis brut",
@@ -624,8 +648,9 @@
     "lore": "Une cotte de plates possédée par l'esprit rancunier d'un général royal trahi.",
     "drops": [
       {
-        "name": "Fer spectral",
-        "chance": 50
+        "name": "Lingot de Fer Spectral Intangible",
+        "chance": 30,
+        "materialId": "spectral_iron"
       },
       {
         "name": "Fragment de plastron",
@@ -757,8 +782,9 @@
         "chance": 40
       },
       {
-        "name": "Chaîne de fer lourd",
-        "chance": 60
+        "name": "Chaîne d'Entrave du Bourreau",
+        "chance": 35,
+        "materialId": "cursed_chain"
       },
       {
         "name": "Écus",
@@ -794,8 +820,9 @@
     "lore": "Un puissant sorcier qui a troqué sa mortalité contre le pouvoir infini de la nécromancie.",
     "drops": [
       {
-        "name": "Phylactère fissuré",
-        "chance": 50
+        "name": "Fragment de Phylactère d'Archiliche",
+        "chance": 30,
+        "materialId": "phylactery_shard"
       },
       {
         "name": "Orbe de nécrose",
@@ -839,8 +866,9 @@
         "chance": 100
       },
       {
-        "name": "Cœur Spectral",
-        "chance": 60
+        "name": "Cœur Spectral Immortel du Roi",
+        "chance": 12,
+        "materialId": "spectral_heart"
       },
       {
         "name": "Lame Spectrale Royale [Légendaire C2C]",

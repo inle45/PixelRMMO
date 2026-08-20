@@ -16,6 +16,8 @@ export interface MonsterDrop {
   currency?: boolean;
   min?: number;
   max?: number;
+  /** Present when this drop is one of the 20 Livre des Matériaux entries — links to materials.ts's MaterialDef.id. */
+  materialId?: string;
 }
 
 export interface MonsterSkill {
