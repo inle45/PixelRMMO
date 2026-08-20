@@ -1,0 +1,202 @@
+[
+  {
+    "id": "rusty_scrap",
+    "name": "Ferraille Rouillée",
+    "rarity": "poor",
+    "category": "forge",
+    "usage": "Broyage en limaille",
+    "lore": "Des fragments de métal corrodés par des siècles d'humidité, à peine bons pour la fonte.",
+    "provenance": { "monsterId": "skeleton_recruit", "dropChance": 95 },
+    "value": 1
+  },
+  {
+    "id": "brittle_bone",
+    "name": "Os Vermoulu Fissuré",
+    "rarity": "poor",
+    "category": "alchimie",
+    "usage": "Cendres alchimiques",
+    "lore": "Un ossement si fragile qu'il se réduit en poussière au moindre choc.",
+    "provenance": { "monsterId": "plague_rat", "dropChance": 90 },
+    "value": 1
+  },
+  {
+    "id": "bone_shard",
+    "name": "Éclat d'Os Blanchi",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Poignées de dagues",
+    "lore": "Poli par le temps, cet éclat garde un tranchant surprenant malgré son âge.",
+    "provenance": { "monsterId": "skeleton_recruit", "dropChance": 80 },
+    "value": 3
+  },
+  {
+    "id": "scraped_leather",
+    "name": "Lanière de Cuir Râpé",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Forge & Sellerie",
+    "lore": "Du cuir usé jusqu'à la corde, mais encore assez solide pour être retravaillé.",
+    "provenance": { "monsterId": "plague_rat", "dropChance": 75 },
+    "value": 3
+  },
+  {
+    "id": "chitin_scale",
+    "name": "Écaille de Chitine Brune",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Armures légères",
+    "lore": "Une écaille robuste arrachée à la carapace d'un scarabée des cryptes.",
+    "provenance": { "monsterId": "crypt_beetle", "dropChance": 80 },
+    "value": 4
+  },
+  {
+    "id": "membrane_wing",
+    "name": "Aile Membraneuse Impeccable",
+    "rarity": "uncommon",
+    "category": "alchimie",
+    "usage": "Potions d'agilité",
+    "lore": "Fine et élastique, cette membrane conserve encore un peu de la vivacité de son propriétaire.",
+    "provenance": { "monsterId": "vampire_bat", "dropChance": 80 },
+    "value": 7
+  },
+  {
+    "id": "hardened_bone_shaft",
+    "name": "Hampe d'Os Durcie",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Lances, arcs",
+    "lore": "Un os taillé et durci au feu, prêt à devenir la hampe d'une arme redoutable.",
+    "provenance": { "monsterId": "bone_spearman", "dropChance": 70 },
+    "value": 9
+  },
+  {
+    "id": "ancient_iron_scrap",
+    "name": "Lingot de Fer Ancien",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Lames d'acier",
+    "lore": "Un lingot forgé selon des techniques oubliées, dense et étonnamment pur.",
+    "provenance": { "monsterId": "shield_skeleton", "dropChance": 65 },
+    "value": 12
+  },
+  {
+    "id": "necrotic_silk",
+    "name": "Soie Nécrotique Tissée",
+    "rarity": "rare",
+    "category": "alchimie",
+    "usage": "Robes magiques & bandages",
+    "lore": "Une soie spectrale tissée entre les sarcophages, froide au toucher.",
+    "provenance": { "monsterId": "tomb_spider", "dropChance": 60 },
+    "value": 20
+  },
+  {
+    "id": "venom_gland",
+    "name": "Glande de Venin Concentré",
+    "rarity": "rare",
+    "category": "alchimie",
+    "usage": "Poisons persistants",
+    "lore": "Palpitante même après extraction, cette glande recèle un poison d'une rare puissance.",
+    "provenance": { "monsterId": "tomb_spider", "dropChance": 35 },
+    "value": 25
+  },
+  {
+    "id": "shield_plating",
+    "name": "Plaque d'Écu Runique",
+    "rarity": "rare",
+    "category": "forge",
+    "usage": "Boucliers de rempart",
+    "lore": "Gravée de runes protectrices à moitié effacées, cette plaque a résisté à d'innombrables coups.",
+    "provenance": { "monsterId": "shield_skeleton", "dropChance": 35 },
+    "value": 30
+  },
+  {
+    "id": "runic_granite_fragment",
+    "name": "Fragment de Granit Runique",
+    "rarity": "epic",
+    "category": "forge",
+    "usage": "Armures de pierre vivante",
+    "lore": "Un éclat de pierre vivante, encore chaud de la magie qui animait la gargouille.",
+    "provenance": { "monsterId": "crypt_gargoyle", "dropChance": 45 },
+    "value": 50
+  },
+  {
+    "id": "shimmering_ether",
+    "name": "Éther Scintillant Flottant",
+    "rarity": "epic",
+    "category": "enchantement",
+    "usage": "Potions de grand Mana",
+    "lore": "Une brume magique capturée, qui continue de flotter et scintiller dans sa fiole.",
+    "provenance": { "monsterId": "will_o_wisp", "dropChance": 50 },
+    "value": 55
+  },
+  {
+    "id": "cold_ectoplasm",
+    "name": "Ectoplasme de Givre Éternel",
+    "rarity": "epic",
+    "category": "enchantement",
+    "usage": "Infusion glaciale",
+    "lore": "Une substance spectrale qui ne dégèle jamais, glaçant tout ce qu'elle touche.",
+    "provenance": { "monsterId": "wailing_spectre", "dropChance": 40 },
+    "value": 65
+  },
+  {
+    "id": "shadow_essence",
+    "name": "Essence Pure d'Obscurité",
+    "rarity": "mythic",
+    "category": "enchantement",
+    "usage": "Affixes critiques dagues",
+    "lore": "De l'obscurité condensée qui semble absorber la lumière environnante.",
+    "provenance": { "monsterId": "creeping_shadow", "dropChance": 30 },
+    "value": 90
+  },
+  {
+    "id": "forbidden_grimoire_page",
+    "name": "Feuillet de Nécromancie Interdite",
+    "rarity": "mythic",
+    "category": "enchantement",
+    "usage": "Runes de réanimation",
+    "lore": "Une page arrachée à un grimoire proscrit, ses runes murmurent encore des secrets funestes.",
+    "provenance": { "monsterId": "dark_necromancer", "dropChance": 25 },
+    "value": 110
+  },
+  {
+    "id": "spectral_iron",
+    "name": "Lingot de Fer Spectral Intangible",
+    "rarity": "mythic",
+    "category": "forge",
+    "usage": "Lames ignorant l'armure",
+    "lore": "Un métal à demi-matériel, capable de trancher l'armure comme si elle n'existait pas.",
+    "provenance": { "monsterId": "animated_armor", "dropChance": 30 },
+    "value": 130
+  },
+  {
+    "id": "cursed_chain",
+    "name": "Chaîne d'Entrave du Bourreau",
+    "rarity": "legendary",
+    "category": "reliques",
+    "usage": "Relique de combat (Stun massif)",
+    "lore": "Forgée pour immobiliser les condamnés, cette chaîne maudite frappe encore avec la même cruauté.",
+    "provenance": { "monsterId": "cursed_executioner", "dropChance": 35 },
+    "value": 220
+  },
+  {
+    "id": "phylactery_shard",
+    "name": "Fragment de Phylactère d'Archiliche",
+    "rarity": "legendary",
+    "category": "reliques",
+    "usage": "Catalyseur de sorts suprêmes",
+    "lore": "Un éclat de l'ancre magique qui liait une âme damnée à ce monde.",
+    "provenance": { "monsterId": "crypt_archlich", "dropChance": 30 },
+    "value": 260
+  },
+  {
+    "id": "spectral_heart",
+    "name": "Cœur Spectral Immortel du Roi",
+    "rarity": "transcendent",
+    "category": "reliques",
+    "usage": "Composant unique de la \"Lame Spectrale Royale\" (Actif C2C à forte valeur)",
+    "lore": "Le cœur qui n'a jamais cessé de battre, même après la chute du Roi Squelette. Un trésor que le marché s'arracherait à prix d'or.",
+    "provenance": { "monsterId": "skeleton_king_boss", "dropChance": 12 },
+    "value": 500
+  }
+]

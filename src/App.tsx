@@ -5,7 +5,7 @@ import AuthCard from "./components/auth/AuthCard";
 import CharacterSelectScreen from "./components/character/CharacterSelectScreen";
 import CampScreen from "./components/camp/CampScreen";
 import BottomNav from "./components/nav/BottomNav";
-import Bestiary from "./components/bestiary/Bestiary";
+import CodexHub from "./components/codex/CodexHub";
 import type { TabId } from "./data/tabs";
 
 type Screen = "auth" | "character-select" | "game";
@@ -40,7 +40,7 @@ export default function App() {
           {activeTab === "camp" ? (
             <CampScreen username={username} onOpenDungeon={() => setActiveTab("dungeon")} />
           ) : activeTab === "bestiary" ? (
-            <Bestiary />
+            <CodexHub />
           ) : (
             <ComingSoonPanel {...COMING_SOON[activeTab]} />
           )}

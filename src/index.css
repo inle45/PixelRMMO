@@ -148,12 +148,79 @@ textarea {
   animation-delay: var(--delay, 0s);
 }
 
+/* ---------- Rarity effects (Codex) ---------- */
+
+@keyframes rarity-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 6px 0 var(--glow-color, transparent),
+      0 0 0 0 var(--glow-color, transparent);
+    opacity: 0.8;
+  }
+  50% {
+    box-shadow:
+      0 0 18px 2px var(--glow-color, transparent),
+      0 0 34px 6px var(--glow-color, transparent);
+    opacity: 1;
+  }
+}
+
+@keyframes rarity-flicker {
+  0%,
+  100% {
+    opacity: 0.75;
+    box-shadow: 0 0 10px 1px var(--glow-color, transparent);
+  }
+  20% {
+    opacity: 1;
+    box-shadow: 0 0 24px 4px var(--glow-color, transparent);
+  }
+  35% {
+    opacity: 0.85;
+    box-shadow: 0 0 14px 2px var(--glow-color, transparent);
+  }
+  55% {
+    opacity: 1;
+    box-shadow: 0 0 28px 5px var(--glow-color, transparent);
+  }
+  70% {
+    opacity: 0.8;
+    box-shadow: 0 0 12px 1px var(--glow-color, transparent);
+  }
+  85% {
+    opacity: 0.95;
+    box-shadow: 0 0 20px 3px var(--glow-color, transparent);
+  }
+}
+
+@keyframes rarity-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-rarity-pulse {
+  animation: rarity-pulse var(--dur, 2.2s) ease-in-out infinite;
+}
+
+.animate-rarity-flicker {
+  animation: rarity-flicker 1.5s ease-in-out infinite;
+}
+
+.animate-rarity-spin {
+  animation: rarity-spin var(--dur, 5s) linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-twinkle,
   .animate-lantern,
   .animate-water,
   .animate-drift,
-  .animate-float-up {
+  .animate-float-up,
+  .animate-rarity-pulse,
+  .animate-rarity-flicker,
+  .animate-rarity-spin {
     animation: none !important;
   }
 }

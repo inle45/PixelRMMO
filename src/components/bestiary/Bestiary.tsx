@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { BESTIARY, FAMILY_LABELS, type MonsterFamily } from "../../data/bestiary";
 import { DUNGEONS } from "../../data/dungeons";
@@ -18,10 +18,25 @@ const FILTERS: { id: FilterId; label: string }[] = [
 
 const FAMILY_ORDER: MonsterFamily[] = ["vermin", "skeleton", "spectre", "guardian", "boss"];
 
-export default function Bestiary() {
+interface BestiaryProps {
+  /** Set by CodexHub when a material card's provenance link is clicked, to jump straight to that monster. */
+  requestedMonsterId?: string | null;
+  onRequestHandled?: () => void;
+}
+
+export default function Bestiary({ requestedMonsterId, onRequestHandled }: BestiaryProps = {}) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterId>("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  // CodexHub only ever passes requestedMonsterId on a fresh mount (it unmounts this
+  // screen whenever the Matériaux tab is active), so the jump is a one-time initial
+  // value rather than something to keep re-syncing via an effect.
+  const [selectedId, setSelectedId] = useState<string | null>(() => requestedMonsterId ?? null);
+
+  useEffect(() => {
+    if (requestedMonsterId) onRequestHandled?.();
+    // Consume-once on mount: re-running this if the callback identity changes would defeat the point.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const counts = useMemo(() => {
     const c: Record<FilterId, number> = { all: BESTIARY.length, vermin: 0, skeleton: 0, spectre: 0, guardian: 0, boss: 0 };
