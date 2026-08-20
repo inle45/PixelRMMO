@@ -33,6 +33,7 @@ import CombatantPanel, { type FloatingText } from "./CombatantPanel";
 import TurnQueueBar from "./TurnQueueBar";
 import ActionMenu from "./ActionMenu";
 import arenaBg from "../../assets/dungeon/arena-bg.png";
+import targetIcon from "../../assets/icons/dungeon/target.png";
 
 export interface BattleResult {
   victory: boolean;
@@ -506,8 +507,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
 
         <div className="pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           {st.targetMode ? (
-            <div className="rounded-xl border border-rose-400/40 bg-black/50 px-3 py-2.5 text-center text-xs font-bold text-rose-200 backdrop-blur">
-              🎯 Choisis une cible parmi les ennemis en surbrillance
+            <div className="flex items-center justify-center gap-1.5 rounded-xl border border-rose-400/40 bg-black/50 px-3 py-2.5 text-center text-xs font-bold text-rose-200 backdrop-blur">
+              <img src={targetIcon} alt="" className="h-4 w-4 object-contain" style={{ imageRendering: "pixelated" }} />
+              Choisis une cible parmi les ennemis en surbrillance
               <button
                 type="button"
                 onClick={() => set({ targetMode: null, effectivenessBadge: {} })}
@@ -593,7 +595,7 @@ function SkillPanel({
         onClick={onPick}
         className="flex w-full items-center gap-2.5 rounded-lg border border-white/10 bg-white/[0.06] p-2 text-left transition-colors hover:border-violet-400/40 disabled:cursor-not-allowed disabled:opacity-40"
       >
-        <span className="text-xl">{skill.icon}</span>
+        <img src={skill.icon} alt="" className="h-7 w-7 flex-none object-contain" style={{ imageRendering: "pixelated" }} />
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold text-white">{skill.name}</p>
           <p className="truncate text-[10px] text-white/50">{skill.description}</p>

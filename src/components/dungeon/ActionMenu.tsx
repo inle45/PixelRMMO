@@ -1,3 +1,8 @@
+import attackIcon from "../../assets/icons/dungeon/attack.png";
+import skillsIcon from "../../assets/icons/dungeon/skills.png";
+import guardIcon from "../../assets/icons/dungeon/guard.png";
+import backpackIcon from "../../assets/icons/dungeon/backpack.png";
+
 interface ActionMenuProps {
   disabled: boolean;
   onBasicAttack: () => void;
@@ -7,10 +12,10 @@ interface ActionMenuProps {
 }
 
 const BUTTONS = [
-  { key: "attack", label: "Attaque", icon: "⚔️" },
-  { key: "skills", label: "Sorts", icon: "✨" },
-  { key: "guard", label: "Garde", icon: "🛡️" },
-  { key: "items", label: "Sac", icon: "🎒" },
+  { key: "attack", label: "Attaque", icon: attackIcon },
+  { key: "skills", label: "Sorts", icon: skillsIcon },
+  { key: "guard", label: "Garde", icon: guardIcon },
+  { key: "items", label: "Sac", icon: backpackIcon },
 ] as const;
 
 export default function ActionMenu({ disabled, onBasicAttack, onOpenSkills, onGuard, onOpenItems }: ActionMenuProps) {
@@ -31,7 +36,7 @@ export default function ActionMenu({ disabled, onBasicAttack, onOpenSkills, onGu
           onClick={handlers[b.key]}
           className="flex flex-col items-center gap-1 rounded-xl border border-white/15 bg-white/[0.07] py-2.5 text-white transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
         >
-          <span className="text-lg">{b.icon}</span>
+          <img src={b.icon} alt="" className="h-6 w-6 object-contain" style={{ imageRendering: "pixelated" }} />
           <span className="text-[9px] font-bold uppercase tracking-wide">{b.label}</span>
         </button>
       ))}

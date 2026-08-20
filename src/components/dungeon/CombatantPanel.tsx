@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import StatusIcon from "./StatusIcon";
+import guardIcon from "../../assets/icons/dungeon/guard.png";
 import type { Combatant } from "../../data/battleEngine";
 
 export interface FloatingText {
@@ -105,8 +106,8 @@ export default function CombatantPanel({
           />
         </div>
         {combatant.guarding && (
-          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] shadow">
-            🛡️
+          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 shadow">
+            <img src={guardIcon} alt="" className="h-3.5 w-3.5 object-contain" style={{ imageRendering: "pixelated" }} />
           </span>
         )}
       </div>

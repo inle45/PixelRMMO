@@ -4,6 +4,8 @@ import { DUNGEONS } from "../../data/dungeons";
 import { MAX_KEYS, getSettledKeyState, msUntilNextKey } from "../../data/energy";
 import { WEATHER, getActiveWeatherIndex, getMsUntilNextWeather } from "../../data/typeSystem";
 import skullIcon from "../../assets/icons/items/skull.png";
+import swordsIcon from "../../assets/icons/dungeon/attack.png";
+import keyIcon from "../../assets/icons/dungeon/key.png";
 
 interface DungeonHubProps {
   onEnter: () => void;
@@ -39,7 +41,10 @@ export default function DungeonHub({ onEnter }: DungeonHubProps) {
         >
           Expéditions
         </span>
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">⚔️ Donjons & Expéditions</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
+          <img src={swordsIcon} alt="" className="h-7 w-7 object-contain sm:h-8 sm:w-8" style={{ imageRendering: "pixelated" }} />
+          Donjons & Expéditions
+        </h1>
       </div>
 
       {/* Key / energy gauge */}
@@ -52,14 +57,16 @@ export default function DungeonHub({ onEnter }: DungeonHubProps) {
         </div>
         <div className="mt-2 flex items-center gap-1.5">
           {Array.from({ length: MAX_KEYS }).map((_, i) => (
-            <span
+            <img
               key={i}
+              src={keyIcon}
+              alt=""
               className={
-                "text-xl transition-all " + (i < keyState.count ? "opacity-100 drop-shadow-[0_0_6px_rgba(255,179,71,0.65)]" : "opacity-20 grayscale")
+                "h-6 w-6 object-contain transition-all " +
+                (i < keyState.count ? "opacity-100 drop-shadow-[0_0_6px_rgba(255,179,71,0.65)]" : "opacity-20 grayscale")
               }
-            >
-              🗝️
-            </span>
+              style={{ imageRendering: "pixelated" }}
+            />
           ))}
           <span className="ml-auto text-sm font-bold text-white">
             {keyState.count} <span className="text-white/40">/ {MAX_KEYS}</span>
@@ -80,9 +87,7 @@ export default function DungeonHub({ onEnter }: DungeonHubProps) {
         </motion.div>
         <div className="min-w-0 flex-1">
           <p className="text-[9px] font-bold uppercase tracking-wide text-lantern-glow">Météo Active</p>
-          <h2 className="truncate text-sm font-bold text-white">
-            {activeWeather.emoji} {activeWeather.name}
-          </h2>
+          <h2 className="truncate text-sm font-bold text-white">{activeWeather.name}</h2>
           <div className="mt-1 flex flex-wrap gap-1">
             {activeWeather.modifiers.map((mod) => (
               <span key={mod.label} className="rounded-full border border-white/10 bg-black/25 px-1.5 py-0.5 text-[9px] text-white/60">
@@ -122,7 +127,8 @@ export default function DungeonHub({ onEnter }: DungeonHubProps) {
             "Aucune Clé disponible"
           ) : (
             <>
-              💀 Entrer dans la Crypte <span className="text-rose-100/80">(Consomme 1 Clé)</span>
+              <img src={skullIcon} alt="" className="h-5 w-5 object-contain" style={{ imageRendering: "pixelated" }} />
+              Entrer dans la Crypte <span className="text-rose-100/80">(Consomme 1 Clé)</span>
             </>
           )}
         </button>

@@ -8,6 +8,12 @@ import { CATEGORY_ICONS } from "../../data/materials";
 import RarityFrame from "../codex/RarityFrame";
 import ecuIcon from "../../assets/icons/ecu.png";
 import chestOpen from "../../assets/dungeon/chest-open.png";
+import skullIcon from "../../assets/icons/items/skull.png";
+import attackIcon from "../../assets/icons/dungeon/attack.png";
+import skillsIcon from "../../assets/icons/dungeon/skills.png";
+import guardIcon from "../../assets/icons/dungeon/guard.png";
+import backpackIcon from "../../assets/icons/dungeon/backpack.png";
+import castleIcon from "../../assets/icons/dungeon/castle.png";
 
 const chestFrameModules = import.meta.glob("../../assets/dungeon/chest/*.png", { eager: true, import: "default" }) as Record<
   string,
@@ -208,25 +214,34 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
                 type="button"
                 onClick={() => setStored(true)}
                 disabled={stored}
-                className="w-full rounded-xl bg-gradient-to-r from-lantern via-lantern-glow to-mercenary py-2.5 text-sm font-bold text-[#1a1004] shadow-[0_4px_16px_rgba(255,179,71,0.35)] transition-all active:scale-[0.98] disabled:opacity-70"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lantern via-lantern-glow to-mercenary py-2.5 text-sm font-bold text-[#1a1004] shadow-[0_4px_16px_rgba(255,179,71,0.35)] transition-all active:scale-[0.98] disabled:opacity-70"
               >
-                {stored ? "✓ Rangé dans le Sac" : "🎒 Tout Ranger dans le Sac"}
+                {stored ? (
+                  "✓ Rangé dans le Sac"
+                ) : (
+                  <>
+                    <img src={backpackIcon} alt="" className="h-5 w-5 object-contain" style={{ imageRendering: "pixelated" }} />
+                    Tout Ranger dans le Sac
+                  </>
+                )}
               </button>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={onReplay}
                   disabled={!hasKey}
-                  className="rounded-xl border border-rose-400/30 bg-rose-500/15 py-2.5 text-xs font-bold text-rose-200 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-rose-400/30 bg-rose-500/15 py-2.5 text-xs font-bold text-rose-200 transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  ⚔️ Rejouer (1 Clé)
+                  <img src={attackIcon} alt="" className="h-4 w-4 object-contain" style={{ imageRendering: "pixelated" }} />
+                  Rejouer (1 Clé)
                 </button>
                 <button
                   type="button"
                   onClick={onReturnToCamp}
-                  className="rounded-xl border border-white/15 bg-white/[0.06] py-2.5 text-xs font-bold text-white/85 transition-all active:scale-[0.98]"
+                  className="flex items-center justify-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.06] py-2.5 text-xs font-bold text-white/85 transition-all active:scale-[0.98]"
                 >
-                  🏰 Retour au Camp
+                  <img src={castleIcon} alt="" className="h-4 w-4 object-contain" style={{ imageRendering: "pixelated" }} />
+                  Retour au Camp
                 </button>
               </div>
             </div>
@@ -240,7 +255,7 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
           className="w-full max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-[#12101a] shadow-[0_25px_70px_rgba(0,0,0,0.65)]"
         >
           <div className="flex flex-col items-center gap-2 border-b border-white/10 bg-black/30 px-6 py-8 text-center">
-            <span className="text-3xl">💀</span>
+            <img src={skullIcon} alt="" className="h-10 w-10 object-contain" style={{ imageRendering: "pixelated" }} />
             <h2 className="text-lg font-bold text-white/85">La Crypte t'a Vaincu...</h2>
             <p className="text-xs text-white/45">Le Roi Squelette veille encore sur ses ossements.</p>
           </div>
@@ -260,9 +275,15 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
 
             <div className="mt-3 rounded-xl border border-white/10 bg-black/20 p-3">
               <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-white/50">Conseils Stratégiques</p>
-              <ul className="space-y-1 text-[11px] leading-snug text-white/60">
-                <li>• Utilise ✨ Sorts contre les faiblesses élémentaires signalées "Super Efficace".</li>
-                <li>• 🛡️ Garde réduit de 50% les dégâts en attendant tes potions ou ton mana.</li>
+              <ul className="space-y-1.5 text-[11px] leading-snug text-white/60">
+                <li className="flex items-start gap-1.5">
+                  <img src={skillsIcon} alt="" className="mt-0.5 h-3.5 w-3.5 flex-none object-contain" style={{ imageRendering: "pixelated" }} />
+                  <span>Utilise les Sorts contre les faiblesses élémentaires signalées "Super Efficace".</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <img src={guardIcon} alt="" className="mt-0.5 h-3.5 w-3.5 flex-none object-contain" style={{ imageRendering: "pixelated" }} />
+                  <span>Garde réduit de 50% les dégâts en attendant tes potions ou ton mana.</span>
+                </li>
                 <li>• Garde un œil sur la Météo active : elle amplifie certains types de dégâts.</li>
               </ul>
             </div>
@@ -270,9 +291,10 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
             <button
               type="button"
               onClick={onReturnToCamp}
-              className="mt-4 w-full rounded-xl bg-gradient-to-r from-lantern via-lantern-glow to-mercenary py-2.5 text-sm font-bold text-[#1a1004] shadow-[0_4px_16px_rgba(255,179,71,0.35)] transition-all active:scale-[0.98]"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-lantern via-lantern-glow to-mercenary py-2.5 text-sm font-bold text-[#1a1004] shadow-[0_4px_16px_rgba(255,179,71,0.35)] transition-all active:scale-[0.98]"
             >
-              🏰 Retourner au Campement
+              <img src={castleIcon} alt="" className="h-5 w-5 object-contain" style={{ imageRendering: "pixelated" }} />
+              Retourner au Campement
             </button>
           </div>
         </motion.div>
