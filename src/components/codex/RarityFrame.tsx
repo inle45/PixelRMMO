@@ -12,6 +12,7 @@ const PULSE_DURATION: Partial<Record<RarityId, string>> = {
   uncommon: "3s",
   rare: "2.2s",
   epic: "1.7s",
+  legendary: "2.6s",
 };
 
 const SPARKLE_SPOTS = [
@@ -23,17 +24,19 @@ const SPARKLE_SPOTS = [
 ];
 
 /** Wraps card/icon content with the visual treatment for its rarity tier — border color always,
- * escalating from a static tint (poor/common) through a pulsing glow (uncommon-epic), a flame-like
- * flicker (mythic), to a rotating halo ring (legendary) and prismatic sparkles (transcendent). */
+ * escalating from a static tint (poor/common) through a pulsing glow (uncommon-legendary, gold pulsing
+ * slower/richer than the rest) and a flame-like flicker (mythic), to a multi-color layered halo plus
+ * twinkling sparkles at the transcendent tier. */
 export default function RarityFrame({ rarity, radius = "rounded-2xl", className = "", children }: RarityFrameProps) {
   const def = RARITY_BY_ID[rarity];
   const tier = def.tier;
-  const hasShimmerRing = tier >= 7;
   const isPrismatic = tier === 8;
 
   let glowClassName = "";
   let glowStyle: CSSProperties = {};
-  if (tier === 6) {
+  if (isPrismatic) {
+    glowClassName = "animate-rarity-prismatic";
+  } else if (tier === 6) {
     glowClassName = "animate-rarity-flicker";
     glowStyle = { "--glow-color": def.color } as CSSProperties;
   } else if (tier >= 3) {
@@ -45,20 +48,6 @@ export default function RarityFrame({ rarity, radius = "rounded-2xl", className 
 
   return (
     <div className={`relative ${className}`}>
-      {hasShimmerRing && (
-        <div
-          className={`absolute -inset-[3px] ${radius} animate-rarity-spin opacity-70 blur-[3px]`}
-          style={
-            {
-              background: isPrismatic
-                ? "conic-gradient(from 0deg, #06b6d4, #a855f7, #eab308, #22c55e, #06b6d4)"
-                : `conic-gradient(from 0deg, ${def.color}, transparent 40%, transparent 60%, ${def.color})`,
-              "--dur": isPrismatic ? "4s" : "6s",
-            } as CSSProperties
-          }
-          aria-hidden
-        />
-      )}
       <div className={`relative ${radius} border-2 ${glowClassName}`} style={{ borderColor: def.color, ...glowStyle }}>
         {children}
       </div>

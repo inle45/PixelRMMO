@@ -194,9 +194,21 @@ textarea {
   }
 }
 
-@keyframes rarity-spin {
-  to {
-    transform: rotate(360deg);
+@keyframes rarity-prismatic-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px 1px rgba(6, 182, 212, 0.65),
+      0 0 16px 3px rgba(168, 85, 247, 0.4),
+      0 0 24px 6px rgba(234, 179, 8, 0.25);
+    opacity: 0.85;
+  }
+  50% {
+    box-shadow:
+      0 0 16px 3px rgba(6, 182, 212, 0.8),
+      0 0 30px 6px rgba(168, 85, 247, 0.6),
+      0 0 42px 10px rgba(234, 179, 8, 0.4);
+    opacity: 1;
   }
 }
 
@@ -208,8 +220,8 @@ textarea {
   animation: rarity-flicker 1.5s ease-in-out infinite;
 }
 
-.animate-rarity-spin {
-  animation: rarity-spin var(--dur, 5s) linear infinite;
+.animate-rarity-prismatic {
+  animation: rarity-prismatic-pulse 3s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -220,7 +232,7 @@ textarea {
   .animate-float-up,
   .animate-rarity-pulse,
   .animate-rarity-flicker,
-  .animate-rarity-spin {
+  .animate-rarity-prismatic {
     animation: none !important;
   }
 }
