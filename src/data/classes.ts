@@ -4,6 +4,12 @@ import archerMale from "../assets/characters/archer-male.png";
 import archerFemale from "../assets/characters/archer-female.png";
 import mageMale from "../assets/characters/mage-male.png";
 import mageFemale from "../assets/characters/mage-female.png";
+import knightMaleBg from "../assets/characters/profile-bg/knight-male.png";
+import knightFemaleBg from "../assets/characters/profile-bg/knight-female.png";
+import archerMaleBg from "../assets/characters/profile-bg/archer-male.png";
+import archerFemaleBg from "../assets/characters/profile-bg/archer-female.png";
+import mageMaleBg from "../assets/characters/profile-bg/mage-male.png";
+import mageFemaleBg from "../assets/characters/profile-bg/mage-female.png";
 
 export type Gender = "male" | "female";
 export type ClassId = "knight" | "archer" | "mage";
@@ -55,6 +61,7 @@ export interface ClassDefinition {
   badge: string;
   names: Record<Gender, string>;
   sprites: Record<Gender, string>;
+  profileBackground: Record<Gender, string>;
   idleFrames: Record<Gender, string[]>;
   attackFrames: Record<Gender, string[]>;
   theme: {
@@ -83,6 +90,7 @@ export const CLASSES: ClassDefinition[] = [
     badge: "TANK",
     names: { male: "Chevalier", female: "Chevalière" },
     sprites: { male: knightMale, female: knightFemale },
+    profileBackground: { male: knightMaleBg, female: knightFemaleBg },
     idleFrames: {
       male: getIdleFrames("knight-male"),
       female: getIdleFrames("knight-female"),
@@ -117,6 +125,7 @@ export const CLASSES: ClassDefinition[] = [
     badge: "DPS",
     names: { male: "Archer", female: "Archère" },
     sprites: { male: archerMale, female: archerFemale },
+    profileBackground: { male: archerMaleBg, female: archerFemaleBg },
     idleFrames: {
       male: getIdleFrames("archer-male"),
       female: getIdleFrames("archer-female"),
@@ -151,6 +160,7 @@ export const CLASSES: ClassDefinition[] = [
     badge: "BURST",
     names: { male: "Mage", female: "Magicienne" },
     sprites: { male: mageMale, female: mageFemale },
+    profileBackground: { male: mageMaleBg, female: mageFemaleBg },
     idleFrames: {
       male: getIdleFrames("mage-male"),
       female: getIdleFrames("mage-female"),

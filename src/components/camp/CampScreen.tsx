@@ -1,7 +1,9 @@
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { CLASSES, type ClassId, type Gender } from "../../data/classes";
 import StatBar from "../ui/StatBar";
 import AnimatedSprite from "../ui/AnimatedSprite";
+import HeroProfileOverlay from "./HeroProfileOverlay";
 import ecuIcon from "../../assets/icons/ecu.png";
 import swordIcon from "../../assets/icons/items/sword.png";
 import bowIcon from "../../assets/icons/items/bow.png";
@@ -60,6 +62,7 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
   const weapon = hero ? STARTER_WEAPON[hero.classId] : null;
   const armor = hero ? STARTER_ARMOR[hero.classId] : null;
   const [openSlot, setOpenSlot] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const backpack: (BackpackItem | null)[] = useMemo(() => {
     const items: BackpackItem[] = [];
@@ -116,12 +119,23 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-2xl">
         {classDef && hero ? (
           <div className="flex gap-4">
-            <div className="flex h-20 w-20 flex-none items-center justify-center rounded-xl border border-white/10 bg-black/25">
-              <AnimatedSprite
-                idleSrc={classDef.sprites[hero.gender]}
-                idleFrames={classDef.idleFrames[hero.gender]}
-                alt={classDef.names[hero.gender]}
-              />
+            <div className="h-20 w-20 flex-none">
+              {!profileOpen && (
+                <motion.button
+                  type="button"
+                  layoutId="hero-avatar-frame"
+                  onClick={() => setProfileOpen(true)}
+                  aria-label="Voir la fiche du héros"
+                  className="flex h-20 w-20 items-center justify-center rounded-xl border border-white/10 bg-black/25 transition-colors active:scale-95"
+                  transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                >
+                  <AnimatedSprite
+                    idleSrc={classDef.sprites[hero.gender]}
+                    idleFrames={classDef.idleFrames[hero.gender]}
+                    alt={classDef.names[hero.gender]}
+                  />
+                </motion.button>
+              )}
             </div>
             <div className="flex flex-1 flex-col justify-center gap-2">
               <div className="flex items-center justify-between">
@@ -212,6 +226,17 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
         </div>
         <span className="text-white/40 transition-transform group-hover:translate-x-1">→</span>
       </button>
+
+      <AnimatePresence>
+        {profileOpen && classDef && hero && (
+          <HeroProfileOverlay
+            classDef={classDef}
+            gender={hero.gender}
+            username={username}
+            onClose={() => setProfileOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
