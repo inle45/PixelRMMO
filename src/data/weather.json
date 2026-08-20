@@ -1,0 +1,65 @@
+[
+  {
+    "id": "deluge",
+    "name": "Déluge",
+    "emoji": "🌧️",
+    "description": "Une pluie battante s'abat sur la crypte, chargeant l'air d'humidité conductrice.",
+    "modifiers": [
+      { "label": "Foudre", "value": "+30%" },
+      { "label": "Feu", "value": "-40%" },
+      { "label": "Conductivité", "value": "Maximale" }
+    ]
+  },
+  {
+    "id": "sepulchral_mist",
+    "name": "Brume Sépulcrale",
+    "emoji": "🌫️",
+    "description": "Un brouillard spectral s'infiltre entre les tombes, dissimulant les silhouettes.",
+    "modifiers": [
+      { "label": "Ombre", "value": "+25%" },
+      { "label": "Taux Critique", "value": "+15%" },
+      { "label": "Précision", "value": "-15%" }
+    ]
+  },
+  {
+    "id": "furnace",
+    "name": "Fournaise Tellurique",
+    "emoji": "☀️",
+    "description": "Une chaleur souterraine intense fait vibrer l'air des couloirs de pierre.",
+    "modifiers": [
+      { "label": "Feu", "value": "+35%" },
+      { "label": "Brûlures", "value": "x2 dégâts" },
+      { "label": "Coût de Mana", "value": "+20%" }
+    ]
+  },
+  {
+    "id": "blizzard",
+    "name": "Blizzard",
+    "emoji": "❄️",
+    "description": "Un vent glacial s'engouffre dans la crypte, couvrant les pierres de givre.",
+    "modifiers": [
+      { "label": "Glace", "value": "+35%" },
+      { "label": "Vitesse d'attaque globale", "value": "-25%" }
+    ]
+  },
+  {
+    "id": "magnetic_storm",
+    "name": "Tempête Magnétique",
+    "emoji": "⚡",
+    "description": "Les gisements de métal ancien résonnent, déclenchant des décharges erratiques.",
+    "modifiers": [
+      { "label": "Foudre", "value": "+40%" },
+      { "label": "Décharges aléatoires", "value": "Périodiques" }
+    ]
+  },
+  {
+    "id": "blood_eclipse",
+    "name": "Éclipse Sanguine",
+    "emoji": "🩸",
+    "description": "Une éclipse teinte la crypte de rouge, réveillant les instincts les plus primaux.",
+    "modifiers": [
+      { "label": "Physique", "value": "+30%" },
+      { "label": "Vampirisme", "value": "Actif pour tous" }
+    ]
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "burn",
+    "name": "Brûlure",
+    "emoji": "🔥",
+    "category": "dot",
+    "description": "La cible s'embrase et continue de perdre des PV tant que les flammes ne sont pas éteintes.",
+    "formula": "3 dégâts/sec pendant 5s (cumulable x2 max)"
+  },
+  {
+    "id": "freeze",
+    "name": "Gel",
+    "emoji": "🧊",
+    "category": "control",
+    "description": "La cible se fige dans la glace, incapable d'agir jusqu'à ce que le gel se brise.",
+    "formula": "Immobilisation 2s, -50% Vitesse pendant 3s après la rupture"
+  },
+  {
+    "id": "shock",
+    "name": "Électrocution",
+    "emoji": "⚡",
+    "category": "dot",
+    "description": "Des étincelles parcourent le corps de la cible, perturbant ses attaques.",
+    "formula": "2 dégâts/sec pendant 4s, 20% de chance de rater la prochaine attaque"
+  },
+  {
+    "id": "poison",
+    "name": "Poison",
+    "emoji": "☠️",
+    "category": "dot",
+    "description": "Un venin toxique ronge la cible ; chaque nouvelle application renforce l'effet.",
+    "formula": "2 dégâts/sec pendant 4s, cumulable jusqu'à 5 stacks"
+  },
+  {
+    "id": "bleed",
+    "name": "Saignement",
+    "emoji": "🩸",
+    "category": "dot",
+    "description": "Une plaie ouverte qui s'aggrave à chaque mouvement de la cible.",
+    "formula": "4 dégâts/sec pendant 3s, +50% dégâts si la cible se déplace"
+  },
+  {
+    "id": "stun",
+    "name": "Étourdissement",
+    "emoji": "💫",
+    "category": "control",
+    "description": "La cible voit des étoiles et perd le contrôle de ses actions.",
+    "formula": "Incapacité totale pendant 2s"
+  },
+  {
+    "id": "blind",
+    "name": "Cécité",
+    "emoji": "👁️",
+    "category": "debuff",
+    "description": "Un voile d'ombre recouvre les yeux de la cible, brouillant sa précision.",
+    "formula": "-40% Précision et -20% Taux Critique pendant 5s"
+  },
+  {
+    "id": "aegis",
+    "name": "Égide",
+    "emoji": "🛡️",
+    "category": "buff",
+    "description": "Un bouclier lumineux divin absorbe les prochains coups avant de se briser.",
+    "formula": "Absorbe les dégâts jusqu'à 25% des PV max, dure 6s"
+  }
+]

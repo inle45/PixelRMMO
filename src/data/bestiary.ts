@@ -26,6 +26,37 @@ export interface MonsterSkill {
   description: string;
 }
 
+export interface CombatWeakness {
+  type: string;
+  multiplier: number;
+  note?: string;
+}
+
+export interface CombatResistance {
+  type: string;
+  percent?: number;
+  note?: string;
+}
+
+export interface CombatInflict {
+  status: string;
+  note?: string;
+}
+
+export interface MonsterCombat {
+  /** Flavor label shown as-is, e.g. "Ombre / Bête" — not necessarily 1:1 with canonical damage types. */
+  typeLabel: string;
+  /** The monster's own canonical type(s) — used by the Types & Météo matrix to group/filter monsters. */
+  combatTypes: string[];
+  weaknesses: CombatWeakness[];
+  resistances: CombatResistance[];
+  /** Type or status ids this monster takes no damage/effect from. */
+  immunities: string[];
+  inflicts: CombatInflict[];
+  /** Freeform note for anything that doesn't fit the structured fields (special abilities, unique behavior). */
+  note?: string;
+}
+
 interface RawMonster {
   id: string;
   dungeonId: string;
@@ -40,6 +71,7 @@ interface RawMonster {
   skill: MonsterSkill;
   lore: string;
   drops: MonsterDrop[];
+  combat: MonsterCombat;
 }
 
 export interface MonsterDef extends RawMonster {

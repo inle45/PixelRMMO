@@ -1,0 +1,58 @@
+[
+  {
+    "id": "fire",
+    "name": "Feu",
+    "emoji": "🔥",
+    "color": "#f97316",
+    "description": "Une flamme rougeoyante incandescente qui consume tout ce qui peut brûler.",
+    "strongVs": ["nature", "ice"]
+  },
+  {
+    "id": "ice",
+    "name": "Glace",
+    "emoji": "❄️",
+    "color": "#38bdf8",
+    "description": "Un froid cristallin qui ralentit et brise ce qu'il touche.",
+    "strongVs": ["nature", "physical"]
+  },
+  {
+    "id": "lightning",
+    "name": "Foudre",
+    "emoji": "⚡",
+    "color": "#eab308",
+    "description": "Un éclair doré crépitant qui traverse le métal et la chair sans distinction.",
+    "strongVs": ["physical", "shadow"]
+  },
+  {
+    "id": "nature",
+    "name": "Nature",
+    "emoji": "🍃",
+    "color": "#22c55e",
+    "description": "Une énergie végétale toxique, envahissante et vivace.",
+    "strongVs": ["lightning"]
+  },
+  {
+    "id": "holy",
+    "name": "Sacré",
+    "emoji": "✨",
+    "color": "#fde68a",
+    "description": "Une lumière rayonnante blanc-or, la malédiction ultime des morts-vivants.",
+    "strongVs": ["shadow"]
+  },
+  {
+    "id": "shadow",
+    "name": "Ombre",
+    "emoji": "💀",
+    "color": "#a855f7",
+    "description": "Une obscurité nécrotique enveloppée de fumée violette.",
+    "strongVs": ["lightning"]
+  },
+  {
+    "id": "physical",
+    "name": "Physique",
+    "emoji": "⚔️",
+    "color": "#94a3b8",
+    "description": "La force brute de l'acier et du muscle, sans artifice élémentaire.",
+    "strongVs": ["ice"]
+  }
+]
