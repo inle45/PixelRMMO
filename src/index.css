@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-pixel: "Press Start 2P", "Inter", system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+
+  --color-lantern: #ffb347;
+  --color-lantern-glow: #ffcf6b;
+  --color-water: #1c3a52;
+  --color-ember: #ff7a45;
+  --color-mercenary: #d4a24c;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: #0b0f1a;
+  color: #f1eee8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Prevent iOS Safari from zooming on input focus (16px min) while keeping our type scale */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-lantern) 40%, transparent);
+  color: #fff;
+}
+
+/* ---------- Scene animations ---------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: var(--star-min, 0.25);
+    transform: scale(1);
+  }
+  50% {
+    opacity: var(--star-max, 1);
+    transform: scale(1.15);
+  }
+}
+
+@keyframes lantern-glow {
+  0%,
+  100% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 6px rgba(255, 179, 71, 0.55)) drop-shadow(0 0 14px rgba(255, 179, 71, 0.3));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px rgba(255, 179, 71, 0.85)) drop-shadow(0 0 22px rgba(255, 179, 71, 0.5));
+  }
+}
+
+@keyframes water-shimmer {
+  0% {
+    transform: translateX(-4%) scaleY(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translateX(4%) scaleY(1.04);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-4%) scaleY(1);
+    opacity: 0.35;
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-140px);
+    opacity: 0;
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle var(--dur, 3s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.animate-lantern {
+  animation: lantern-glow 2.6s ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.animate-water {
+  animation: water-shimmer 6s ease-in-out infinite;
+}
+
+.animate-drift {
+  animation: drift 60s linear infinite;
+}
+
+.animate-float-up {
+  animation: float-up var(--dur, 8s) ease-in infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-twinkle,
+  .animate-lantern,
+  .animate-water,
+  .animate-drift,
+  .animate-float-up {
+    animation: none !important;
+  }
+}
