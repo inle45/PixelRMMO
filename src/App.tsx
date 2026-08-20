@@ -5,13 +5,14 @@ import AuthCard from "./components/auth/AuthCard";
 import CharacterSelectScreen from "./components/character/CharacterSelectScreen";
 import CampScreen from "./components/camp/CampScreen";
 import BottomNav from "./components/nav/BottomNav";
+import Bestiary from "./components/bestiary/Bestiary";
 import type { TabId } from "./data/tabs";
 
 type Screen = "auth" | "character-select" | "game";
 
 const USERNAME_KEY = "pixelrmmo:username";
 
-const COMING_SOON: Record<Exclude<TabId, "camp">, { title: string; text: string }> = {
+const COMING_SOON: Record<Exclude<TabId, "camp" | "bestiary">, { title: string; text: string }> = {
   dungeon: { title: "Expéditions", text: "Les donjons ouvriront bientôt leurs portes, Mercenaire." },
   crafting: {
     title: "Crafting",
@@ -38,6 +39,8 @@ export default function App() {
         <main className="flex justify-center px-4 pb-28 pt-[calc(1.5rem+env(safe-area-inset-top))]">
           {activeTab === "camp" ? (
             <CampScreen username={username} onOpenDungeon={() => setActiveTab("dungeon")} />
+          ) : activeTab === "bestiary" ? (
+            <Bestiary />
           ) : (
             <ComingSoonPanel {...COMING_SOON[activeTab]} />
           )}

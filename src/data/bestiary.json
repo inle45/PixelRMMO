@@ -1,0 +1,361 @@
+[
+  {
+    "id": "vampire_bat",
+    "name": "Chauve-Souris Vampire",
+    "family": "vermin",
+    "level": "1-2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 40, "atk": 6, "def": 1, "speedLabel": "Rapide", "speedValue": 4 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Morsure Sangsue", "icon": "🩸", "description": "Draine 5 PV pour se soigner à chaque coup critique." },
+    "lore": "Tapie dans les voûtes humides, elle fond sur les mercenaires isolés pour se repaître de leur sang.",
+    "drops": [
+      { "name": "Aile membraneuse", "chance": 90 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 3, "max": 6 }
+    ]
+  },
+  {
+    "id": "plague_rat",
+    "name": "Rat Pestiféré Géant",
+    "family": "vermin",
+    "level": "1-2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 50, "atk": 7, "def": 2, "speedLabel": "Moyenne", "speedValue": 3 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Morsure Purulente", "icon": "☠️", "description": "Inflige un poison infligeant 2 dégâts/sec pendant 4s." },
+    "lore": "Nourri des immondices de la crypte, ses crocs transmettent une fièvre dévastatrice.",
+    "drops": [
+      { "name": "Croc infecté", "chance": 85 },
+      { "name": "Peau râpée", "chance": 60 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 4, "max": 8 }
+    ]
+  },
+  {
+    "id": "crypt_beetle",
+    "name": "Scarabée Cuirassé",
+    "family": "vermin",
+    "level": "1-2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 75, "atk": 8, "def": 10, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Carapace de Granit", "icon": "🛡️", "description": "Réduit les 2 premières attaques subies de 50%." },
+    "lore": "Une créature millénaire dotée d'une carapace dure comme l'acier forgé.",
+    "drops": [
+      { "name": "Écaille de chitine", "chance": 80 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 5, "max": 9 }
+    ]
+  },
+  {
+    "id": "tomb_spider",
+    "name": "Mygale Tisseuse de Tombes",
+    "family": "vermin",
+    "level": "1-2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 60, "atk": 9, "def": 3, "speedLabel": "Moyenne", "speedValue": 3 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Toile Entravante", "icon": "🕸️", "description": "Réduit la vitesse d'attaque de la cible de 30%." },
+    "lore": "Elle tisse des toiles spectrales indestructibles au milieu des sarcophages.",
+    "drops": [
+      { "name": "Soie nécrotique", "chance": 75 },
+      { "name": "Glande de venin", "chance": 35 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 6, "max": 10 }
+    ]
+  },
+  {
+    "id": "skeleton_recruit",
+    "name": "Squelette Recrue",
+    "family": "skeleton",
+    "level": "2-3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 80, "atk": 10, "def": 4, "speedLabel": "Normale", "speedValue": 3 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Estoc Rouillé", "icon": "🗡️", "description": "15% de chance d'infliger un coup perforant ignorant 30% d'armure." },
+    "lore": "Les ossements ranimés d'un jeune milicien tombé lors d'un ancien siège.",
+    "drops": [
+      { "name": "Os brisé", "chance": 95 },
+      { "name": "Épée ébréchée", "chance": 25 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 6, "max": 12 }
+    ]
+  },
+  {
+    "id": "shield_skeleton",
+    "name": "Garde d'Os au Grand Bouclier",
+    "family": "skeleton",
+    "level": "2-3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 140, "atk": 8, "def": 14, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [{ "label": "Parade", "value": 35, "display": "35%" }],
+    "traits": [],
+    "skill": { "name": "Mur d'Ossements", "icon": "🛡️", "description": "Bloque complètement une attaque toutes les 8 secondes." },
+    "lore": "Ancien protecteur du tombeau royal, il ne baisse jamais sa lourde défense.",
+    "drops": [
+      { "name": "Éclat de fer ancien", "chance": 75 },
+      { "name": "Plaque de bouclier", "chance": 40 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 8, "max": 15 }
+    ]
+  },
+  {
+    "id": "bone_spearman",
+    "name": "Lancier Squelette",
+    "family": "skeleton",
+    "level": "2-3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 85, "atk": 13, "def": 5, "speedLabel": "Normale", "speedValue": 3 },
+    "extraStats": [],
+    "traits": ["Portée Allongée"],
+    "skill": { "name": "Transpercement", "icon": "🔱", "description": "Sa première frappe de combat inflige +75% de dégâts." },
+    "lore": "Sa pique d'os taillée traverse aisément le cuir et la cotte de mailles.",
+    "drops": [
+      { "name": "Hampe d'os durcie", "chance": 70 },
+      { "name": "Pointe de lance", "chance": 30 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 9, "max": 16 }
+    ]
+  },
+  {
+    "id": "bone_archer",
+    "name": "Archer Squelette Maudit",
+    "family": "skeleton",
+    "level": "2-3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 65, "atk": 16, "def": 3, "speedLabel": "Moyenne", "speedValue": 2 },
+    "extraStats": [{ "label": "Critique", "value": 25, "display": "25%" }],
+    "traits": [],
+    "skill": { "name": "Tir dans l'Ombre", "icon": "🏹", "description": "Tire une flèche spectrale avec 50% de chance de critique si la cible est à distance." },
+    "lore": "Ses yeux s'illuminent d'une lueur spectrale au moment de décocher ses traits précis.",
+    "drops": [
+      { "name": "Corde d'arc usée", "chance": 65 },
+      { "name": "Flèche maudite", "chance": 45 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 10, "max": 18 }
+    ]
+  },
+  {
+    "id": "will_o_wisp",
+    "name": "Feu Follet Éthéré",
+    "family": "spectre",
+    "level": "3-4",
+    "rarity": "normal",
+    "damageType": "magic",
+    "stats": { "hp": 45, "atk": 12, "def": 0, "speedLabel": "Rapide", "speedValue": 4 },
+    "extraStats": [{ "label": "Esquive", "value": 40, "display": "40%" }],
+    "traits": [],
+    "skill": { "name": "Flash Aveuglant", "icon": "✨", "description": "Fait rater la prochaine attaque physique de l'adversaire." },
+    "lore": "Une lueur trompeuse guidant les voyageurs imprudents vers des fosses sans fond.",
+    "drops": [
+      { "name": "Éther scintillant", "chance": 75 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 12, "max": 20 }
+    ]
+  },
+  {
+    "id": "wailing_spectre",
+    "name": "Spectre Gémissant",
+    "family": "spectre",
+    "level": "3-4",
+    "rarity": "normal",
+    "damageType": "magic",
+    "stats": { "hp": 75, "atk": 15, "def": 2, "speedLabel": "Moyenne", "speedValue": 3 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Hurlement Déchirant", "icon": "📢", "description": "Réduit l'attaque de la cible de 20% pendant 5 secondes." },
+    "lore": "Une âme en peine dont le cri glace le sang et paralyse les plus braves guerriers.",
+    "drops": [
+      { "name": "Ectoplasme froid", "chance": 65 },
+      { "name": "Voile d'ombre", "chance": 30 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 14, "max": 22 }
+    ]
+  },
+  {
+    "id": "dark_necromancer",
+    "name": "Nécromancien des Ombres",
+    "family": "spectre",
+    "level": "3-4",
+    "rarity": "normal",
+    "damageType": "magic",
+    "stats": { "hp": 95, "atk": 18, "def": 3, "speedLabel": "Moyenne", "speedValue": 2 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Appel Sépulcral", "icon": "💀", "description": "Invoque un Squelette Recrue quand ses PV tombent sous 50%." },
+    "lore": "Un adepte des arts noirs qui manipule les cadavres de la crypte à sa guise.",
+    "drops": [
+      { "name": "Poussière d'âme", "chance": 80 },
+      { "name": "Grimoire interdit", "chance": 30 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 16, "max": 25 }
+    ]
+  },
+  {
+    "id": "creeping_shadow",
+    "name": "Ombre Rampante",
+    "family": "spectre",
+    "level": "3-4",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 70, "atk": 22, "def": 2, "speedLabel": "Rapide", "speedValue": 4 },
+    "extraStats": [{ "label": "Critique", "value": 35, "display": "35%" }],
+    "traits": [],
+    "skill": { "name": "Attaque Furtive", "icon": "🗡️", "description": "Se téléporte derrière la cible pour lui asséner un coup critique garanti." },
+    "lore": "Une condensation de pure noirceur qui se glisse dans les angles morts.",
+    "drops": [
+      { "name": "Essence d'obscurité", "chance": 50 },
+      { "name": "Dague d'ombre", "chance": 20 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 18, "max": 28 }
+    ]
+  },
+  {
+    "id": "crypt_gargoyle",
+    "name": "Gargouille Pétrifiée",
+    "family": "guardian",
+    "level": "4-5",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 160, "atk": 16, "def": 16, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Forme Statuaire", "icon": "🗿", "description": "Se régénère de 30 PV lorsqu'elle ne subit pas d'attaque pendant 3s." },
+    "lore": "Sculptée pour surveiller le sanctuaire, elle s'éveille dès qu'un intrus s'approche.",
+    "drops": [
+      { "name": "Fragment de granit runique", "chance": 60 },
+      { "name": "Rubis brut", "chance": 15 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 20, "max": 30 }
+    ]
+  },
+  {
+    "id": "tomb_mummy",
+    "name": "Momie Putréfiée",
+    "family": "guardian",
+    "level": "4-5",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 200, "atk": 17, "def": 8, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [{ "label": "Résistance Physique", "value": 30, "display": "30%" }],
+    "traits": [],
+    "skill": { "name": "Malédiction d'Ensevelissement", "icon": "⚰️", "description": "Ralentit de 40% la vitesse de régénération du joueur." },
+    "lore": "Préservée par des baumes interdits, son corps insensible absorbe les pires chocs.",
+    "drops": [
+      { "name": "Bandelette funéraire", "chance": 75 },
+      { "name": "Cendres séculaires", "chance": 40 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 22, "max": 32 }
+    ]
+  },
+  {
+    "id": "animated_armor",
+    "name": "Armure Royale Hantée",
+    "family": "guardian",
+    "level": "4-5",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": { "hp": 180, "atk": 20, "def": 20, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [{ "label": "Parade", "value": 25, "display": "25%" }],
+    "traits": [],
+    "skill": { "name": "Tranchant Spectral", "icon": "⚔️", "description": "Inflige des dégâts purs ignorant totalement l'armure." },
+    "lore": "Une cotte de plates possédée par l'esprit rancunier d'un général royal trahi.",
+    "drops": [
+      { "name": "Fer spectral", "chance": 50 },
+      { "name": "Fragment de plastron", "chance": 35 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 25, "max": 38 }
+    ]
+  },
+  {
+    "id": "treasure_goblin",
+    "name": "Gobelin Pilleur de Tombes",
+    "family": "guardian",
+    "level": "4-5",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": { "hp": 100, "atk": 0, "def": 1, "speedLabel": "Ultra-Rapide", "speedValue": 5 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Portail de Fuite", "icon": "🌀", "description": "Tente d'ouvrir un portail doré pour fuir au bout de 12 secondes." },
+    "lore": "Un voleur cupide qui fouille les tombes. S'il est vaincu à temps, ses richesses sont à vous !",
+    "drops": [
+      { "name": "Sac de pièces", "chance": 100, "currency": true, "min": 60, "max": 150 },
+      { "name": "Minerai rare", "chance": 50 },
+      { "name": "Clé dorée", "chance": 25 }
+    ]
+  },
+  {
+    "id": "crypt_mimic",
+    "name": "Mimic des Catacombes",
+    "family": "guardian",
+    "level": "4-5",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": { "hp": 150, "atk": 24, "def": 8, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [],
+    "traits": ["Piège Rare"],
+    "skill": { "name": "Mâchoire Traîtresse", "icon": "👄", "description": "Inflige le double de dégâts si le joueur n'a pas utilisé de compétence." },
+    "lore": "Il prend l'apparence exacte d'un coffre rempli d'or pour dévorer les aventuriers cupides.",
+    "drops": [
+      { "name": "Dent de mimic", "chance": 100 },
+      { "name": "Bois pétrifié", "chance": 80 },
+      { "name": "Relique oubliée", "chance": 30 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 40, "max": 70 }
+    ]
+  },
+  {
+    "id": "cursed_executioner",
+    "name": "Le Bourreau Maudit",
+    "family": "boss",
+    "level": "5-6",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": { "hp": 350, "atk": 28, "def": 12, "speedLabel": "Lente", "speedValue": 1 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Guillotine Lourde", "icon": "🪓", "description": "Frappe le sol et étourdit l'adversaire pendant 2 secondes." },
+    "lore": "Autrefois chargé d'exécuter les traîtres du royaume, sa hache est encore imprégnée de tourments.",
+    "drops": [
+      { "name": "Hache de bourreau", "chance": 40 },
+      { "name": "Chaîne de fer lourd", "chance": 60 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 45, "max": 75 }
+    ]
+  },
+  {
+    "id": "crypt_archlich",
+    "name": "L'Archiliche des Tombes",
+    "family": "boss",
+    "level": "5-6",
+    "rarity": "miniboss",
+    "damageType": "magic",
+    "stats": { "hp": 300, "atk": 30, "def": 8, "speedLabel": "Moyenne", "speedValue": 2 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Nova de Givre Mortel", "icon": "❄️", "description": "Déclenche une explosion glacée infligeant 45 dégâts magiques." },
+    "lore": "Un puissant sorcier qui a troqué sa mortalité contre le pouvoir infini de la nécromancie.",
+    "drops": [
+      { "name": "Phylactère fissuré", "chance": 50 },
+      { "name": "Orbe de nécrose", "chance": 35 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 50, "max": 85 }
+    ]
+  },
+  {
+    "id": "skeleton_king_boss",
+    "name": "Le Roi Squelette Immortel",
+    "family": "boss",
+    "level": "5-6",
+    "rarity": "boss",
+    "damageType": "physical",
+    "stats": { "hp": 600, "atk": 36, "def": 24, "speedLabel": "Normale", "speedValue": 3 },
+    "extraStats": [],
+    "traits": [],
+    "skill": { "name": "Tempête d'Ossements & Renaissance", "icon": "🌪️", "description": "Déchaîne un tourbillon d'épées et ressuscite une fois avec 30% de ses PV." },
+    "lore": "Le souverain suprême déchu de la crypte. Sa couronne brisée cache un trésor inestimable convoité sur le marché.",
+    "drops": [
+      { "name": "Couronne Royale Ancienne", "chance": 100 },
+      { "name": "Cœur Spectral", "chance": 60 },
+      { "name": "Lame Spectrale Royale [Légendaire C2C]", "chance": 12 },
+      { "name": "Écus", "chance": 100, "currency": true, "min": 80, "max": 150 }
+    ]
+  }
+]

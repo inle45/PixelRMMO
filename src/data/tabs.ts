@@ -2,8 +2,9 @@ import campBg from "../assets/scenes/camp.png";
 import dungeonBg from "../assets/scenes/dungeon.png";
 import craftingBg from "../assets/scenes/crafting.png";
 import marketBg from "../assets/scenes/market.png";
+import bestiaryBg from "../assets/scenes/bestiary.png";
 
-export type TabId = "camp" | "dungeon" | "crafting" | "market";
+export type TabId = "camp" | "dungeon" | "crafting" | "market" | "bestiary";
 
 export interface TabDef {
   id: TabId;
@@ -32,6 +33,7 @@ function getNavFrames(prefix: string): string[] {
 export const TABS: TabDef[] = [
   { id: "camp", label: "Camp", frames: getNavFrames("camp"), background: campBg },
   { id: "dungeon", label: "Donjon", frames: getNavFrames("dungeon"), background: dungeonBg },
+  { id: "bestiary", label: "Bestiaire", frames: getNavFrames("bestiary"), background: bestiaryBg },
   { id: "crafting", label: "Crafting", frames: getNavFrames("crafting"), background: craftingBg },
   { id: "market", label: "Marché C2C", frames: getNavFrames("market"), background: marketBg },
 ];
