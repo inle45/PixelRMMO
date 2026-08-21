@@ -58,13 +58,13 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
       </p>
 
       {/* --------------------------------------------------------- time period selector */}
-      <div className="absolute right-3 top-[calc(3.25rem+env(safe-area-inset-top))] flex max-w-[85%] flex-col items-end gap-1">
-        <div className="flex flex-wrap justify-end gap-1">
+      <div className="absolute inset-x-3 top-[calc(0.75rem+env(safe-area-inset-top))] pointer-events-none">
+        <div className="flex flex-wrap justify-end gap-1 pointer-events-auto">
           <button
             type="button"
             onClick={() => setOverride(null)}
             className={
-              "rounded-full border px-2 py-0.5 text-[10px] font-bold backdrop-blur-md transition-colors " +
+              "rounded-full border px-3 py-1 text-xs font-bold backdrop-blur-md transition-colors " +
               (!override
                 ? "border-lantern/50 bg-lantern/20 text-lantern-glow"
                 : "border-white/15 bg-black/45 text-white/60 hover:border-white/35")
@@ -78,25 +78,25 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
               type="button"
               onClick={() => setOverride(p.id)}
               className={
-                "rounded-full border px-2 py-0.5 text-[10px] font-bold backdrop-blur-md transition-colors " +
+                "rounded-full border px-3 py-1 text-xs font-bold backdrop-blur-md transition-colors " +
                 (override === p.id
                   ? "border-cyan-400/60 bg-cyan-400/20 text-cyan-200"
                   : "border-white/15 bg-black/45 text-white/60 hover:border-white/35")
               }
             >
-              {i + 1}. {p.label}
+              {i + 1}
             </button>
           ))}
+          {debugEnabled && (
+            <button
+              type="button"
+              onClick={() => setCalibratorOpen((o) => !o)}
+              className="rounded-full border border-cyan-400/40 bg-black/45 px-3 py-1 text-xs font-bold text-cyan-300 backdrop-blur-md transition-colors hover:bg-cyan-400/20"
+            >
+              {calibratorOpen ? "Fermer" : "Calibr."}
+            </button>
+          )}
         </div>
-        {debugEnabled && (
-          <button
-            type="button"
-            onClick={() => setCalibratorOpen((o) => !o)}
-            className="rounded-full border border-cyan-400/40 bg-black/45 px-2 py-0.5 text-[10px] font-bold text-cyan-300 backdrop-blur-md transition-colors hover:bg-cyan-400/20"
-          >
-            {calibratorOpen ? "Fermer calibrateur" : "Calibrateur"}
-          </button>
-        )}
       </div>
 
       <AnimatePresence>
