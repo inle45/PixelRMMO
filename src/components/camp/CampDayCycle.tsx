@@ -57,40 +57,38 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
         {scene.caption}
       </p>
 
-      {/* --------------------------------------------------------- dev tools only */}
-      {/* Floated over the scene rather than stacked under it: the tab is a fixed-height, no-scroll
-          surface now, so anything that grows has to overlay and scroll inside itself. */}
-      {debugEnabled && (
-        <div className="absolute right-3 top-[calc(3.25rem+env(safe-area-inset-top))] flex max-w-[85%] flex-col items-end gap-1">
-          <div className="flex flex-wrap justify-end gap-1">
+      {/* --------------------------------------------------------- time period selector */}
+      <div className="absolute right-3 top-[calc(3.25rem+env(safe-area-inset-top))] flex max-w-[85%] flex-col items-end gap-1">
+        <div className="flex flex-wrap justify-end gap-1">
+          <button
+            type="button"
+            onClick={() => setOverride(null)}
+            className={
+              "rounded-full border px-2 py-0.5 text-[10px] font-bold backdrop-blur-md transition-colors " +
+              (!override
+                ? "border-lantern/50 bg-lantern/20 text-lantern-glow"
+                : "border-white/15 bg-black/45 text-white/60 hover:border-white/35")
+            }
+          >
+            Auto ({PERIOD_BY_ID[clockPeriod].label})
+          </button>
+          {TIME_PERIODS.map((p, i) => (
             <button
+              key={p.id}
               type="button"
-              onClick={() => setOverride(null)}
+              onClick={() => setOverride(p.id)}
               className={
                 "rounded-full border px-2 py-0.5 text-[10px] font-bold backdrop-blur-md transition-colors " +
-                (!override
-                  ? "border-lantern/50 bg-lantern/20 text-lantern-glow"
+                (override === p.id
+                  ? "border-cyan-400/60 bg-cyan-400/20 text-cyan-200"
                   : "border-white/15 bg-black/45 text-white/60 hover:border-white/35")
               }
             >
-              Auto ({PERIOD_BY_ID[clockPeriod].label})
+              {i + 1}. {p.label}
             </button>
-            {TIME_PERIODS.map((p, i) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setOverride(p.id)}
-                className={
-                  "rounded-full border px-2 py-0.5 text-[10px] font-bold backdrop-blur-md transition-colors " +
-                  (override === p.id
-                    ? "border-cyan-400/60 bg-cyan-400/20 text-cyan-200"
-                    : "border-white/15 bg-black/45 text-white/60 hover:border-white/35")
-                }
-              >
-                {i + 1}. {p.label}
-              </button>
-            ))}
-          </div>
+          ))}
+        </div>
+        {debugEnabled && (
           <button
             type="button"
             onClick={() => setCalibratorOpen((o) => !o)}
@@ -98,8 +96,8 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
           >
             {calibratorOpen ? "Fermer calibrateur" : "Calibrateur"}
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       <AnimatePresence>
         {debugEnabled && calibratorOpen && (

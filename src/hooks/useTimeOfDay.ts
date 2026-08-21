@@ -89,10 +89,9 @@ export function useTimeOfDay(): UseTimeOfDayResult {
   );
 
   useEffect(() => {
-    if (!debugEnabled) return;
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [debugEnabled, handleKey]);
+  }, [handleKey]);
 
   return {
     period: override ?? clockPeriod,
