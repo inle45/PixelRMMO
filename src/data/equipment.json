@@ -1,0 +1,63 @@
+[
+  {
+    "id": "cracked_bone_helm",
+    "name": "Heaume d'Os Fendu",
+    "slot": "head",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 45,
+    "lore": "Taillé dans le crâne d'un garde déchu de la Crypte Ancestrale, ce heaume grince encore du dernier souffle de son propriétaire.",
+    "stats": { "hp": 20, "mana": 10, "def": 2 }
+  },
+  {
+    "id": "chitin_plate",
+    "name": "Plastron de Chitine",
+    "slot": "chest",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 60,
+    "lore": "Assemblé à partir de carapaces de vermines géantes, ce plastron reste étonnamment léger malgré sa robustesse.",
+    "stats": { "hp": 15, "def": 8 }
+  },
+  {
+    "id": "scale_greaves",
+    "name": "Jambières d'Écailles",
+    "slot": "legs",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 55,
+    "lore": "Cousues d'écailles récupérées sur des créatures rampantes, elles absorbent les coups sans entraver la foulée.",
+    "stats": { "def": 5, "dodgeChance": 0.02 }
+  },
+  {
+    "id": "tracker_boots",
+    "name": "Bottes de Traqueur",
+    "slot": "boots",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 40,
+    "lore": "Portées par les éclaireurs qui cartographièrent les premiers niveaux de la Crypte — semelles silencieuses, prise infaillible.",
+    "stats": { "speed": 1, "dodgeChance": 0.05 }
+  },
+  {
+    "id": "rusty_steel_sword",
+    "name": "Épée d'Acier Rouillé",
+    "slot": "weapon",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 70,
+    "lore": "La rouille ronge la lame mais pas le tranchant — une arme d'aventurier, fiable dans les premières profondeurs.",
+    "stats": { "atk": 10 },
+    "damageType": "physical"
+  },
+  {
+    "id": "bone_pavise",
+    "name": "Pavois d'Ossement",
+    "slot": "offhand",
+    "rarity": "common",
+    "levelRequired": 1,
+    "value": 50,
+    "lore": "Un bouclier assemblé à la hâte à partir de côtes et de plaques osseuses — grossier, mais il a déjà arrêté bien des lames.",
+    "stats": { "def": 3, "blockChance": 0.08 }
+  }
+]
