@@ -8,9 +8,9 @@ import { MATERIALS } from "../../data/materials";
 type CodexTab = "bestiary" | "materials" | "types";
 
 const CODEX_TABS: { id: CodexTab; label: string }[] = [
-  { id: "bestiary", label: `📖 Bestiaire (${BESTIARY.length})` },
-  { id: "materials", label: `🪵 Matériaux (${MATERIALS.length})` },
-  { id: "types", label: `⚡ Types & Météo` },
+  { id: "bestiary", label: `Bestiaire (${BESTIARY.length})` },
+  { id: "materials", label: `Matériaux (${MATERIALS.length})` },
+  { id: "types", label: `Types & Météo` },
 ];
 
 export default function CodexHub() {

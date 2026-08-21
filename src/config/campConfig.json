@@ -1,0 +1,34 @@
+{
+  "morning": {
+    "hero": { "x": 46, "y": 86, "width": 16 },
+    "shadow": { "x": 46, "y": 86, "width": 13, "height": 2.6, "opacity": 0.32 },
+    "props": {
+      "kettle": { "x": 24, "y": 92, "width": 11 },
+      "bird": { "x": 72, "y": 86, "width": 8 }
+    }
+  },
+  "noon": {
+    "hero": { "x": 46, "y": 91, "width": 16 },
+    "shadow": { "x": 46, "y": 91, "width": 14, "height": 2.8, "opacity": 0.35 },
+    "props": {
+      "butterflies": { "x": 64, "y": 86, "width": 11 },
+      "banner": { "x": 25, "y": 94, "width": 12 }
+    }
+  },
+  "sunset": {
+    "hero": { "x": 48, "y": 91, "width": 16 },
+    "shadow": { "x": 48, "y": 91, "width": 13, "height": 2.6, "opacity": 0.35 },
+    "props": {
+      "lantern": { "x": 33, "y": 78, "width": 10 },
+      "fireflies": { "x": 72, "y": 90, "width": 12 }
+    }
+  },
+  "night": {
+    "hero": { "x": 48, "y": 92, "width": 17 },
+    "shadow": { "x": 48, "y": 92, "width": 17, "height": 2.4, "opacity": 0.35 },
+    "props": {
+      "campfire": { "x": 30, "y": 94, "width": 14 },
+      "torch": { "x": 78, "y": 90, "width": 10 }
+    }
+  }
+}

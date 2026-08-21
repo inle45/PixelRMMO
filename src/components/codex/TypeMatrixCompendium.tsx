@@ -57,7 +57,7 @@ export default function TypeMatrixCompendium({ onViewMonster }: TypeMatrixCompen
         <span className="text-[10px] uppercase tracking-[0.3em] text-lantern-glow/80" style={{ fontFamily: "var(--font-pixel)" }}>
           Crypte Ancestrale
         </span>
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">⚡ Types & Météo</h1>
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Types & Météo</h1>
         <p className="max-w-md text-sm text-white/55">
           Les affinités élémentaires, les statuts de combat et les cycles météorologiques de la crypte.
         </p>
@@ -77,7 +77,7 @@ export default function TypeMatrixCompendium({ onViewMonster }: TypeMatrixCompen
         <div className="min-w-0 flex-1">
           <p className="text-[10px] font-bold uppercase tracking-wide text-lantern-glow">Météo Active</p>
           <h2 className="truncate text-base font-bold text-white">
-            {activeWeather.emoji} {activeWeather.name}
+            {activeWeather.name}
           </h2>
           <div className="mt-1 flex flex-wrap gap-1.5">
             {activeWeather.modifiers.map((mod) => (
@@ -156,7 +156,7 @@ export default function TypeMatrixCompendium({ onViewMonster }: TypeMatrixCompen
                 {s.icon && <img src={s.icon} alt="" className="h-9 w-9 object-contain" style={{ imageRendering: "pixelated" }} />}
               </div>
               <h4 className="text-xs font-bold text-white">
-                {s.emoji} {s.name}
+                {s.name}
               </h4>
               <p className="text-[9px] uppercase tracking-wide text-white/40">{CATEGORY_LABELS[s.category]}</p>
               <p className="text-[10px] leading-snug text-white/55">{s.description}</p>
@@ -210,14 +210,25 @@ export default function TypeMatrixCompendium({ onViewMonster }: TypeMatrixCompen
                           : { borderColor: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.5)" }
                       }
                     >
-                      {TYPE_BY_ID[w.type]?.emoji ?? "◆"} x{w.multiplier}
+                      {TYPE_BY_ID[w.type]?.icon && (
+                        <img
+                          src={TYPE_BY_ID[w.type].icon}
+                          alt=""
+                          className="mr-0.5 inline-block h-2.5 w-2.5 align-[-1px]"
+                          style={{ imageRendering: "pixelated" }}
+                        />
+                      )}
+                      x{w.multiplier}
                     </button>
                   ))}
                   {monster.combat.inflicts.map((inf) => {
                     const status = STATUS_BY_ID[inf.status];
                     return status ? (
-                      <span key={inf.status} className="rounded-full border border-white/10 bg-black/20 px-1.5 py-0.5 text-[9px] text-white/60">
-                        {status.emoji} {status.name}
+                      <span key={inf.status} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/20 px-1.5 py-0.5 text-[9px] text-white/60">
+                        {status.icon && (
+                          <img src={status.icon} alt="" className="h-2.5 w-2.5" style={{ imageRendering: "pixelated" }} />
+                        )}
+                        {status.name}
                       </span>
                     ) : null;
                   })}

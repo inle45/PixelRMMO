@@ -7,7 +7,6 @@ export type DamageTypeId = "fire" | "ice" | "lightning" | "nature" | "holy" | "s
 export interface DamageTypeDef {
   id: DamageTypeId;
   name: string;
-  emoji: string;
   color: string;
   description: string;
   strongVs: DamageTypeId[];
@@ -17,7 +16,6 @@ export interface DamageTypeDef {
 export interface StatusDef {
   id: string;
   name: string;
-  emoji: string;
   category: "dot" | "control" | "debuff" | "buff";
   description: string;
   formula: string;
@@ -32,7 +30,6 @@ export interface WeatherModifier {
 export interface WeatherDef {
   id: string;
   name: string;
-  emoji: string;
   description: string;
   modifiers: WeatherModifier[];
   icon: string;

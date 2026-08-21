@@ -5,6 +5,8 @@ import { getInventory, getOwnedMaterials } from "../../data/inventory";
 import StatBar from "../ui/StatBar";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import HeroProfileOverlay from "./HeroProfileOverlay";
+import CampDayCycle from "./CampDayCycle";
+import WorldMapOverlay from "./WorldMapOverlay";
 import ecuIcon from "../../assets/icons/ecu.png";
 import swordIcon from "../../assets/icons/items/sword.png";
 import bowIcon from "../../assets/icons/items/bow.png";
@@ -64,6 +66,7 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
   const armor = hero ? STARTER_ARMOR[hero.classId] : null;
   const [openSlot, setOpenSlot] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [mapOpen, setMapOpen] = useState(false);
   const inventory = useMemo(() => getInventory(), []);
   const ownedMaterials = useMemo(() => getOwnedMaterials(), []);
 
@@ -114,6 +117,11 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
 
   return (
     <div className="w-full max-w-md">
+      {/* Living camp diorama — backdrop, props and hero routine all follow the real clock */}
+      <div className="mb-4">
+        <CampDayCycle onOpenMap={() => setMapOpen(true)} />
+      </div>
+
       {/* Header: Écus + Marché C2C balance */}
       <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 backdrop-blur-2xl">
         <div className="flex items-center gap-2">
@@ -248,6 +256,8 @@ export default function CampScreen({ username, onOpenDungeon }: CampScreenProps)
           />
         )}
       </AnimatePresence>
+
+      <AnimatePresence>{mapOpen && <WorldMapOverlay onClose={() => setMapOpen(false)} />}</AnimatePresence>
     </div>
   );
 }

@@ -55,7 +55,7 @@ export default function MonsterCard({ monster, isOpen, onOpen }: MonsterCardProp
           onClick={() => setPosture("idle")}
           className={`rounded-full px-2 py-0.5 transition-colors ${posture === "idle" ? `${theme.accentBg} ${theme.accentText}` : "text-white/40"}`}
         >
-          👁️ Repos
+          Repos
         </button>
         <button
           type="button"
@@ -63,7 +63,7 @@ export default function MonsterCard({ monster, isOpen, onOpen }: MonsterCardProp
           disabled={monster.attackFrames.length === 0}
           className={`rounded-full px-2 py-0.5 transition-colors disabled:opacity-30 ${posture === "attack" ? `${theme.accentBg} ${theme.accentText}` : "text-white/40"}`}
         >
-          ⚔️ Attaque
+          Attaque
         </button>
       </div>
 

@@ -13,7 +13,9 @@ export default function StatusIcon({ status }: { status: ActiveStatus }) {
       {def.icon ? (
         <img src={def.icon} alt={def.name} className="h-3.5 w-3.5 object-contain" style={{ imageRendering: "pixelated" }} />
       ) : (
-        <span className="text-[9px]">{def.emoji}</span>
+        // Every status ships a badge, so this is only a defensive fallback for a missing asset —
+        // a plain dot rather than an emoji stand-in.
+        <span className="h-2 w-2 rounded-full bg-white/70" />
       )}
       <span className="absolute -top-1.5 -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-black/80 text-[7px] font-bold text-white/80 ring-1 ring-white/15">
         {status.turnsLeft}

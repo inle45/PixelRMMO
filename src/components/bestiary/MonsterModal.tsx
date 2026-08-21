@@ -66,7 +66,7 @@ export default function MonsterModal({ monster, onClose, onViewMaterial }: Monst
             onClick={() => setPosture("idle")}
             className={`rounded-full px-3 py-1 transition-colors ${posture === "idle" ? `${theme.accentBg} ${theme.accentText}` : "text-white/40"}`}
           >
-            👁️ Repos
+            Repos
           </button>
           <button
             type="button"
@@ -74,7 +74,7 @@ export default function MonsterModal({ monster, onClose, onViewMaterial }: Monst
             disabled={monster.attackFrames.length === 0}
             className={`rounded-full px-3 py-1 transition-colors disabled:opacity-30 ${posture === "attack" ? `${theme.accentBg} ${theme.accentText}` : "text-white/40"}`}
           >
-            ⚔️ Attaque
+            Attaque
           </button>
         </div>
 

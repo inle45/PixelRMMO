@@ -169,7 +169,7 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
                   className="mt-2 text-center text-sm font-extrabold text-lantern-glow"
                   style={{ fontFamily: "var(--font-pixel)" }}
                 >
-                  ⭐ LEVEL UP ! Niveau {result.previousLevel} → {result.newLevel} ⭐
+                  LEVEL UP ! Niveau {result.previousLevel} → {result.newLevel}
                 </motion.p>
               )}
             </div>

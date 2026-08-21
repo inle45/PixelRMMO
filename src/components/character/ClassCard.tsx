@@ -43,7 +43,7 @@ export default function ClassCard({ classDef, gender, selected, onSelect }: Clas
 
       {attacking && (
         <span className="absolute left-4 top-4 animate-[fadeIn_0.15s_ease-out] rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white/80">
-          ⚔️ Attaque !
+          Attaque !
         </span>
       )}
 

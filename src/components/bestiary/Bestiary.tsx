@@ -76,7 +76,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
         <span className="text-[10px] uppercase tracking-[0.3em] text-lantern-glow/80" style={{ fontFamily: "var(--font-pixel)" }}>
           Crypte Ancestrale
         </span>
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">📖 Bestiaire des Créatures</h1>
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Bestiaire des Créatures</h1>
         <p className="max-w-md text-sm text-white/55">
           {BESTIARY.length} créatures répertoriées dans le grimoire. Étudie-les avant de descendre.
         </p>
@@ -120,7 +120,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
           {dungeonSections.map(({ dungeon, familyGroups, count }) => (
             <section key={dungeon.id}>
               <div className="mb-5 flex items-center gap-3 border-b border-white/10 pb-3">
-                <span className="text-2xl leading-none">{dungeon.icon}</span>
+                <img src={dungeon.icon} alt="" className="h-7 w-7" style={{ imageRendering: "pixelated" }} />
                 <div>
                   <h2 className="text-sm font-bold uppercase tracking-wide text-lantern-glow">{dungeon.name}</h2>
                   <p className="text-xs text-white/50">
