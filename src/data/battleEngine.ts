@@ -1,5 +1,5 @@
 import type { ClassDefinition, ClassId, Gender } from "./classes";
-import { getBattlePortrait } from "./battlePortraits";
+import { getBattlePortrait, getBattleIdleFrames, getBattleAttackFrames } from "./battlePortraits";
 import type { MonsterCombat, MonsterDef, MonsterSkill } from "./bestiary";
 import type { WaveMonster } from "./waves";
 import type { ClassSkill } from "./skills";
@@ -98,8 +98,8 @@ export function buildHeroCombatant(
     side: "hero",
     name: classDef.names[gender],
     portrait: getBattlePortrait(classDef.id, gender),
-    idleFrames: [],
-    attackFrames: [],
+    idleFrames: getBattleIdleFrames(classDef.id, gender),
+    attackFrames: getBattleAttackFrames(classDef.id, gender),
     level,
     maxHp,
     hp: carryover ? Math.min(carryover.hp, maxHp) : maxHp,

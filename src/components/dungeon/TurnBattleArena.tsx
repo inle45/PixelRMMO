@@ -485,11 +485,6 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     >
       <img src={arenaBg} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ imageRendering: "pixelated" }} />
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-transparent to-black/75" />
-      {/* Ambient torch flicker — broad, forgiving glow spots since object-cover crops the arena art differently per viewport */}
-      <div className="pointer-events-none absolute left-[4%] top-[22%] h-24 w-16 animate-lantern rounded-full bg-ember/35 blur-2xl" />
-      <div className="pointer-events-none absolute right-[4%] top-[20%] h-24 w-16 animate-lantern rounded-full bg-ember/35 blur-2xl" style={{ animationDelay: "1.3s" }} />
-      <div className="pointer-events-none absolute left-[22%] top-[16%] h-16 w-12 animate-lantern rounded-full bg-ember/25 blur-xl" style={{ animationDelay: "0.6s" }} />
-      <div className="pointer-events-none absolute right-[22%] top-[16%] h-16 w-12 animate-lantern rounded-full bg-ember/25 blur-xl" style={{ animationDelay: "1.9s" }} />
 
       <div className="relative flex flex-1 flex-col px-3 pt-[calc(0.6rem+env(safe-area-inset-top))]">
         {/* Streamlined top bar: weather + wave + initiative */}
@@ -509,57 +504,61 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           <TurnQueueBar order={st.turnOrder} combatants={st.combatants} activeId={st.activeId} />
         </div>
 
-        {/* Arena play area — hero bottom-left, monsters top-right, no boxes */}
-        <div className="relative flex-1">
-          <AnimatePresence>
-            {st.centerBanner && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                className="pointer-events-none absolute left-1/2 top-1/3 z-30 -translate-x-1/2 whitespace-nowrap text-center"
-              >
-                <p
-                  className="rounded-xl bg-black/50 px-5 py-2.5 text-base font-bold text-lantern-glow backdrop-blur-md"
-                  style={{ fontFamily: "var(--font-pixel)" }}
+        {/* Arena play area — a bounded "stage" centered in the available space, not stretched
+            edge-to-edge, so hero (bottom-left) and monsters (top-right) share a believable
+            patch of floor instead of being flung to opposite corners of an empty viewport. */}
+        <div className="relative flex flex-1 items-center">
+          <div className="relative h-[58%] max-h-[400px] min-h-[240px] w-full">
+            <AnimatePresence>
+              {st.centerBanner && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.85 }}
+                  className="pointer-events-none absolute left-1/2 top-1/3 z-30 -translate-x-1/2 whitespace-nowrap text-center"
                 >
-                  {st.centerBanner}
-                </p>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                  <p
+                    className="rounded-xl bg-black/50 px-5 py-2.5 text-base font-bold text-lantern-glow backdrop-blur-md"
+                    style={{ fontFamily: "var(--font-pixel)" }}
+                  >
+                    {st.centerBanner}
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {hero && (
-            <div className="absolute bottom-2 left-1 sm:bottom-4 sm:left-3">
-              <CombatantPanel
-                combatant={hero}
-                playing={st.playingId === "hero"}
-                size="lg"
-                floatingTexts={st.floatingTexts["hero"] ?? []}
-                onFloatingTextDone={(id) => clearFloatingText("hero", id)}
-              />
-            </div>
-          )}
-
-          <div className="absolute right-1 top-1 flex max-w-[75%] flex-wrap justify-end gap-1.5 sm:right-3 sm:top-3">
-            {enemies.map((e) => {
-              const targetable = !!st.targetMode && e.alive;
-              const badge = st.effectivenessBadge[e.instanceId];
-              return (
+            {hero && (
+              <div className="absolute bottom-0 left-1 sm:left-3">
                 <CombatantPanel
-                  key={e.instanceId}
-                  combatant={e}
-                  playing={st.playingId === e.instanceId}
-                  size={enemies.length > 1 ? "sm" : "lg"}
-                  targetable={targetable}
-                  onSelectTarget={() => handleTargetClick(e.instanceId)}
-                  effectivenessBadge={badge?.kind ?? null}
-                  effectivenessMultiplier={badge?.mult}
-                  floatingTexts={st.floatingTexts[e.instanceId] ?? []}
-                  onFloatingTextDone={(id) => clearFloatingText(e.instanceId, id)}
+                  combatant={hero}
+                  playing={st.playingId === "hero"}
+                  size="lg"
+                  floatingTexts={st.floatingTexts["hero"] ?? []}
+                  onFloatingTextDone={(id) => clearFloatingText("hero", id)}
                 />
-              );
-            })}
+              </div>
+            )}
+
+            <div className="absolute right-1 top-0 flex max-w-[72%] flex-wrap justify-end gap-1.5 sm:right-3">
+              {enemies.map((e) => {
+                const targetable = !!st.targetMode && e.alive;
+                const badge = st.effectivenessBadge[e.instanceId];
+                return (
+                  <CombatantPanel
+                    key={e.instanceId}
+                    combatant={e}
+                    playing={st.playingId === e.instanceId}
+                    size={enemies.length > 1 ? "sm" : "lg"}
+                    targetable={targetable}
+                    onSelectTarget={() => handleTargetClick(e.instanceId)}
+                    effectivenessBadge={badge?.kind ?? null}
+                    effectivenessMultiplier={badge?.mult}
+                    floatingTexts={st.floatingTexts[e.instanceId] ?? []}
+                    onFloatingTextDone={(id) => clearFloatingText(e.instanceId, id)}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
 

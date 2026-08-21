@@ -129,31 +129,20 @@ export default function CombatantPanel({
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
         )}
-        <div className="absolute -bottom-0.5 left-1/2 h-3 w-16 -translate-x-1/2 rounded-full bg-black/55 blur-[3px]" />
+        <div className="absolute bottom-0 left-1/2 h-4 w-20 -translate-x-1/2 rounded-[50%] bg-black/60 blur-[4px]" />
 
-        <div className={dim + " relative flex items-center justify-center drop-shadow-[0_10px_16px_rgba(0,0,0,0.65)]"}>
-          {isHero ? (
-            <motion.img
-              src={combatant.portrait}
-              alt={combatant.name}
-              className="h-full w-full object-contain"
-              style={{ imageRendering: "pixelated" }}
-              animate={playing ? { x: [0, 16, 0], scale: [1, 1.08, 1] } : { x: 0, scale: 1 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              onAnimationComplete={() => {
-                if (playing) onFinishAttack?.();
-              }}
-            />
-          ) : (
-            <AnimatedSprite
-              idleSrc={combatant.portrait}
-              idleFrames={combatant.idleFrames}
-              attackFrames={combatant.attackFrames}
-              playing={playing}
-              onFinish={onFinishAttack}
-              alt={combatant.name}
-            />
-          )}
+        <div
+          className={dim + " relative flex items-center justify-center"}
+          style={{ filter: "drop-shadow(0 10px 16px rgba(0,0,0,0.65)) brightness(0.93) contrast(1.06) saturate(0.9)" }}
+        >
+          <AnimatedSprite
+            idleSrc={combatant.portrait}
+            idleFrames={combatant.idleFrames}
+            attackFrames={combatant.attackFrames}
+            playing={playing}
+            onFinish={onFinishAttack}
+            alt={combatant.name}
+          />
         </div>
 
         {combatant.guarding && (
