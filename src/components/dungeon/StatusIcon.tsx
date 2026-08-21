@@ -15,6 +15,9 @@ export default function StatusIcon({ status }: { status: ActiveStatus }) {
       ) : (
         <span className="text-[9px]">{def.emoji}</span>
       )}
+      <span className="absolute -top-1.5 -left-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-black/80 text-[7px] font-bold text-white/80 ring-1 ring-white/15">
+        {status.turnsLeft}
+      </span>
       {status.stacks > 1 && (
         <span className="absolute -bottom-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-black text-[7px] font-bold text-white ring-1 ring-white/20">
           {status.stacks}

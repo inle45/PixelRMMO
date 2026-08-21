@@ -37,7 +37,8 @@ import ActionMenu from "./ActionMenu";
 import ArenaBackdrop from "./ArenaBackdrop";
 import WeatherParticles from "./WeatherParticles";
 import { DAMAGE_TYPES } from "../../data/typeSystem";
-import type { ImpactBurst, DeathBurst } from "../../data/battleVfx";
+import type { ImpactBurst, DeathBurst, Projectile, ShieldCast } from "../../data/battleVfx";
+import ProjectileFx from "./ProjectileFx";
 
 export interface BattleResult {
   victory: boolean;
@@ -79,6 +80,8 @@ interface Internal {
   bossPhase2Triggered: boolean;
   impactBursts: Record<string, ImpactBurst[]>;
   deathBursts: Record<string, DeathBurst[]>;
+  projectiles: Projectile[];
+  shieldCasts: Record<string, ShieldCast[]>;
 }
 
 interface RunStats {
@@ -117,6 +120,10 @@ function formatCountdown(ms: number): string {
 export default function TurnBattleArena({ classDef, gender, level, onComplete }: TurnBattleArenaProps) {
   const [, forceRender] = useReducer((x: number) => x + 1, 0);
   const [now, setNow] = useState(() => Date.now());
+  const [shakeKey, setShakeKey] = useState(0);
+  function triggerShake() {
+    setShakeKey((k) => k + 1);
+  }
   const skillList = CLASS_SKILLS[classDef.id];
 
   useEffect(() => {
@@ -167,6 +174,22 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     const current = stateRef.current.deathBursts;
     set({ deathBursts: { ...current, [targetId]: (current[targetId] ?? []).filter((b) => b.id !== id) } });
   }
+  function addProjectile(damageType: string, from: "hero" | "enemy") {
+    const p: Projectile = { id: `v${vfxId++}`, color: DAMAGE_TYPE_COLOR[damageType] ?? "#ffffff", from };
+    set({ projectiles: [...stateRef.current.projectiles, p] });
+  }
+  function clearProjectile(id: string) {
+    set({ projectiles: stateRef.current.projectiles.filter((p) => p.id !== id) });
+  }
+  function addShieldCast(targetId: string) {
+    const s: ShieldCast = { id: `v${vfxId++}` };
+    const current = stateRef.current.shieldCasts;
+    set({ shieldCasts: { ...current, [targetId]: [...(current[targetId] ?? []), s] } });
+  }
+  function clearShieldCast(targetId: string, id: string) {
+    const current = stateRef.current.shieldCasts;
+    set({ shieldCasts: { ...current, [targetId]: (current[targetId] ?? []).filter((s) => s.id !== id) } });
+  }
   function setEffectivenessBadge(targetId: string, kind: "weak" | "immune", mult?: number) {
     set({ effectivenessBadge: { ...stateRef.current.effectivenessBadge, [targetId]: { kind, mult } } });
   }
@@ -186,6 +209,8 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
         case "log":
           break;
         case "damage": {
+          addProjectile(ev.damageType, ev.actorId === "hero" ? "hero" : "enemy");
+          await sleep(260);
           addFloatingText(ev.targetId, ev.crit ? `-${ev.amount} CRIT !` : `-${ev.amount}`, ev.crit ? "crit" : "damage");
           addImpactBurst(ev.targetId, ev.damageType);
           if (ev.effectiveness === "weak") {
@@ -225,6 +250,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           break;
         case "status_applied":
           addFloatingText(ev.targetId, STATUS_APPLIED_LABEL[ev.statusId] ?? STATUS_BY_ID[ev.statusId]?.name.toUpperCase() ?? "", "status");
+          if (ev.statusId === "aegis") addShieldCast(ev.targetId);
           await sleep(200);
           break;
         case "status_tick":
@@ -269,6 +295,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       const { combatants: revived, revived: didRevive } = tryBossRevive(st.combatants, boss.instanceId);
       if (didRevive) {
         applyCombatants(revived);
+        triggerShake();
         showBanner("RENAISSANCE DU ROI SQUELETTE !", 1600);
         await sleep(800);
       }
@@ -277,6 +304,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       const reinforcements = generateReinforcements().map(buildEnemyCombatant);
       applyCombatants([...withPhase2, ...reinforcements]);
       set({ bossPhase2Triggered: true });
+      triggerShake();
       showBanner("⚠ PHASE 2 : LE ROI ENTRE EN FUREUR !", 1600);
       await sleep(900);
     }
@@ -510,9 +538,32 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      <ArenaBackdrop />
-      <WeatherParticles weatherId={activeWeather.id} />
+      <motion.div
+        key={shakeKey}
+        animate={shakeKey > 0 ? { x: [0, -10, 9, -7, 6, -3, 2, 0], y: [0, 5, -4, 3, -2, 0] } : {}}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="absolute inset-0 flex flex-col overflow-hidden"
+      >
+        <ArenaBackdrop weatherId={activeWeather.id} isBossWave={st.wave === 3} />
+        <WeatherParticles weatherId={activeWeather.id} />
+
+      {/* Manga-style diagonal slash-open on combat entry — two clipped black panels retract off-screen. */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-[95] bg-black"
+        style={{ clipPath: "polygon(0 0, 55% 0, 45% 100%, 0 100%)" }}
+        initial={{ x: "0%" }}
+        animate={{ x: "-110%" }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.76, 0, 0.24, 1] }}
+      />
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-[95] bg-black"
+        style={{ clipPath: "polygon(55% 0, 100% 0, 100% 100%, 45% 100%)" }}
+        initial={{ x: "0%" }}
+        animate={{ x: "110%" }}
+        transition={{ duration: 0.5, delay: 0.15, ease: [0.76, 0, 0.24, 1] }}
+      />
 
       <div className="relative flex flex-1 flex-col px-3 pt-[calc(0.6rem+env(safe-area-inset-top))]">
         {/* Streamlined top bar: weather + wave + initiative */}
@@ -537,6 +588,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
             patch of floor instead of being flung to opposite corners of an empty viewport. */}
         <div className="relative flex flex-1 items-center">
           <div className="relative h-[58%] max-h-[400px] min-h-[240px] w-full">
+            {st.projectiles.map((p) => (
+              <ProjectileFx key={p.id} projectile={p} onDone={() => clearProjectile(p.id)} />
+            ))}
             <AnimatePresence>
               {st.centerBanner && (
                 <motion.div
@@ -567,6 +621,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
                   onImpactBurstDone={(id) => clearImpactBurst("hero", id)}
                   deathBursts={st.deathBursts["hero"] ?? []}
                   onDeathBurstDone={(id) => clearDeathBurst("hero", id)}
+                  manaPreviewCost={st.targetMode?.kind === "skill" ? (st.targetMode.skill?.manaCost ?? 0) : 0}
+                  shieldCasts={st.shieldCasts["hero"] ?? []}
+                  onShieldCastDone={(id) => clearShieldCast("hero", id)}
                 />
               </div>
             )}
@@ -630,6 +687,16 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           )}
         </div>
       </div>
+
+      {st.bossPhase2Triggered && (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-[15]"
+          style={{ boxShadow: "inset 0 0 90px 20px rgba(220,38,38,0.55)" }}
+          animate={{ opacity: [0.5, 0.9, 0.5] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
+      </motion.div>
     </motion.div>
   );
 }
@@ -654,6 +721,8 @@ function buildInitialState(classDef: ClassDefinition, gender: Gender, level: num
     bossPhase2Triggered: false,
     impactBursts: {},
     deathBursts: {},
+    projectiles: [],
+    shieldCasts: {},
   };
 }
 

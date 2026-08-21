@@ -1,3 +1,6 @@
+import projectileBoltUrl from "../assets/dungeon/vfx/projectile-bolt.png";
+import shieldEmblemUrl from "../assets/dungeon/vfx/shield-emblem.png";
+
 const impactModules = import.meta.glob("../assets/dungeon/vfx/impact-burst-*.png", {
   eager: true,
   import: "default",
@@ -30,5 +33,21 @@ export interface ImpactBurst {
 }
 
 export interface DeathBurst {
+  id: string;
+}
+
+/** Elongated glowing bolt, tinted per damage type in CSS, travels between attacker and target. */
+export const PROJECTILE_BOLT = projectileBoltUrl;
+
+/** Translucent shield emblem that slams down over the hero when Bouclier Sacré (aegis) is cast. */
+export const SHIELD_EMBLEM = shieldEmblemUrl;
+
+export interface Projectile {
+  id: string;
+  color: string;
+  from: "hero" | "enemy";
+}
+
+export interface ShieldCast {
   id: string;
 }

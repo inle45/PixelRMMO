@@ -4,7 +4,14 @@ import AnimatedSprite from "../ui/AnimatedSprite";
 import OneShotFx from "./OneShotFx";
 import StatusIcon from "./StatusIcon";
 import guardIcon from "../../assets/icons/dungeon/guard.png";
-import { IMPACT_BURST_FRAMES, DEATH_DISSOLVE_FRAMES, type ImpactBurst, type DeathBurst } from "../../data/battleVfx";
+import {
+  IMPACT_BURST_FRAMES,
+  DEATH_DISSOLVE_FRAMES,
+  SHIELD_EMBLEM,
+  type ImpactBurst,
+  type DeathBurst,
+  type ShieldCast,
+} from "../../data/battleVfx";
 import type { Combatant } from "../../data/battleEngine";
 
 export interface FloatingText {
@@ -28,6 +35,9 @@ interface CombatantPanelProps {
   onImpactBurstDone?: (id: string) => void;
   deathBursts?: DeathBurst[];
   onDeathBurstDone?: (id: string) => void;
+  manaPreviewCost?: number;
+  shieldCasts?: ShieldCast[];
+  onShieldCastDone?: (id: string) => void;
 }
 
 const FLOAT_STYLE: Record<FloatingText["kind"], string> = {
@@ -54,9 +64,14 @@ export default function CombatantPanel({
   onImpactBurstDone,
   deathBursts = [],
   onDeathBurstDone,
+  manaPreviewCost = 0,
+  shieldCasts = [],
+  onShieldCastDone,
 }: CombatantPanelProps) {
   const hpPct = Math.max(0, Math.min(100, (combatant.hp / combatant.maxHp) * 100));
   const manaPct = combatant.maxMana > 0 ? Math.max(0, Math.min(100, (combatant.mana / combatant.maxMana) * 100)) : 0;
+  const manaAfterPreviewPct =
+    combatant.maxMana > 0 ? Math.max(0, Math.min(100, ((combatant.mana - manaPreviewCost) / combatant.maxMana) * 100)) : 0;
   const dim = size === "lg" ? "h-32 w-32" : "h-20 w-20";
   const isHero = combatant.side === "hero";
 
@@ -78,8 +93,9 @@ export default function CombatantPanel({
   const content = (
     <motion.div
       className="relative flex flex-col items-center"
-      animate={{ opacity: combatant.alive ? 1 : 0.3, filter: combatant.alive ? "grayscale(0)" : "grayscale(1)" }}
-      transition={{ duration: 0.6 }}
+      initial={{ opacity: 0, y: 26 }}
+      animate={{ opacity: combatant.alive ? 1 : 0.3, y: 0, filter: combatant.alive ? "grayscale(0)" : "grayscale(1)" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
       {/* Floating HUD — no card, no border, just glowing bars over the head */}
       <div className="z-10 mb-1 flex flex-col items-center gap-0.5">
@@ -100,12 +116,20 @@ export default function CombatantPanel({
             />
           </div>
           {combatant.maxMana > 0 && (
-            <div className="mt-0.5 h-[3px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
+            <div className="relative mt-0.5 h-[3px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-300 shadow-[0_0_5px_rgba(56,189,248,0.9)]"
+                className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-300 shadow-[0_0_5px_rgba(56,189,248,0.9)]"
                 animate={{ width: `${manaPct}%` }}
                 transition={{ duration: 0.4 }}
               />
+              {manaPreviewCost > 0 && (
+                <motion.div
+                  className="absolute inset-y-0 h-full bg-amber-300"
+                  style={{ left: `${manaAfterPreviewPct}%`, width: `${Math.max(0, manaPct - manaAfterPreviewPct)}%` }}
+                  animate={{ opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "easeInOut" }}
+                />
+              )}
             </div>
           )}
         </div>
@@ -207,6 +231,20 @@ export default function CombatantPanel({
                 className="absolute h-full w-full scale-125 object-contain opacity-90"
               />
             </div>
+          ))}
+
+          {shieldCasts.map((cast) => (
+            <motion.img
+              key={cast.id}
+              src={SHIELD_EMBLEM}
+              alt=""
+              className="pointer-events-none absolute inset-0 z-20 h-full w-full object-contain"
+              style={{ imageRendering: "pixelated" }}
+              initial={{ opacity: 0, scale: 1.8 }}
+              animate={{ opacity: [0, 1, 1, 0], scale: [1.8, 1, 1, 0.9] }}
+              transition={{ duration: 1.1, times: [0, 0.25, 0.75, 1], ease: "easeOut" }}
+              onAnimationComplete={() => onShieldCastDone?.(cast.id)}
+            />
           ))}
         </div>
 
