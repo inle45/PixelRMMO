@@ -48,11 +48,23 @@ function NodeDecoration({ kind, paused }: { kind: MapNodeDef["kind"]; paused?: b
   if (kind === "dungeon") {
     return (
       <div className="pointer-events-none absolute inset-x-0 bottom-full flex justify-center">
-        <LoopSprite frames={MIST_FRAMES} frameDuration={260} alt="" paused={paused} className="h-10 w-10 opacity-80" />
+        {/* mixBlendMode "screen" + a soft blur + lower opacity is what turns this from a flat sticker
+            pasted over the scene into something that reads as glowing haze reacting with the dark
+            colours underneath — a sprite dropped in at full alpha/contrast never blends with a
+            desaturated backdrop no matter how good the source art is, the same lesson as the battle
+            arena's own sprite-integration pass. */}
+        <LoopSprite
+          frames={MIST_FRAMES}
+          frameDuration={260}
+          alt=""
+          paused={paused}
+          className="h-10 w-10"
+          style={{ opacity: 0.5, mixBlendMode: "screen", filter: "blur(1.5px) saturate(0.7)" }}
+        />
         {batVisible && <LoopSprite frames={BAT_FRAMES} frameDuration={140} alt="" paused={paused} className="absolute -top-2 left-1/2 h-4 w-4 -translate-x-6" />}
         <motion.div
-          className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/50 blur-md"
-          animate={paused ? {} : { opacity: [0.4, 0.8, 0.4] }}
+          className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-500/40 blur-lg"
+          animate={paused ? {} : { opacity: [0.3, 0.65, 0.3] }}
           transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>

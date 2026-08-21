@@ -110,6 +110,8 @@ function getFrames(modules: Record<string, string>, prefix: string): string[] {
 
 export const MIST_FRAMES = getFrames(vfxModules, "mist");
 export const BAT_FRAMES = getFrames(vfxModules, "bat");
+export const BIRD_FRAMES = getFrames(vfxModules, "bird-fly");
+export const SMOKE_FRAMES = getFrames(vfxModules, "smoke");
 
 /* ------------------------------------------------------------------------ reused camp props */
 
@@ -124,3 +126,12 @@ const campPropModules = import.meta.glob("../assets/camp/props/*.png", { eager: 
 
 export const CAMPFIRE_FRAMES = getFrames(campPropModules, "campfire");
 export const BANNER_FRAMES = getFrames(campPropModules, "banner");
+
+/* ------------------------------------------------------------------------ wildlife */
+
+const wildlifeModules = import.meta.glob("../assets/map/wildlife/*.png", { eager: true, import: "default" }) as Record<
+  string,
+  string
+>;
+
+export const DEER_FRAMES = getFrames(wildlifeModules, "deer");

@@ -12,12 +12,12 @@ import {
   type NodeStatus,
 } from "../../data/worldMap";
 import { getWorldState, hasSeenDialogue, markDialogueSeen, travelToNode, type WorldState } from "../../data/worldState";
-import FogOfWar from "./FogOfWar";
 import MapNode from "./MapNode";
 import HeroToken from "./HeroToken";
 import DialogueBox from "./DialogueBox";
 import MapCalibrator from "./MapCalibrator";
-import birdIcon from "../../assets/camp/props/bird-0.png";
+import LoopSprite from "../camp/LoopSprite";
+import { BIRD_FRAMES, DEER_FRAMES, SMOKE_FRAMES } from "../../data/worldMap";
 
 interface WorldMapProps {
   onClose: () => void;
@@ -69,6 +69,30 @@ const LEAVES = Array.from({ length: 10 }, (_, i) => ({
   dur: 6 + (i % 4),
   delay: -(i * 1.3),
 }));
+/** A loose two-bird group drifting across the sky over the forest, on a long diagonal loop. Each
+ * bird gets its own frameDuration so the pair doesn't flap in perfect lockstep — a small thing, but
+ * it's the difference between "a flock" and "one sprite duplicated". */
+const BIRDS = [
+  { dx: 0, dy: 0, frameDuration: 150 },
+  { dx: 14, dy: -6, frameDuration: 170 },
+];
+/** Small ash/ember specks drifting up out of the volcano's crater alongside the smoke puffs — reuses
+ * the same float-up-and-fade technique as the forest's LEAVES, just recoloured. */
+const EMBERS = Array.from({ length: 5 }, (_, i) => ({
+  x: -4 + i * 2.2,
+  y: -2 - (i % 3),
+  dur: 3 + (i % 3),
+  delay: -(i * 0.6),
+}));
+/** Snow flurries confined to the snowy mountain band of the map (roughly where the painted peaks
+ * sit) — plain CSS particles, not a PixelLab asset, matching the fireflies/leaves technique already
+ * established for "a scattering of small ambient specks" throughout this app. */
+const SNOW = Array.from({ length: 14 }, (_, i) => ({
+  x: 44 + ((i * 17) % 34),
+  y: 6 + ((i * 11) % 26),
+  dur: 5 + (i % 4),
+  delay: -(i * 0.9),
+}));
 /** Large, slow shimmer bands for the open-water Ocean layer, positioned in plain viewport percentages
  * (this layer never pans/zooms with the box) — reuses the same `.animate-water` keyframe as the
  * in-box river/lake shimmer, just bigger and dimmer to read as open sea rather than a river glint. */
@@ -78,6 +102,9 @@ const OCEAN_SHIMMER = [
   { x: -10, y: 40, w: 45, h: 9, delay: -4 },
   { x: 55, y: 20, w: 40, h: 8, delay: -1.5 },
 ];
+/** A patch of forest near the Campement, clear of any node's own pin/decoration — where the ambient
+ * deer grazes into view every so often. */
+const DEER_SPOT = { x: 27, y: 80 };
 
 export default function WorldMap({ onClose }: WorldMapProps) {
   const reduceMotion = useReducedMotion();
@@ -96,6 +123,15 @@ export default function WorldMap({ onClose }: WorldMapProps) {
 
   const [calibratorOpen, setCalibratorOpen] = useState(false);
   const [calibSelectedId, setCalibSelectedId] = useState<string | null>(null);
+
+  // The ambient deer grazes into view for a stretch, then wanders off — a rarer, longer cycle than
+  // the crypt's bats, so spotting it feels like a small find rather than a constant fixture.
+  const [deerVisible, setDeerVisible] = useState(true);
+  useEffect(() => {
+    if (reduceMotion) return;
+    const id = setInterval(() => setDeerVisible((v) => !v), 9000);
+    return () => clearInterval(id);
+  }, [reduceMotion]);
 
   // Pan/zoom state lives in plain refs, not useState: nothing else in the render tree depends on
   // tx/ty/scale (every node/fog/prop position is a plain percentage *inside* the box, unaffected by
@@ -159,22 +195,30 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     return clamp(v, -bound, bound);
   }
 
-  // Changes scale AND compensates tx/ty in the same breath, atomically, so the point currently under
-  // the viewport's centre stays there — touching scale alone leaves tx/ty untouched, and since the
-  // box's own transform-origin is its own centre (not the viewport's), the visible content jumps to a
-  // completely different part of the map the instant scale changes, worse the further off-centre the
-  // current pan already is. tx/ty scale by the same (new/old) ratio needed to hold a fixed box-local
-  // point at a fixed screen position under a scale change, then get clamped against the *new* scale
-  // (not the old one) so a zoom-out can never leave them pointing past the box's new, smaller overhang
-  // — an earlier version clamped a tick *after* scale had already changed, which on a big zoom-out
-  // (especially off an already off-centre pan) read as the view suddenly snapping to a totally
-  // different, often still-fogged part of the map.
-  function applyZoom(rawScale: number) {
+  // Changes scale AND compensates tx/ty in the same breath, atomically, so whatever box-local point
+  // is currently under `anchor` (a client/screen coordinate — defaults to the viewport's own centre)
+  // stays exactly there through the change. Touching scale alone leaves tx/ty untouched, and since
+  // the box's own transform-origin is its own centre (not the viewport's), the visible content jumps
+  // to a completely different part of the map the instant scale changes, worse the further the anchor
+  // is from centre. Anchoring to the *pinch midpoint* (or the wheel cursor) rather than always the
+  // viewport centre is what makes a pinch off to one side of the screen feel like zooming under your
+  // fingers instead of the whole map appearing to leap sideways to re-centre on something else —
+  // exactly what read as "teleporting" when pinching anywhere but dead-centre.
+  //
+  // Derivation: a box-local point p, at scale s and pan t, lands on screen (relative to viewport
+  // centre) at `t + s*(p - boxCenter)`. Holding that fixed at a target `anchor` (also relative to
+  // viewport centre) across a scale change from oldS to newS solves to
+  // `newT = anchor*(1 - newS/oldS) + oldT*(newS/oldS)` — the oldS terms cancel entirely, so this
+  // never needs to know where `p` actually was, only the anchor and the old/new pan+scale.
+  function applyZoom(rawScale: number, anchorClientX?: number, anchorClientY?: number) {
     const newScale = clamp(rawScale, MIN_SCALE, MAX_SCALE);
     const ratio = newScale / scaleRef.current;
+    const rect = viewportRef.current?.getBoundingClientRect();
+    const anchorX = rect && anchorClientX !== undefined ? anchorClientX - rect.left - rect.width / 2 : 0;
+    const anchorY = rect && anchorClientY !== undefined ? anchorClientY - rect.top - rect.height / 2 : 0;
     scaleRef.current = newScale;
-    txRef.current = clampX(txRef.current * ratio, newScale);
-    tyRef.current = clampY(tyRef.current * ratio, newScale);
+    txRef.current = clampX(anchorX * (1 - ratio) + txRef.current * ratio, newScale);
+    tyRef.current = clampY(anchorY * (1 - ratio) + tyRef.current * ratio, newScale);
     applyTransform();
   }
 
@@ -242,11 +286,6 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   const heroTo = displayNode ? { x: displayNode.x, y: displayNode.y } : heroFrom;
 
   const unlockedNodes = nodes.filter((n) => worldState.unlockedNodeIds.includes(n.id));
-  const revealX = unlockedNodes.length ? unlockedNodes.reduce((s, n) => s + n.x, 0) / unlockedNodes.length : 50;
-  const revealY = unlockedNodes.length ? unlockedNodes.reduce((s, n) => s + n.y, 0) / unlockedNodes.length : 80;
-  const spread = unlockedNodes.length
-    ? Math.max(...unlockedNodes.map((n) => distance(n, { x: revealX, y: revealY })))
-    : 20;
   const volcano = nodes.find((n) => n.kind === "volcano");
   const activeDialogue = activeDialogueNodeId ? DIALOGUE_BY_NODE[activeDialogueNodeId] : null;
   const talkTarget = currentNode?.dialogueId ? currentNode : null;
@@ -257,6 +296,12 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     const pts = Array.from(pointers.current.values());
     if (pts.length < 2) return null;
     return distance(pts[0], pts[1]);
+  }
+
+  function pinchMidpoint(): { x: number; y: number } | null {
+    const pts = Array.from(pointers.current.values());
+    if (pts.length < 2) return null;
+    return { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
   }
 
   // Pointer capture is only taken once a gesture has PROVEN itself to be a drag (moved past
@@ -284,8 +329,9 @@ export default function WorldMap({ onClose }: WorldMapProps) {
 
     if (pointers.current.size === 2) {
       const dist = pinchDistance();
-      if (dist && pinchStartDist.current) {
-        applyZoom(scaleRef.current * (dist / pinchStartDist.current));
+      const mid = pinchMidpoint();
+      if (dist && pinchStartDist.current && mid) {
+        applyZoom(scaleRef.current * (dist / pinchStartDist.current), mid.x, mid.y);
       }
       pinchStartDist.current = dist;
     } else if (pointers.current.size === 1 && dragStart.current) {
@@ -311,12 +357,19 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     if (pointers.current.size === 0) {
       dragStart.current = null;
       viewportRef.current?.style.setProperty("cursor", "grab");
+    } else if (pointers.current.size === 1) {
+      // Lifting one finger out of a pinch leaves a single finger still down — re-baseline the drag
+      // from ITS current tracked position, not whatever dragStart held before the pinch started (or
+      // null). Without this the very next move computes its delta against a stale/nonexistent
+      // baseline and the pan jumps instantly to wherever that stale math points.
+      const [remaining] = pointers.current.values();
+      dragStart.current = { x: remaining.x, y: remaining.y, tx: txRef.current, ty: tyRef.current };
     }
   }
 
   function onWheel(e: ReactWheelEvent) {
     e.preventDefault();
-    applyZoom(scaleRef.current * (1 - e.deltaY * 0.0015));
+    applyZoom(scaleRef.current * (1 - e.deltaY * 0.0015), e.clientX, e.clientY);
   }
 
   function onBoxClick(e: ReactMouseEvent) {
@@ -422,17 +475,84 @@ export default function WorldMap({ onClose }: WorldMapProps) {
           )}
 
           {/* --------------------------------------------------------------- ambient: bird flock */}
-          {!reduceMotion && (
+          {/* A real flap-cycle loop (LoopSprite over BIRD_FRAMES), not a single static perched-bird
+              sprite translated across the screen — the earlier version reused the Camp diorama's
+              perched-bird icon with no wing motion at all, which read as "stakes sliding" rather
+              than birds flying. */}
+          {!reduceMotion && BIRD_FRAMES.length > 0 && (
             <motion.div
-              className="pointer-events-none absolute flex gap-2"
-              style={{ left: "8%", top: "58%" }}
-              animate={{ x: ["0%", "420%"], y: ["0%", "-18%"] }}
-              transition={{ duration: 26, repeat: Infinity, ease: "linear", repeatDelay: 6 }}
+              className="pointer-events-none absolute"
+              style={{ left: "6%", top: "16%" }}
+              animate={{ x: ["0%", "520%"], y: ["0%", "24%", "8%"] }}
+              transition={{ duration: 34, repeat: Infinity, ease: "linear", repeatDelay: 8 }}
             >
-              {[0, 1, 2].map((i) => (
-                <img key={i} src={birdIcon} alt="" className="h-3 w-3 opacity-80" style={{ imageRendering: "pixelated" }} />
+              {BIRDS.map((b, i) => (
+                <LoopSprite
+                  key={i}
+                  frames={BIRD_FRAMES}
+                  frameDuration={b.frameDuration}
+                  alt=""
+                  className="absolute h-3 w-3 opacity-75"
+                  style={{ left: `${b.dx}px`, top: `${b.dy}px` }}
+                />
               ))}
             </motion.div>
+          )}
+
+          {/* ------------------------------------------------------------ ambient: volcano smoke */}
+          {volcano && SMOKE_FRAMES.length > 0 && (
+            <div className="pointer-events-none absolute" style={{ left: `${volcano.x}%`, top: `${volcano.y}%` }}>
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  className="absolute -translate-x-1/2"
+                  style={{ bottom: 0 }}
+                  animate={reduceMotion ? { opacity: 0.5 } : { y: [0, -34], x: [0, i % 2 === 0 ? 6 : -5], opacity: [0, 0.65, 0] }}
+                  transition={reduceMotion ? { duration: 0 } : { duration: 5, repeat: Infinity, ease: "easeOut", delay: i * 1.7 }}
+                >
+                  <LoopSprite frames={SMOKE_FRAMES} frameDuration={220} alt="" className="h-8 w-8" />
+                </motion.div>
+              ))}
+              {!reduceMotion &&
+                EMBERS.map((e, i) => (
+                  <span
+                    key={i}
+                    className="animate-float-up absolute h-0.5 w-0.5 rounded-full bg-orange-300"
+                    style={{ left: `${e.x}%`, top: `${e.y}%`, "--dur": `${e.dur}s`, "--delay": `${e.delay}s` } as CSSProperties}
+                  />
+                ))}
+            </div>
+          )}
+
+          {/* -------------------------------------------------------------------- ambient: wildlife */}
+          {DEER_FRAMES.length > 0 && (
+            <AnimatePresence>
+              {deerVisible && (
+                <motion.div
+                  className="pointer-events-none absolute"
+                  style={{ left: `${DEER_SPOT.x}%`, top: `${DEER_SPOT.y}%`, transform: "translate(-50%, -100%)" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2 }}
+                >
+                  <LoopSprite frames={DEER_FRAMES} frameDuration={280} alt="" className="h-7 w-7" style={{ filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.5))" }} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          )}
+
+          {/* ----------------------------------------------------------------------- ambient: snow */}
+          {!reduceMotion && (
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              {SNOW.map((s, i) => (
+                <span
+                  key={i}
+                  className="animate-snow-fall absolute h-1 w-1 rounded-full bg-white/80"
+                  style={{ left: `${s.x}%`, top: `${s.y}%`, "--dur": `${s.dur}s`, "--delay": `${s.delay}s` } as CSSProperties}
+                />
+              ))}
+            </div>
           )}
 
           {/* Path trails between the currently-unlocked nodes. */}
@@ -460,11 +580,6 @@ export default function WorldMap({ onClose }: WorldMapProps) {
                 })
             )}
           </svg>
-
-          <FogOfWar
-            reveal={{ x: revealX, y: revealY, rx: spread + 14, ry: spread + 8 }}
-            hints={volcano ? [{ x: volcano.x, y: volcano.y }] : []}
-          />
 
           {nodes.map((node) => (
             <MapNode key={node.id} node={node} status={statusFor(node, worldState)} onSelect={handleSelectNode} />

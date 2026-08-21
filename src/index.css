@@ -131,6 +131,23 @@ textarea {
   }
 }
 
+@keyframes snow-fall {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.85;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(var(--drift, 12px), 90px);
+    opacity: 0;
+  }
+}
+
 .animate-twinkle {
   animation: twinkle var(--dur, 3s) ease-in-out infinite;
   animation-delay: var(--delay, 0s);
@@ -151,6 +168,11 @@ textarea {
 
 .animate-float-up {
   animation: float-up var(--dur, 8s) ease-in infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.animate-snow-fall {
+  animation: snow-fall var(--dur, 6s) linear infinite;
   animation-delay: var(--delay, 0s);
 }
 
@@ -236,6 +258,7 @@ textarea {
   .animate-water,
   .animate-drift,
   .animate-float-up,
+  .animate-snow-fall,
   .animate-rarity-pulse,
   .animate-rarity-flicker,
   .animate-rarity-prismatic {
