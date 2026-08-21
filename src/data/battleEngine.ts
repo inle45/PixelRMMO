@@ -5,6 +5,7 @@ import type { WaveMonster } from "./waves";
 import type { ClassSkill } from "./skills";
 import type { BattleItem } from "./items";
 import { STATUS_BY_ID, TYPE_BY_ID, type DamageTypeId, type WeatherDef } from "./typeSystem";
+import { aggregateEquipmentBonuses, type EquipmentBonuses } from "./equipment";
 
 export type Effectiveness = "weak" | "resist" | "immune" | "normal";
 
@@ -84,15 +85,54 @@ function abs(classDef: ClassDefinition, label: string): number {
   return s ? s.value : 0;
 }
 
+export interface HeroStats {
+  maxHp: number;
+  maxMana: number;
+  atk: number;
+  def: number;
+  speed: number;
+  critChance: number;
+  dodgeChance: number;
+  blockChance: number;
+  magicPenetration: number;
+  damageType: DamageTypeId;
+}
+
+/**
+ * The full derived hero stat block — base class numbers (HERO_BASE_COMBAT, level scaling) plus
+ * equipped-gear bonuses layered on top. Shared by buildHeroCombatant (battle) and HeroPaperDoll
+ * (Inventaire tab) so the two never drift apart on what a hero's stats actually are.
+ */
+export function computeHeroStats(
+  classDef: ClassDefinition,
+  level: number,
+  equipment: EquipmentBonuses = aggregateEquipmentBonuses({})
+): HeroStats {
+  const base = HERO_BASE_COMBAT[classDef.id];
+  return {
+    maxHp: abs(classDef, "PV") + (level - 1) * 15 + equipment.hp,
+    maxMana: abs(classDef, "Mana") + equipment.mana,
+    atk: base.atk + (level - 1) * 2 + equipment.atk,
+    def: base.def + (level - 1) * 1 + equipment.def,
+    speed: base.speed + equipment.speed,
+    critChance: (pct(classDef, "Critique") || 0.1) + equipment.critChance,
+    // Mage has neither an Esquive nor Parade display stat (unlike Knight/Archer), leaving it with
+    // zero damage-negation — a small innate "arcane evasion" keeps it from being purely deterministic.
+    dodgeChance: (pct(classDef, "Esquive") || (classDef.id === "mage" ? 0.2 : 0)) + equipment.dodgeChance,
+    blockChance: pct(classDef, "Parade") + equipment.blockChance,
+    magicPenetration: pct(classDef, "Pénétration Magique") + equipment.magicPenetration,
+    damageType: equipment.damageType ?? "physical",
+  };
+}
+
 export function buildHeroCombatant(
   classDef: ClassDefinition,
   gender: Gender,
   level: number,
-  carryover?: { hp: number; mana: number }
+  carryover?: { hp: number; mana: number },
+  equipment: EquipmentBonuses = aggregateEquipmentBonuses({})
 ): Combatant {
-  const base = HERO_BASE_COMBAT[classDef.id];
-  const maxHp = abs(classDef, "PV") + (level - 1) * 15;
-  const maxMana = abs(classDef, "Mana");
+  const stats = computeHeroStats(classDef, level, equipment);
   return {
     instanceId: "hero",
     side: "hero",
@@ -101,20 +141,18 @@ export function buildHeroCombatant(
     idleFrames: getBattleIdleFrames(classDef.id, gender),
     attackFrames: getBattleAttackFrames(classDef.id, gender),
     level,
-    maxHp,
-    hp: carryover ? Math.min(carryover.hp, maxHp) : maxHp,
-    maxMana,
-    mana: carryover ? Math.min(carryover.mana, maxMana) : maxMana,
-    atk: base.atk + (level - 1) * 2,
-    def: base.def + (level - 1) * 1,
-    speed: base.speed,
-    damageType: "physical",
-    critChance: pct(classDef, "Critique") || 0.1,
-    // Mage has neither an Esquive nor Parade display stat (unlike Knight/Archer), leaving it with
-    // zero damage-negation — a small innate "arcane evasion" keeps it from being purely deterministic.
-    dodgeChance: pct(classDef, "Esquive") || (classDef.id === "mage" ? 0.2 : 0),
-    blockChance: pct(classDef, "Parade"),
-    magicPenetration: pct(classDef, "Pénétration Magique"),
+    maxHp: stats.maxHp,
+    hp: carryover ? Math.min(carryover.hp, stats.maxHp) : stats.maxHp,
+    maxMana: stats.maxMana,
+    mana: carryover ? Math.min(carryover.mana, stats.maxMana) : stats.maxMana,
+    atk: stats.atk,
+    def: stats.def,
+    speed: stats.speed,
+    damageType: stats.damageType,
+    critChance: stats.critChance,
+    dodgeChance: stats.dodgeChance,
+    blockChance: stats.blockChance,
+    magicPenetration: stats.magicPenetration,
     guarding: false,
     alive: true,
     statuses: [],

@@ -7,7 +7,8 @@ import type { ClassSkill } from "../../data/skills";
 import { BATTLE_ITEMS, STARTING_ITEM_COUNTS, type BattleItem } from "../../data/items";
 import { generateWave1, generateWave2, generateWave3, generateReinforcements, type WaveMonster } from "../../data/waves";
 import { rollDungeonLoot, computeXpReward, toLootCards, type LootCard } from "../../data/lootEngine";
-import { applyRewards } from "../../data/inventory";
+import { applyRewards, getInventory } from "../../data/inventory";
+import { aggregateEquipmentBonuses, type EquipmentBonuses } from "../../data/equipment";
 import { WEATHER, getActiveWeatherIndex, getMsUntilNextWeather, STATUS_BY_ID } from "../../data/typeSystem";
 import {
   buildHeroCombatant,
@@ -83,6 +84,8 @@ interface Internal {
   projectiles: Projectile[];
   shieldCasts: Record<string, ShieldCast[]>;
   waveFading: boolean;
+  /** Snapshotted once at battle start (Inventaire tab equipment) so gear can't shift mid-run. */
+  equipmentBonuses: EquipmentBonuses;
 }
 
 interface RunStats {
@@ -337,7 +340,13 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     const hero = st.combatants.find((c) => c.side === "hero")!;
     const nextWaveNum = st.wave === 1 ? 2 : 3;
     const plan = nextWaveNum === 2 ? generateWave2() : generateWave3();
-    const carriedHero = buildHeroCombatant(classDef, gender, level, { hp: hero.hp, mana: hero.mana });
+    const carriedHero = buildHeroCombatant(
+      classDef,
+      gender,
+      level,
+      { hp: hero.hp, mana: hero.mana },
+      st.equipmentBonuses
+    );
     const newEnemies = plan.monsters.map((wm: WaveMonster) => buildEnemyCombatant(wm));
     set({
       combatants: [carriedHero, ...newEnemies],
@@ -742,7 +751,8 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
 }
 
 function buildInitialState(classDef: ClassDefinition, gender: Gender, level: number): Internal {
-  const hero = buildHeroCombatant(classDef, gender, level);
+  const equipmentBonuses = aggregateEquipmentBonuses(getInventory().equippedItems);
+  const hero = buildHeroCombatant(classDef, gender, level, undefined, equipmentBonuses);
   const plan = generateWave1();
   const enemies = plan.monsters.map((wm: WaveMonster) => buildEnemyCombatant(wm));
   return {
@@ -764,6 +774,7 @@ function buildInitialState(classDef: ClassDefinition, gender: Gender, level: num
     projectiles: [],
     shieldCasts: {},
     waveFading: false,
+    equipmentBonuses,
   };
 }
 
