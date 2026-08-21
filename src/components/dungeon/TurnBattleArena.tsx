@@ -34,7 +34,9 @@ import {
 import CombatantPanel, { type FloatingText } from "./CombatantPanel";
 import TurnQueueBar from "./TurnQueueBar";
 import ActionMenu from "./ActionMenu";
-import arenaBg from "../../assets/dungeon/arena-bg.png";
+import ArenaBackdrop from "./ArenaBackdrop";
+import { DAMAGE_TYPES } from "../../data/typeSystem";
+import type { ImpactBurst, DeathBurst } from "../../data/battleVfx";
 
 export interface BattleResult {
   victory: boolean;
@@ -74,6 +76,8 @@ interface Internal {
   effectivenessBadge: Record<string, { kind: "weak" | "immune"; mult?: number }>;
   centerBanner: string | null;
   bossPhase2Triggered: boolean;
+  impactBursts: Record<string, ImpactBurst[]>;
+  deathBursts: Record<string, DeathBurst[]>;
 }
 
 interface RunStats {
@@ -97,7 +101,10 @@ const STATUS_APPLIED_LABEL: Record<string, string> = {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const DAMAGE_TYPE_COLOR: Record<string, string> = Object.fromEntries(DAMAGE_TYPES.map((t) => [t.id, t.color]));
+
 let floatId = 0;
+let vfxId = 0;
 
 function formatCountdown(ms: number): string {
   const totalSeconds = Math.max(0, Math.ceil(ms / 1000));
@@ -141,6 +148,24 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     const current = stateRef.current.floatingTexts;
     set({ floatingTexts: { ...current, [targetId]: (current[targetId] ?? []).filter((f) => f.id !== id) } });
   }
+  function addImpactBurst(targetId: string, damageType: string) {
+    const burst: ImpactBurst = { id: `v${vfxId++}`, color: DAMAGE_TYPE_COLOR[damageType] ?? "#ffffff" };
+    const current = stateRef.current.impactBursts;
+    set({ impactBursts: { ...current, [targetId]: [...(current[targetId] ?? []), burst] } });
+  }
+  function clearImpactBurst(targetId: string, id: string) {
+    const current = stateRef.current.impactBursts;
+    set({ impactBursts: { ...current, [targetId]: (current[targetId] ?? []).filter((b) => b.id !== id) } });
+  }
+  function addDeathBurst(targetId: string) {
+    const burst: DeathBurst = { id: `v${vfxId++}` };
+    const current = stateRef.current.deathBursts;
+    set({ deathBursts: { ...current, [targetId]: [...(current[targetId] ?? []), burst] } });
+  }
+  function clearDeathBurst(targetId: string, id: string) {
+    const current = stateRef.current.deathBursts;
+    set({ deathBursts: { ...current, [targetId]: (current[targetId] ?? []).filter((b) => b.id !== id) } });
+  }
   function setEffectivenessBadge(targetId: string, kind: "weak" | "immune", mult?: number) {
     set({ effectivenessBadge: { ...stateRef.current.effectivenessBadge, [targetId]: { kind, mult } } });
   }
@@ -161,6 +186,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           break;
         case "damage": {
           addFloatingText(ev.targetId, ev.crit ? `-${ev.amount} CRIT !` : `-${ev.amount}`, ev.crit ? "crit" : "damage");
+          addImpactBurst(ev.targetId, ev.damageType);
           if (ev.effectiveness === "weak") {
             const target = stateRef.current.combatants.find((c) => c.instanceId === ev.targetId);
             const mult = target?.combat ? getTypeEffectiveness(target.damageType, target.combat).mult : undefined;
@@ -208,6 +234,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           break;
         case "ko": {
           addFloatingText(ev.targetId, "K.O.", "miss");
+          addDeathBurst(ev.targetId);
           const c = stateRef.current.combatants.find((x) => x.instanceId === ev.targetId);
           if (c?.side === "enemy" && c.sourceDef) statsRef.current.monstersDefeated.push(c.sourceDef);
           await sleep(450);
@@ -483,8 +510,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <img src={arenaBg} alt="" className="absolute inset-0 h-full w-full object-cover" style={{ imageRendering: "pixelated" }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-transparent to-black/75" />
+      <ArenaBackdrop />
 
       <div className="relative flex flex-1 flex-col px-3 pt-[calc(0.6rem+env(safe-area-inset-top))]">
         {/* Streamlined top bar: weather + wave + initiative */}
@@ -535,6 +561,10 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
                   size="lg"
                   floatingTexts={st.floatingTexts["hero"] ?? []}
                   onFloatingTextDone={(id) => clearFloatingText("hero", id)}
+                  impactBursts={st.impactBursts["hero"] ?? []}
+                  onImpactBurstDone={(id) => clearImpactBurst("hero", id)}
+                  deathBursts={st.deathBursts["hero"] ?? []}
+                  onDeathBurstDone={(id) => clearDeathBurst("hero", id)}
                 />
               </div>
             )}
@@ -555,6 +585,10 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
                     effectivenessMultiplier={badge?.mult}
                     floatingTexts={st.floatingTexts[e.instanceId] ?? []}
                     onFloatingTextDone={(id) => clearFloatingText(e.instanceId, id)}
+                    impactBursts={st.impactBursts[e.instanceId] ?? []}
+                    onImpactBurstDone={(id) => clearImpactBurst(e.instanceId, id)}
+                    deathBursts={st.deathBursts[e.instanceId] ?? []}
+                    onDeathBurstDone={(id) => clearDeathBurst(e.instanceId, id)}
                   />
                 );
               })}
@@ -616,6 +650,8 @@ function buildInitialState(classDef: ClassDefinition, gender: Gender, level: num
     effectivenessBadge: {},
     centerBanner: null,
     bossPhase2Triggered: false,
+    impactBursts: {},
+    deathBursts: {},
   };
 }
 

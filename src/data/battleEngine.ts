@@ -256,7 +256,7 @@ export function computeDamage(params: {
 
 export type BattleEvent =
   | { type: "log"; text: string }
-  | { type: "damage"; actorId: string; targetId: string; amount: number; crit: boolean; effectiveness: Effectiveness }
+  | { type: "damage"; actorId: string; targetId: string; amount: number; crit: boolean; effectiveness: Effectiveness; damageType: DamageTypeId }
   | { type: "heal"; targetId: string; amount: number }
   | { type: "shield"; targetId: string; amount: number }
   | { type: "dodge"; targetId: string }
@@ -278,7 +278,8 @@ function applyDamageResult(
   actor: Combatant,
   target: Combatant,
   result: DamageResult,
-  logText: string
+  logText: string,
+  damageType: DamageTypeId
 ): StepResult {
   const events: BattleEvent[] = [{ type: "log", text: logText }];
   if (result.dodged) {
@@ -318,6 +319,7 @@ function applyDamageResult(
       amount,
       crit: result.crit,
       effectiveness: result.effectiveness,
+      damageType,
     });
   }
   if (!alive) events.push({ type: "ko", targetId: target.instanceId });
@@ -334,7 +336,7 @@ export function performBasicAttack(combatants: Combatant[], actorId: string, tar
   const target = combatants.find((c) => c.instanceId === targetId)!;
   const damageType: DamageTypeId = actor.side === "hero" ? "physical" : actor.damageType;
   const result = computeDamage({ attacker: actor, defender: target, damageType, powerMultiplier: 1, weather });
-  return applyDamageResult(combatants, actor, target, result, `${actor.name} attaque ${target.name}.`);
+  return applyDamageResult(combatants, actor, target, result, `${actor.name} attaque ${target.name}.`, damageType);
 }
 
 export function performSkill(
@@ -354,7 +356,14 @@ export function performSkill(
     weather,
     bonusPenetrationPct: actor.magicPenetration ?? 0,
   });
-  let { combatants: next, events } = applyDamageResult(combatants, actor, target, result, `${actor.name} utilise ${skill.name} !`);
+  let { combatants: next, events } = applyDamageResult(
+    combatants,
+    actor,
+    target,
+    result,
+    `${actor.name} utilise ${skill.name} !`,
+    skill.damageType
+  );
 
   if (skill.inflictsStatus && !result.dodged && !result.blocked && result.effectiveness !== "immune") {
     const targetNow = next.find((c) => c.instanceId === targetId)!;
@@ -402,7 +411,8 @@ export function performEnemySkill(combatants: Combatant[], actorId: string, targ
     actor,
     target,
     result,
-    `${actor.name} utilise ${actor.skill?.name ?? "une capacité spéciale"} !`
+    `${actor.name} utilise ${actor.skill?.name ?? "une capacité spéciale"} !`,
+    actor.damageType
   );
 
   const inflict = actor.combat?.inflicts[0];

@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import AnimatedSprite from "../ui/AnimatedSprite";
+import OneShotFx from "./OneShotFx";
 import StatusIcon from "./StatusIcon";
 import guardIcon from "../../assets/icons/dungeon/guard.png";
+import { IMPACT_BURST_FRAMES, DEATH_DISSOLVE_FRAMES, type ImpactBurst, type DeathBurst } from "../../data/battleVfx";
 import type { Combatant } from "../../data/battleEngine";
 
 export interface FloatingText {
@@ -21,6 +23,10 @@ interface CombatantPanelProps {
   size?: "lg" | "sm";
   floatingTexts?: FloatingText[];
   onFloatingTextDone?: (id: string) => void;
+  impactBursts?: ImpactBurst[];
+  onImpactBurstDone?: (id: string) => void;
+  deathBursts?: DeathBurst[];
+  onDeathBurstDone?: (id: string) => void;
 }
 
 const FLOAT_STYLE: Record<FloatingText["kind"], string> = {
@@ -43,6 +49,10 @@ export default function CombatantPanel({
   size = "lg",
   floatingTexts = [],
   onFloatingTextDone,
+  impactBursts = [],
+  onImpactBurstDone,
+  deathBursts = [],
+  onDeathBurstDone,
 }: CombatantPanelProps) {
   const hpPct = Math.max(0, Math.min(100, (combatant.hp / combatant.maxHp) * 100));
   const manaPct = combatant.maxMana > 0 ? Math.max(0, Math.min(100, (combatant.mana / combatant.maxMana) * 100)) : 0;
@@ -50,7 +60,11 @@ export default function CombatantPanel({
   const isHero = combatant.side === "hero";
 
   const content = (
-    <div className={"relative flex flex-col items-center " + (!combatant.alive ? "opacity-30 grayscale" : "")}>
+    <motion.div
+      className="relative flex flex-col items-center"
+      animate={{ opacity: combatant.alive ? 1 : 0.3, filter: combatant.alive ? "grayscale(0)" : "grayscale(1)" }}
+      transition={{ duration: 0.6 }}
+    >
       {/* Floating HUD — no card, no border, just glowing bars over the head */}
       <div className="z-10 mb-1 flex flex-col items-center gap-0.5">
         <p className="max-w-[7rem] truncate text-center text-[10px] font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] sm:text-xs">
@@ -143,6 +157,36 @@ export default function CombatantPanel({
             onFinish={onFinishAttack}
             alt={combatant.name}
           />
+
+          {impactBursts.map((burst) => (
+            <div key={burst.id} className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+              <motion.div
+                className="absolute h-2/3 w-2/3 rounded-full"
+                style={{ background: `radial-gradient(circle, ${burst.color}cc, transparent 70%)` }}
+                initial={{ opacity: 0, scale: 0.3 }}
+                animate={{ opacity: [0, 0.9, 0], scale: [0.3, 1.3, 1.5] }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+              />
+              <OneShotFx
+                frames={IMPACT_BURST_FRAMES}
+                frameDuration={55}
+                onDone={() => onImpactBurstDone?.(burst.id)}
+                className="absolute h-full w-full object-contain"
+                style={{ mixBlendMode: "screen" }}
+              />
+            </div>
+          ))}
+
+          {deathBursts.map((burst) => (
+            <div key={burst.id} className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
+              <OneShotFx
+                frames={DEATH_DISSOLVE_FRAMES}
+                frameDuration={70}
+                onDone={() => onDeathBurstDone?.(burst.id)}
+                className="absolute h-full w-full scale-125 object-contain opacity-90"
+              />
+            </div>
+          ))}
         </div>
 
         {combatant.guarding && (
@@ -151,7 +195,7 @@ export default function CombatantPanel({
           </span>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 
   if (targetable) {
