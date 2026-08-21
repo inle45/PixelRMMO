@@ -1,4 +1,5 @@
 import type { ClassDefinition, ClassId, Gender } from "./classes";
+import { getBattlePortrait } from "./battlePortraits";
 import type { MonsterCombat, MonsterDef, MonsterSkill } from "./bestiary";
 import type { WaveMonster } from "./waves";
 import type { ClassSkill } from "./skills";
@@ -11,6 +12,8 @@ export interface ActiveStatus {
   id: string;
   turnsLeft: number;
   stacks: number;
+  /** Remaining absorption pool — aegis only. */
+  shieldHp?: number;
 }
 
 export interface Combatant {
@@ -54,7 +57,7 @@ export interface Combatant {
  * keep basic attacks meaningful into DEF 24 while preserving each class's Tank/DPS/Burst identity.
  */
 const HERO_BASE_COMBAT: Record<ClassId, { atk: number; def: number; speed: number }> = {
-  knight: { atk: 35, def: 21, speed: 3 },
+  knight: { atk: 50, def: 21, speed: 3 },
   archer: { atk: 34, def: 8, speed: 4 },
   mage: { atk: 40, def: 18, speed: 3 },
 };
@@ -94,9 +97,9 @@ export function buildHeroCombatant(
     instanceId: "hero",
     side: "hero",
     name: classDef.names[gender],
-    portrait: classDef.sprites[gender],
-    idleFrames: classDef.idleFrames[gender],
-    attackFrames: classDef.attackFrames[gender],
+    portrait: getBattlePortrait(classDef.id, gender),
+    idleFrames: [],
+    attackFrames: [],
     level,
     maxHp,
     hp: carryover ? Math.min(carryover.hp, maxHp) : maxHp,
@@ -194,16 +197,20 @@ export function canInflictStatus(target: Combatant, statusId: string): boolean {
 
 export function inflictStatus(combatant: Combatant, statusId: string, maxStacks = 1): Combatant {
   const duration = STATUS_DURATIONS[statusId] ?? 2;
+  // Recasting aegis always resets the shield to a fresh 25%-of-max-HP pool rather than stacking.
+  const shieldHp = statusId === "aegis" ? Math.round(combatant.maxHp * 0.25) : undefined;
   const existing = combatant.statuses.find((s) => s.id === statusId);
   if (existing) {
     return {
       ...combatant,
       statuses: combatant.statuses.map((s) =>
-        s.id === statusId ? { id: statusId, turnsLeft: duration, stacks: Math.min(maxStacks, s.stacks + 1) } : s
+        s.id === statusId
+          ? { id: statusId, turnsLeft: duration, stacks: Math.min(maxStacks, s.stacks + 1), shieldHp: shieldHp ?? s.shieldHp }
+          : s
       ),
     };
   }
-  return { ...combatant, statuses: [...combatant.statuses, { id: statusId, turnsLeft: duration, stacks: 1 }] };
+  return { ...combatant, statuses: [...combatant.statuses, { id: statusId, turnsLeft: duration, stacks: 1, shieldHp }] };
 }
 
 export interface DamageResult {
@@ -251,6 +258,7 @@ export type BattleEvent =
   | { type: "log"; text: string }
   | { type: "damage"; actorId: string; targetId: string; amount: number; crit: boolean; effectiveness: Effectiveness }
   | { type: "heal"; targetId: string; amount: number }
+  | { type: "shield"; targetId: string; amount: number }
   | { type: "dodge"; targetId: string }
   | { type: "block"; targetId: string }
   | { type: "immune"; targetId: string }
@@ -285,19 +293,38 @@ function applyDamageResult(
     events.push({ type: "immune", targetId: target.instanceId });
     return { combatants, events };
   }
-  const newHp = Math.max(0, target.hp - result.amount);
+
+  let amount = result.amount;
+  let workingStatuses = target.statuses;
+  const aegis = target.statuses.find((s) => s.id === "aegis" && (s.shieldHp ?? 0) > 0);
+  if (aegis) {
+    const absorbed = Math.min(aegis.shieldHp!, amount);
+    const remainingShield = aegis.shieldHp! - absorbed;
+    amount -= absorbed;
+    events.push({ type: "shield", targetId: target.instanceId, amount: absorbed });
+    workingStatuses =
+      remainingShield > 0
+        ? target.statuses.map((s) => (s.id === "aegis" ? { ...s, shieldHp: remainingShield } : s))
+        : target.statuses.filter((s) => s.id !== "aegis");
+  }
+
+  const newHp = Math.max(0, target.hp - amount);
   const alive = newHp > 0;
-  events.push({
-    type: "damage",
-    actorId: actor.instanceId,
-    targetId: target.instanceId,
-    amount: result.amount,
-    crit: result.crit,
-    effectiveness: result.effectiveness,
-  });
+  if (amount > 0) {
+    events.push({
+      type: "damage",
+      actorId: actor.instanceId,
+      targetId: target.instanceId,
+      amount,
+      crit: result.crit,
+      effectiveness: result.effectiveness,
+    });
+  }
   if (!alive) events.push({ type: "ko", targetId: target.instanceId });
   return {
-    combatants: combatants.map((c) => (c.instanceId === target.instanceId ? { ...c, hp: newHp, alive } : c)),
+    combatants: combatants.map((c) =>
+      c.instanceId === target.instanceId ? { ...c, hp: newHp, alive, statuses: workingStatuses } : c
+    ),
     events,
   };
 }
@@ -340,6 +367,26 @@ export function performSkill(
   }
 
   if (actor.side === "hero") {
+    next = next.map((c) => (c.instanceId === actorId ? { ...c, mana: Math.max(0, c.mana - skill.manaCost) } : c));
+  }
+
+  return { combatants: next, events };
+}
+
+/** Self-targeted buff skills (e.g. Bouclier Sacré) skip damage/dodge/block rolls entirely — a buff never misses. */
+export function performBuffSkill(combatants: Combatant[], actorId: string, skill: ClassSkill): StepResult {
+  const actor = combatants.find((c) => c.instanceId === actorId)!;
+  let next = combatants;
+  const events: BattleEvent[] = [{ type: "log", text: `${actor.name} utilise ${skill.name} !` }];
+
+  if (skill.inflictsStatus) {
+    next = next.map((c) =>
+      c.instanceId === actorId ? inflictStatus(c, skill.inflictsStatus!, STATUS_MAX_STACKS[skill.inflictsStatus!] ?? 1) : c
+    );
+    events.push({ type: "status_applied", targetId: actorId, statusId: skill.inflictsStatus });
+  }
+
+  if (actor.side === "hero" && skill.manaCost > 0) {
     next = next.map((c) => (c.instanceId === actorId ? { ...c, mana: Math.max(0, c.mana - skill.manaCost) } : c));
   }
 

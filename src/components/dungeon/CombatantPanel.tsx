@@ -7,7 +7,7 @@ import type { Combatant } from "../../data/battleEngine";
 export interface FloatingText {
   id: string;
   text: string;
-  kind: "damage" | "crit" | "heal" | "miss" | "status";
+  kind: "damage" | "crit" | "heal" | "miss" | "status" | "shield";
 }
 
 interface CombatantPanelProps {
@@ -16,20 +16,20 @@ interface CombatantPanelProps {
   onFinishAttack?: () => void;
   targetable?: boolean;
   onSelectTarget?: () => void;
-  effectivenessBadge?: "weak" | "resist" | "immune" | null;
+  effectivenessBadge?: "weak" | "immune" | null;
   effectivenessMultiplier?: number;
-  flipped?: boolean;
   size?: "lg" | "sm";
   floatingTexts?: FloatingText[];
   onFloatingTextDone?: (id: string) => void;
 }
 
-const FLOAT_COLOR: Record<FloatingText["kind"], string> = {
+const FLOAT_STYLE: Record<FloatingText["kind"], string> = {
   damage: "text-white",
   crit: "text-amber-300",
   heal: "text-emerald-300",
-  miss: "text-white/50",
+  miss: "text-white/60",
   status: "text-violet-300",
+  shield: "text-sky-300",
 };
 
 export default function CombatantPanel({
@@ -40,17 +40,49 @@ export default function CombatantPanel({
   onSelectTarget,
   effectivenessBadge,
   effectivenessMultiplier,
-  flipped,
   size = "lg",
   floatingTexts = [],
   onFloatingTextDone,
 }: CombatantPanelProps) {
   const hpPct = Math.max(0, Math.min(100, (combatant.hp / combatant.maxHp) * 100));
   const manaPct = combatant.maxMana > 0 ? Math.max(0, Math.min(100, (combatant.mana / combatant.maxMana) * 100)) : 0;
-  const dim = size === "lg" ? "h-28 w-28" : "h-16 w-16";
+  const dim = size === "lg" ? "h-32 w-32" : "h-20 w-20";
+  const isHero = combatant.side === "hero";
 
   const content = (
-    <div className={"flex flex-col items-center gap-1.5 " + (!combatant.alive ? "opacity-35 grayscale" : "")}>
+    <div className={"relative flex flex-col items-center " + (!combatant.alive ? "opacity-30 grayscale" : "")}>
+      {/* Floating HUD — no card, no border, just glowing bars over the head */}
+      <div className="z-10 mb-1 flex flex-col items-center gap-0.5">
+        <p className="max-w-[7rem] truncate text-center text-[10px] font-bold text-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] sm:text-xs">
+          {combatant.name}
+        </p>
+        <div className="w-20 sm:w-24">
+          <div className="h-[5px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-300 shadow-[0_0_6px_rgba(244,63,94,0.9)]"
+              animate={{ width: `${hpPct}%` }}
+              transition={{ duration: 0.4 }}
+            />
+          </div>
+          {combatant.maxMana > 0 && (
+            <div className="mt-0.5 h-[3px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-300 shadow-[0_0_5px_rgba(56,189,248,0.9)]"
+                animate={{ width: `${manaPct}%` }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
+          )}
+        </div>
+        {combatant.statuses.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-0.5">
+            {combatant.statuses.map((s) => (
+              <StatusIcon key={s.id} status={s} />
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="relative">
         <AnimatePresence>
           {effectivenessBadge && combatant.alive && (
@@ -59,19 +91,13 @@ export default function CombatantPanel({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0 }}
               className={
-                "absolute -top-6 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5 text-[9px] font-bold shadow-lg " +
-                (effectivenessBadge === "weak"
-                  ? "bg-emerald-500 text-white"
-                  : effectivenessBadge === "immune"
-                    ? "bg-slate-600 text-white"
-                    : "bg-rose-500/90 text-white")
+                "absolute -top-4 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full px-2 py-0.5 text-[9px] font-bold shadow-lg " +
+                (effectivenessBadge === "weak" ? "bg-emerald-500 text-white" : "bg-slate-600 text-white")
               }
             >
               {effectivenessBadge === "weak"
-                ? `Super Efficace ! ${effectivenessMultiplier ? `(x${effectivenessMultiplier.toFixed(1)})` : ""}`
-                : effectivenessBadge === "immune"
-                  ? "Immunisé"
-                  : "Résiste"}
+                ? `SUPER EFFICACE ${effectivenessMultiplier ? `x${effectivenessMultiplier.toFixed(1)}` : ""}`
+                : "IMMUNISÉ"}
             </motion.span>
           )}
         </AnimatePresence>
@@ -81,12 +107,12 @@ export default function CombatantPanel({
             <motion.span
               key={ft.id}
               initial={{ opacity: 0, y: 0, x: "-50%" }}
-              animate={{ opacity: [0, 1, 1, 0], y: -46 }}
-              transition={{ duration: 1.1, delay: i * 0.12 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -52 }}
+              transition={{ duration: 1.15, delay: i * 0.12 }}
               onAnimationComplete={() => onFloatingTextDone?.(ft.id)}
               className={
-                "pointer-events-none absolute left-1/2 top-0 z-20 whitespace-nowrap text-sm font-extrabold drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] " +
-                FLOAT_COLOR[ft.kind] +
+                "pointer-events-none absolute left-1/2 top-2 z-30 whitespace-nowrap text-sm font-extrabold drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] " +
+                FLOAT_STYLE[ft.kind] +
                 (ft.kind === "crit" ? " text-lg" : "")
               }
             >
@@ -95,51 +121,47 @@ export default function CombatantPanel({
           ))}
         </AnimatePresence>
 
-        <div className={dim + " flex items-center justify-center drop-shadow-[0_8px_14px_rgba(0,0,0,0.5)] " + (flipped ? "-scale-x-100" : "")}>
-          <AnimatedSprite
-            idleSrc={combatant.portrait}
-            idleFrames={combatant.idleFrames}
-            attackFrames={combatant.attackFrames}
-            playing={playing}
-            onFinish={onFinishAttack}
-            alt={combatant.name}
+        {isHero && (
+          <motion.div
+            className="absolute -bottom-2 left-1/2 h-7 w-24 -translate-x-1/2 rounded-full"
+            style={{ background: "radial-gradient(closest-side, rgba(255,207,107,0.4), transparent 75%)" }}
+            animate={{ opacity: [0.5, 0.9, 0.5], scale: [0.92, 1.05, 0.92] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
+        )}
+        <div className="absolute -bottom-0.5 left-1/2 h-3 w-16 -translate-x-1/2 rounded-full bg-black/55 blur-[3px]" />
+
+        <div className={dim + " relative flex items-center justify-center drop-shadow-[0_10px_16px_rgba(0,0,0,0.65)]"}>
+          {isHero ? (
+            <motion.img
+              src={combatant.portrait}
+              alt={combatant.name}
+              className="h-full w-full object-contain"
+              style={{ imageRendering: "pixelated" }}
+              animate={playing ? { x: [0, 16, 0], scale: [1, 1.08, 1] } : { x: 0, scale: 1 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              onAnimationComplete={() => {
+                if (playing) onFinishAttack?.();
+              }}
+            />
+          ) : (
+            <AnimatedSprite
+              idleSrc={combatant.portrait}
+              idleFrames={combatant.idleFrames}
+              attackFrames={combatant.attackFrames}
+              playing={playing}
+              onFinish={onFinishAttack}
+              alt={combatant.name}
+            />
+          )}
         </div>
+
         {combatant.guarding && (
-          <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 shadow">
+          <span className="absolute -right-1 -top-1 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 shadow">
             <img src={guardIcon} alt="" className="h-3.5 w-3.5 object-contain" style={{ imageRendering: "pixelated" }} />
           </span>
         )}
       </div>
-
-      <p className="max-w-[7rem] truncate text-center text-[10px] font-bold text-white sm:text-xs">{combatant.name}</p>
-
-      <div className="w-24 sm:w-28">
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10">
-          <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-300"
-            animate={{ width: `${hpPct}%` }}
-            transition={{ duration: 0.4 }}
-          />
-        </div>
-        {combatant.maxMana > 0 && (
-          <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-white/10">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-300"
-              animate={{ width: `${manaPct}%` }}
-              transition={{ duration: 0.4 }}
-            />
-          </div>
-        )}
-      </div>
-
-      {combatant.statuses.length > 0 && (
-        <div className="flex flex-wrap justify-center gap-1">
-          {combatant.statuses.map((s) => (
-            <StatusIcon key={s.id} status={s} />
-          ))}
-        </div>
-      )}
     </div>
   );
 
@@ -148,12 +170,12 @@ export default function CombatantPanel({
       <button
         type="button"
         onClick={onSelectTarget}
-        className="animate-pulse rounded-2xl p-1.5 ring-2 ring-rose-400/70 transition-transform active:scale-95"
+        className="animate-pulse rounded-2xl p-1 ring-2 ring-rose-400/70 transition-transform active:scale-95"
       >
         {content}
       </button>
     );
   }
 
-  return <div className="p-1.5">{content}</div>;
+  return content;
 }
