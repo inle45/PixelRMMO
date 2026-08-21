@@ -23,16 +23,19 @@ interface WorldMapProps {
   onClose: () => void;
 }
 
-const MIN_SCALE = 1;
+// Zoomed all the way out, the box shrinks to well under the viewport's size — the Ocean layer (see
+// below) fills the rest, so "zoom out" reads as the island shrinking into open water rather than
+// hitting a wall at "the map exactly fills the screen".
+const MIN_SCALE = 0.4;
 const MAX_SCALE = 3;
 const DRAG_CLICK_THRESHOLD = 6;
 // The world box is oversized relative to the viewport's dominant dimension, not just matched to it
 // (CampStage's `max(100cqw, 100cqh)` rule for a *static*, never-panned scene). On a portrait phone
 // the viewport's height already IS the box's side length at a bare 100% factor — meaning zero slack
 // to pan vertically at all: centering on any node not dead-center (e.g. the Campement, near the
-// map's southern edge) shifts the box straight past the viewport's edge and exposes the black
-// backdrop behind it. 150% leaves enough slack to pan freely and to mostly-center near-edge nodes;
-// true edge cases are still clamped (see clampX/clampY) so black can never show regardless.
+// map's southern edge) shifts the box straight past the viewport's edge. 150% leaves enough slack to
+// pan freely and to mostly-center near-edge nodes; true edge cases are still clamped (see
+// clampX/clampY), and the Ocean layer means even hitting that clamp never exposes bare black.
 const BOX_SIZE_CQ = "max(150cqw, 150cqh)";
 const BOX_MULTIPLIER = 1.5;
 
@@ -66,6 +69,15 @@ const LEAVES = Array.from({ length: 10 }, (_, i) => ({
   dur: 6 + (i % 4),
   delay: -(i * 1.3),
 }));
+/** Large, slow shimmer bands for the open-water Ocean layer, positioned in plain viewport percentages
+ * (this layer never pans/zooms with the box) — reuses the same `.animate-water` keyframe as the
+ * in-box river/lake shimmer, just bigger and dimmer to read as open sea rather than a river glint. */
+const OCEAN_SHIMMER = [
+  { x: 5, y: 10, w: 55, h: 10, delay: 0 },
+  { x: 40, y: 70, w: 60, h: 12, delay: -2 },
+  { x: -10, y: 40, w: 45, h: 9, delay: -4 },
+  { x: 55, y: 20, w: 40, h: 8, delay: -1.5 },
+];
 
 export default function WorldMap({ onClose }: WorldMapProps) {
   const reduceMotion = useReducedMotion();
@@ -85,10 +97,18 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   const [calibratorOpen, setCalibratorOpen] = useState(false);
   const [calibSelectedId, setCalibSelectedId] = useState<string | null>(null);
 
-  // Pan/zoom state.
-  const [scale, setScale] = useState(1);
-  const [tx, setTx] = useState(0);
-  const [ty, setTy] = useState(0);
+  // Pan/zoom state lives in plain refs, not useState: nothing else in the render tree depends on
+  // tx/ty/scale (every node/fog/prop position is a plain percentage *inside* the box, unaffected by
+  // its own transform), so the transform string is the only thing that ever needs updating on a
+  // gesture tick. Driving it through setState would re-render this whole component — nodes, the fog
+  // SVG, every ambient layer — on every single pointermove, which on a real phone (not the desktop
+  // Chromium this was first tested on) is exactly the dropped-frame/stutter feel reported directly.
+  // Mutating boxRef's style.transform straight from the ref, with no re-render at all, is the same
+  // "useRef + imperative DOM write for continuous updates" call this app already makes for the
+  // battle arena's turn loop — see TurnBattleArena's own note on why useState was wrong there too.
+  const scaleRef = useRef(1);
+  const txRef = useRef(0);
+  const tyRef = useRef(0);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const dragStart = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const pinchStartDist = useRef<number | null>(null);
@@ -103,6 +123,14 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   const viewportSizeRef = useRef({ w: 400, h: 800 });
 
   const currentNode = NODE_BY_ID[worldState.currentNodeId];
+
+  // Writes the current ref values straight to the box's transform — the one and only place that
+  // reads scaleRef/txRef/tyRef and the one and only DOM write a gesture tick needs to make.
+  function applyTransform() {
+    const el = boxRef.current;
+    if (!el) return;
+    el.style.transform = `translate(-50%, -50%) translate(${txRef.current}px, ${tyRef.current}px) scale(${scaleRef.current})`;
+  }
 
   useEffect(() => {
     const el = viewportRef.current;
@@ -120,35 +148,34 @@ export default function WorldMap({ onClose }: WorldMapProps) {
 
   // Bounded to how far the (scaled) box actually overhangs the viewport on that axis — the box can
   // never be dragged far enough to expose the black backdrop behind it, on either axis, at any zoom.
-  // `s` defaults to the current render's scale but takes an explicit override so applyZoom can clamp
-  // against the *target* scale before that state update has actually landed.
-  function clampX(v: number, s: number = scale): number {
+  // `s` defaults to the current scale but takes an explicit override so applyZoom can clamp against
+  // the *target* scale before scaleRef has actually been updated to it.
+  function clampX(v: number, s: number = scaleRef.current): number {
     const bound = Math.max(0, (boxPxRef.current * s - viewportSizeRef.current.w) / 2);
     return clamp(v, -bound, bound);
   }
-  function clampY(v: number, s: number = scale): number {
+  function clampY(v: number, s: number = scaleRef.current): number {
     const bound = Math.max(0, (boxPxRef.current * s - viewportSizeRef.current.h) / 2);
     return clamp(v, -bound, bound);
   }
 
   // Changes scale AND compensates tx/ty in the same breath, atomically, so the point currently under
-  // the viewport's centre stays there — a bare `setScale` alone leaves tx/ty untouched, and since the
+  // the viewport's centre stays there — touching scale alone leaves tx/ty untouched, and since the
   // box's own transform-origin is its own centre (not the viewport's), the visible content jumps to a
   // completely different part of the map the instant scale changes, worse the further off-centre the
   // current pan already is. tx/ty scale by the same (new/old) ratio needed to hold a fixed box-local
   // point at a fixed screen position under a scale change, then get clamped against the *new* scale
   // (not the old one) so a zoom-out can never leave them pointing past the box's new, smaller overhang
-  // — the previous version clamped a tick *after* the scale state had already landed, which on a big
-  // zoom-out (especially in the same gesture as an already off-centre pan) read as the view suddenly
-  // snapping to a totally different, often still-fogged part of the map.
+  // — an earlier version clamped a tick *after* scale had already changed, which on a big zoom-out
+  // (especially off an already off-centre pan) read as the view suddenly snapping to a totally
+  // different, often still-fogged part of the map.
   function applyZoom(rawScale: number) {
     const newScale = clamp(rawScale, MIN_SCALE, MAX_SCALE);
-    setScale((oldScale) => {
-      const ratio = newScale / oldScale;
-      setTx((v) => clampX(v * ratio, newScale));
-      setTy((v) => clampY(v * ratio, newScale));
-      return newScale;
-    });
+    const ratio = newScale / scaleRef.current;
+    scaleRef.current = newScale;
+    txRef.current = clampX(txRef.current * ratio, newScale);
+    tyRef.current = clampY(tyRef.current * ratio, newScale);
+    applyTransform();
   }
 
   // Recenters the pan so `node` sits at the viewport's centre, at the *current* zoom level — never
@@ -159,8 +186,9 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   // string below) — panning at 2x zoom needs twice the raw pixel offset to move a box-local point
   // the same visual distance.
   function centerOn(node: { x: number; y: number }) {
-    setTx(clampX(scale * boxPxRef.current * (0.5 - node.x / 100)));
-    setTy(clampY(scale * boxPxRef.current * (0.5 - node.y / 100)));
+    txRef.current = clampX(scaleRef.current * boxPxRef.current * (0.5 - node.x / 100));
+    tyRef.current = clampY(scaleRef.current * boxPxRef.current * (0.5 - node.y / 100));
+    applyTransform();
   }
 
   // Center on the hero's current node the instant the map opens, once the viewport has its real
@@ -242,7 +270,7 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     movedDistance.current = 0;
     if (pointers.current.size === 1) {
-      dragStart.current = { x: e.clientX, y: e.clientY, tx, ty };
+      dragStart.current = { x: e.clientX, y: e.clientY, tx: txRef.current, ty: tyRef.current };
     } else if (pointers.current.size === 2) {
       // A second finger landing is an unambiguous pinch — no tap is going to follow, so capture now.
       pinchStartDist.current = pinchDistance();
@@ -257,7 +285,7 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     if (pointers.current.size === 2) {
       const dist = pinchDistance();
       if (dist && pinchStartDist.current) {
-        applyZoom(scale * (dist / pinchStartDist.current));
+        applyZoom(scaleRef.current * (dist / pinchStartDist.current));
       }
       pinchStartDist.current = dist;
     } else if (pointers.current.size === 1 && dragStart.current) {
@@ -268,9 +296,11 @@ export default function WorldMap({ onClose }: WorldMapProps) {
       if (moved > DRAG_CLICK_THRESHOLD) {
         if (!e.currentTarget.hasPointerCapture(e.pointerId)) {
           (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+          viewportRef.current?.style.setProperty("cursor", "grabbing");
         }
-        setTx(clampX(dragStart.current.tx + dx));
-        setTy(clampY(dragStart.current.ty + dy));
+        txRef.current = clampX(dragStart.current.tx + dx);
+        tyRef.current = clampY(dragStart.current.ty + dy);
+        applyTransform();
       }
     }
   }
@@ -278,12 +308,15 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   function onPointerUp(e: ReactPointerEvent) {
     pointers.current.delete(e.pointerId);
     if (pointers.current.size < 2) pinchStartDist.current = null;
-    if (pointers.current.size === 0) dragStart.current = null;
+    if (pointers.current.size === 0) {
+      dragStart.current = null;
+      viewportRef.current?.style.setProperty("cursor", "grab");
+    }
   }
 
   function onWheel(e: ReactWheelEvent) {
     e.preventDefault();
-    applyZoom(scale * (1 - e.deltaY * 0.0015));
+    applyZoom(scaleRef.current * (1 - e.deltaY * 0.0015));
   }
 
   function onBoxClick(e: ReactMouseEvent) {
@@ -308,13 +341,30 @@ export default function WorldMap({ onClose }: WorldMapProps) {
       <div
         ref={viewportRef}
         className="absolute inset-0 touch-none select-none overflow-hidden"
-        style={{ containerType: "size", cursor: dragStart.current ? "grabbing" : "grab" }}
+        style={{ containerType: "size", cursor: "grab", backgroundColor: "#0a2438" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         onWheel={onWheel}
       >
+        {/* Ocean: fixed to the viewport, never part of the pannable/zoomable box below, so it always
+            fills the screen edge to edge no matter how far out the island is zoomed or panned — the
+            island shrinks into open water at low zoom instead of hitting a wall of flat black. */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{ background: "radial-gradient(130% 110% at 50% 45%, #1c5b7a 0%, #123f57 48%, #081c2c 100%)" }}
+          />
+          {OCEAN_SHIMMER.map((b, i) => (
+            <div
+              key={i}
+              className="animate-water absolute rounded-full bg-cyan-100/[0.06]"
+              style={{ left: `${b.x}%`, top: `${b.y}%`, width: `${b.w}%`, aspectRatio: `${b.w} / ${b.h}`, filter: "blur(18px)", animationDelay: `${b.delay}s` }}
+            />
+          ))}
+        </div>
+
         <div
           ref={boxRef}
           onClick={onBoxClick}
@@ -322,7 +372,8 @@ export default function WorldMap({ onClose }: WorldMapProps) {
           style={{
             width: BOX_SIZE_CQ,
             aspectRatio: "1 / 1",
-            transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${scale})`,
+            transform: `translate(-50%, -50%) translate(${txRef.current}px, ${tyRef.current}px) scale(${scaleRef.current})`,
+            boxShadow: "0 0 60px 20px rgba(6,20,32,0.55)",
           }}
         >
           <img
