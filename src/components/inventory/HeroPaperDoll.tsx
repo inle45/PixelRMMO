@@ -155,7 +155,7 @@ function SlotButton({
         )}
       </button>
       <span className="text-center text-[8px] font-medium uppercase leading-tight tracking-wide text-white/40">
-        {meta.emoji} {meta.label}
+        {meta.label}
       </span>
     </div>
   );

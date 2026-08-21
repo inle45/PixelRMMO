@@ -43,7 +43,7 @@ export default function MaterialModal({ material, monsterName, onClose, onViewMo
                 className="rounded-full px-2.5 py-1 text-[10px] font-bold"
                 style={{ color: rarity.color, backgroundColor: `${rarity.color}22`, border: `1px solid ${rarity.color}66` }}
               >
-                {rarity.emoji} {rarity.label}
+                {rarity.label}
               </span>
             </div>
 

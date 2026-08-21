@@ -10,18 +10,17 @@ export const EQUIPMENT_SLOTS: EquipmentSlotId[] = ["head", "chest", "legs", "boo
 export interface SlotMeta {
   id: EquipmentSlotId;
   label: string;
-  emoji: string;
   /** What this slot's stats represent, shown as a caption in the paper doll. */
   focus: string;
 }
 
 export const SLOT_META: Record<EquipmentSlotId, SlotMeta> = {
-  head: { id: "head", label: "Tête", emoji: "🪖", focus: "PV, Mana, Résistances" },
-  chest: { id: "chest", label: "Haut du corps", emoji: "🥋", focus: "Défense principale, PV" },
-  legs: { id: "legs", label: "Bas du corps", emoji: "👖", focus: "Défense, Résistances" },
-  boots: { id: "boots", label: "Chaussures", emoji: "👢", focus: "Vitesse, Esquive" },
-  weapon: { id: "weapon", label: "Arme Principale", emoji: "⚔️", focus: "Attaque, Affinité élémentaire" },
-  offhand: { id: "offhand", label: "Main Secondaire", emoji: "🛡️", focus: "Parade, Défense" },
+  head: { id: "head", label: "Tête", focus: "PV, Mana, Résistances" },
+  chest: { id: "chest", label: "Haut du corps", focus: "Défense principale, PV" },
+  legs: { id: "legs", label: "Bas du corps", focus: "Défense, Résistances" },
+  boots: { id: "boots", label: "Chaussures", focus: "Vitesse, Esquive" },
+  weapon: { id: "weapon", label: "Arme Principale", focus: "Attaque, Affinité élémentaire" },
+  offhand: { id: "offhand", label: "Main Secondaire", focus: "Parade, Défense" },
 };
 
 export interface EquipmentStats {

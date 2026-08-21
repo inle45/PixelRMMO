@@ -60,7 +60,7 @@ export default function MaterialsCompendium({ onViewMonster, requestedMaterialId
         <span className="text-[10px] uppercase tracking-[0.3em] text-lantern-glow/80" style={{ fontFamily: "var(--font-pixel)" }}>
           Crypte Ancestrale
         </span>
-        <h1 className="text-2xl font-bold text-white sm:text-3xl">🪵 Livre des Matériaux</h1>
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Livre des Matériaux</h1>
         <p className="max-w-md text-sm text-white/55">
           {MATERIALS.length} butins classés en 8 niveaux de rareté, du plus abîmé au plus transcendant.
         </p>
@@ -115,7 +115,7 @@ export default function MaterialsCompendium({ onViewMonster, requestedMaterialId
                 color: active ? r.color : "rgba(255,255,255,0.55)",
               }}
             >
-              {r.emoji} {r.label}
+              {r.label}
             </button>
           );
         })}
