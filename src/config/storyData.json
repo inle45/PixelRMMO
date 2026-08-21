@@ -1,0 +1,33 @@
+[
+  {
+    "id": "eclaireur",
+    "nodeId": "campement",
+    "npcName": "Kessan l'Éclaireur",
+    "lines": [
+      "Ah, te voilà enfin réveillé... Bienvenue dans le royaume, héros.",
+      "Vers l'est, les remparts de la Cité Royale s'élèvent au-dessus du fleuve. Le Capitaine de la garde y tient le marché et la forge.",
+      "Mais prends garde à la Vallée d'Ossements, au nord. Une crypte maudite y engloutit les imprudents depuis des générations.",
+      "Le reste du continent... personne n'en est jamais revenu pour le raconter. Pars prudemment."
+    ]
+  },
+  {
+    "id": "erudit",
+    "nodeId": "crypte",
+    "npcName": "Aldric l'Érudit",
+    "lines": [
+      "N-n'approche pas plus, je t'en conjure...",
+      "Le Roi Squelette dort là-dessous depuis un siècle, mais son sommeil s'agite. J'ai vu les ossements bouger d'eux-mêmes !",
+      "Si tu descends, ne réveille pas sa garde. Et si tu l'affrontes... que les dieux oubliés te protègent."
+    ]
+  },
+  {
+    "id": "capitaine",
+    "nodeId": "cite",
+    "npcName": "Capitaine Ysolde",
+    "lines": [
+      "Halte-là, aventurier. Bienvenue dans nos murs.",
+      "Le marché est ouvert à tous ceux qui paient leurs taxes de porte. La forge du vieux Brann peut retremper ta lame, moyennant quelques écus.",
+      "Et ne traîne pas après le couvre-feu — mes gardes ont la gâchette facile la nuit venue."
+    ]
+  }
+]

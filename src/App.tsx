@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import NightSceneBackground from "./components/background/NightSceneBackground";
 import DynamicBackground from "./components/background/DynamicBackground";
 import AuthCard from "./components/auth/AuthCard";
@@ -8,6 +9,7 @@ import BottomNav from "./components/nav/BottomNav";
 import CodexHub from "./components/codex/CodexHub";
 import DungeonScreen from "./components/dungeon/DungeonScreen";
 import InventoryScreen from "./components/inventory/InventoryScreen";
+import WorldMap from "./components/map/WorldMap";
 import type { TabId } from "./data/tabs";
 
 type Screen = "auth" | "character-select" | "game";
@@ -25,6 +27,10 @@ const COMING_SOON: Record<Exclude<TabId, "camp" | "bestiary" | "dungeon" | "inve
 export default function App() {
   const [screen, setScreen] = useState<Screen>("auth");
   const [activeTab, setActiveTab] = useState<TabId>("camp");
+  // Lifted above both the Camp and the general "game" branch below: the Dungeon tab also needs to
+  // open the World Map (to send a player who hasn't travelled to the crypt yet), so ownership can't
+  // live inside CampScreen alone.
+  const [mapOpen, setMapOpen] = useState(false);
 
   // Still persisted for whoever needs it later — the Camp tab no longer displays it, since the tab
   // is scene-only now, so there's nothing to hold it in React state for.
@@ -40,9 +46,10 @@ export default function App() {
     return (
       <div className="relative h-[100dvh] w-full overflow-hidden">
         <main className="absolute inset-x-0 top-0 bottom-[var(--nav-height)] overflow-hidden">
-          <CampScreen />
+          <CampScreen onOpenMap={() => setMapOpen(true)} />
         </main>
         <BottomNav active={activeTab} onChange={setActiveTab} />
+        <AnimatePresence>{mapOpen && <WorldMap onClose={() => setMapOpen(false)} />}</AnimatePresence>
       </div>
     );
   }
@@ -57,7 +64,7 @@ export default function App() {
           ) : activeTab === "bestiary" ? (
             <CodexHub />
           ) : activeTab === "dungeon" ? (
-            <DungeonScreen onReturnToCamp={() => setActiveTab("camp")} />
+            <DungeonScreen onReturnToCamp={() => setActiveTab("camp")} onOpenMap={() => setMapOpen(true)} />
           ) : activeTab === "camp" ? null : (
             // "camp" is already handled by the fullscreen branch above, but the narrowing from that
             // early return doesn't carry across two separate conditions, so it's excluded here too.
@@ -65,6 +72,7 @@ export default function App() {
           )}
         </main>
         <BottomNav active={activeTab} onChange={setActiveTab} />
+        <AnimatePresence>{mapOpen && <WorldMap onClose={() => setMapOpen(false)} />}</AnimatePresence>
       </div>
     );
   }
