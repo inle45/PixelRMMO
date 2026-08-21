@@ -26,6 +26,15 @@ interface WorldMapProps {
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
 const DRAG_CLICK_THRESHOLD = 6;
+// The world box is oversized relative to the viewport's dominant dimension, not just matched to it
+// (CampStage's `max(100cqw, 100cqh)` rule for a *static*, never-panned scene). On a portrait phone
+// the viewport's height already IS the box's side length at a bare 100% factor — meaning zero slack
+// to pan vertically at all: centering on any node not dead-center (e.g. the Campement, near the
+// map's southern edge) shifts the box straight past the viewport's edge and exposes the black
+// backdrop behind it. 150% leaves enough slack to pan freely and to mostly-center near-edge nodes;
+// true edge cases are still clamped (see clampX/clampY) so black can never show regardless.
+const BOX_SIZE_CQ = "max(150cqw, 150cqh)";
+const BOX_MULTIPLIER = 1.5;
 
 function clamp(v: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, v));
@@ -84,30 +93,73 @@ export default function WorldMap({ onClose }: WorldMapProps) {
   const dragStart = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
   const pinchStartDist = useRef<number | null>(null);
   const movedDistance = useRef(0);
+  // The world box's own (unscaled) *square* side length in px — the viewport's dominant dimension
+  // times BOX_MULTIPLIER, matching BOX_SIZE_CQ. The viewport's own width/height are cached alongside
+  // it, since clampX/clampY need to compare against them per-axis (the viewport itself is rarely
+  // square, even though the box always is). All three are read via ResizeObserver rather than a
+  // fresh getBoundingClientRect() on every pointermove: that forces a layout on every tick, which is
+  // exactly the kind of main-thread work that reads as dropped/stuttering frames during a fast drag.
+  const boxPxRef = useRef(800);
+  const viewportSizeRef = useRef({ w: 400, h: 800 });
 
   const currentNode = NODE_BY_ID[worldState.currentNodeId];
 
-  // Recenters the pan so `node` sits at the viewport's centre, at the *current* zoom level — the
-  // square world box is almost always wider than a portrait viewport (see SCENE_BOX_STYLE's own
-  // note in CampStage for the same 16:9-into-9:18 problem), so leaving pan wherever it happened to
-  // be can land a node outside the visible crop with no indication the player needs to drag to find
-  // it. `scale` multiplies the offset because translate(tx,ty) here sits *inside* the box's own
-  // scale() transform (see the transform string below) — panning at 2x zoom needs twice the raw
-  // pixel offset to move a box-local point the same visual distance.
-  function centerOn(node: { x: number; y: number }) {
+  useEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const boxPx = Math.max(rect.width, rect.height);
-    setTx(scale * boxPx * (0.5 - node.x / 100));
-    setTy(scale * boxPx * (0.5 - node.y / 100));
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      viewportSizeRef.current = { w: rect.width, h: rect.height };
+      boxPxRef.current = Math.max(rect.width, rect.height) * BOX_MULTIPLIER;
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Bounded to how far the (scaled) box actually overhangs the viewport on that axis — the box can
+  // never be dragged far enough to expose the black backdrop behind it, on either axis, at any zoom.
+  function clampX(v: number): number {
+    const bound = Math.max(0, (boxPxRef.current * scale - viewportSizeRef.current.w) / 2);
+    return clamp(v, -bound, bound);
+  }
+  function clampY(v: number): number {
+    const bound = Math.max(0, (boxPxRef.current * scale - viewportSizeRef.current.h) / 2);
+    return clamp(v, -bound, bound);
+  }
+
+  // Re-clamps after every zoom change, not just after a drag: the bound shrinks as `scale` shrinks
+  // (there's less overhang to hide behind at 1x than at 3x), so zooming back out from a pan near the
+  // edge could otherwise leave tx/ty pointing past the box's new, smaller overhang and expose black.
+  useEffect(() => {
+    setTx((v) => clampX(v));
+    setTy((v) => clampY(v));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scale]);
+
+  // Recenters the pan so `node` sits at the viewport's centre, at the *current* zoom level — never
+  // exactly centering a node near the map's edge (that would require the box to extend past its own
+  // border to reach the viewport's far side), just as close to centered as the box's overhang
+  // allows, via the same clampX/clampY every drag already respects. `scale` multiplies the offset
+  // because translate(tx,ty) here sits *inside* the box's own scale() transform (see the transform
+  // string below) — panning at 2x zoom needs twice the raw pixel offset to move a box-local point
+  // the same visual distance.
+  function centerOn(node: { x: number; y: number }) {
+    setTx(clampX(scale * boxPxRef.current * (0.5 - node.x / 100)));
+    setTy(clampY(scale * boxPxRef.current * (0.5 - node.y / 100)));
   }
 
   // Center on the hero's current node the instant the map opens, once the viewport has its real
   // size — never on the box's own geometric center by default.
   useEffect(() => {
+    const el = viewportRef.current;
     const node = NODE_BY_ID[getWorldState().currentNodeId];
-    if (node) centerOn(node);
+    if (!el || !node) return;
+    const rect = el.getBoundingClientRect();
+    viewportSizeRef.current = { w: rect.width, h: rect.height };
+    boxPxRef.current = Math.max(rect.width, rect.height) * BOX_MULTIPLIER;
+    centerOn(node);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -166,11 +218,6 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     return distance(pts[0], pts[1]);
   }
 
-  function clampOffset(v: number): number {
-    const bound = (scale - 1) * 260 + 40;
-    return clamp(v, -bound, bound);
-  }
-
   // Pointer capture is only taken once a gesture has PROVEN itself to be a drag (moved past
   // DRAG_CLICK_THRESHOLD) — never on the bare pointerdown. Capturing immediately on pointerdown
   // (the first version of this) redirects every subsequent pointer/mouse/click event to whatever
@@ -209,8 +256,8 @@ export default function WorldMap({ onClose }: WorldMapProps) {
         if (!e.currentTarget.hasPointerCapture(e.pointerId)) {
           (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
         }
-        setTx(clampOffset(dragStart.current.tx + dx));
-        setTy(clampOffset(dragStart.current.ty + dy));
+        setTx(clampX(dragStart.current.tx + dx));
+        setTy(clampY(dragStart.current.ty + dy));
       }
     }
   }
@@ -260,7 +307,7 @@ export default function WorldMap({ onClose }: WorldMapProps) {
           onClick={onBoxClick}
           className="absolute left-1/2 top-1/2"
           style={{
-            width: "max(100cqw, 100cqh)",
+            width: BOX_SIZE_CQ,
             aspectRatio: "1 / 1",
             transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${scale})`,
           }}
