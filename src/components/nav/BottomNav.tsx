@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { TABS, type TabId } from "../../data/tabs";
 
@@ -11,18 +11,39 @@ const FRAME_INTERVAL_MS = 180;
 
 export default function BottomNav({ active, onChange }: BottomNavProps) {
   const [tick, setTick] = useState(0);
+  const navRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), FRAME_INTERVAL_MS);
     return () => clearInterval(id);
   }, []);
 
+  // Publishes the bar's real rendered height as `--nav-height`, which the fullscreen Camp scene
+  // sizes itself against. Measured rather than hardcoded because the bar isn't a fixed height: on a
+  // narrow phone a longer tab label ("Marché C2C") wraps to two lines and the bar grows ~15px,
+  // which as a constant would have put the scene's caption underneath it on exactly the devices
+  // this is meant to look right on. A ResizeObserver also covers safe-area and late font loads.
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const publish = () => document.documentElement.style.setProperty("--nav-height", `${el.offsetHeight}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50"
+      ref={navRef}
+      // The bar's surface (border/tint/blur) spans the full width while the tab row stays capped at
+      // max-w-md and centred. Previously the surface itself was the capped element, which on a
+      // desktop viewport left the page background showing as black gutters either side of it —
+      // harmless when a scrolling page sat behind, obvious against the fullscreen Camp scene.
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-white/[0.06] backdrop-blur-2xl"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="mx-auto flex max-w-md items-stretch justify-around border-t border-white/10 bg-white/[0.06] px-2 pt-3 pb-2 backdrop-blur-2xl">
+      <div className="mx-auto flex max-w-md items-stretch justify-around px-2 pt-3 pb-2">
         {TABS.map((tab) => {
           const isActive = tab.id === active;
           const frame = tab.frames[tick % tab.frames.length];

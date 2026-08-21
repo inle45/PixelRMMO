@@ -25,28 +25,42 @@ const COMING_SOON: Record<Exclude<TabId, "camp" | "bestiary" | "dungeon" | "inve
 export default function App() {
   const [screen, setScreen] = useState<Screen>("auth");
   const [activeTab, setActiveTab] = useState<TabId>("camp");
-  const [username, setUsername] = useState<string | null>(() => localStorage.getItem(USERNAME_KEY));
 
+  // Still persisted for whoever needs it later — the Camp tab no longer displays it, since the tab
+  // is scene-only now, so there's nothing to hold it in React state for.
   const handleAuthenticated = (name: string) => {
     localStorage.setItem(USERNAME_KEY, name);
-    setUsername(name);
     setScreen("character-select");
   };
+
+  // The Camp tab is a fullscreen, non-scrolling scene: it opts out of the padded, centred, scrolling
+  // <main> every other tab shares, and out of DynamicBackground too (its own backdrop is opaque and
+  // full-bleed, so painting a second one underneath would just be wasted work).
+  if (screen === "game" && activeTab === "camp") {
+    return (
+      <div className="relative h-[100dvh] w-full overflow-hidden">
+        <main className="absolute inset-x-0 top-0 bottom-[var(--nav-height)] overflow-hidden">
+          <CampScreen />
+        </main>
+        <BottomNav active={activeTab} onChange={setActiveTab} />
+      </div>
+    );
+  }
 
   if (screen === "game") {
     return (
       <div className="relative min-h-[100dvh] w-full">
         <DynamicBackground active={activeTab} />
         <main className="flex justify-center px-4 pb-28 pt-[calc(1.5rem+env(safe-area-inset-top))]">
-          {activeTab === "camp" ? (
-            <CampScreen username={username} onOpenDungeon={() => setActiveTab("dungeon")} />
-          ) : activeTab === "inventory" ? (
+          {activeTab === "inventory" ? (
             <InventoryScreen />
           ) : activeTab === "bestiary" ? (
             <CodexHub />
           ) : activeTab === "dungeon" ? (
             <DungeonScreen onReturnToCamp={() => setActiveTab("camp")} />
-          ) : (
+          ) : activeTab === "camp" ? null : (
+            // "camp" is already handled by the fullscreen branch above, but the narrowing from that
+            // early return doesn't carry across two separate conditions, so it's excluded here too.
             <ComingSoonPanel {...COMING_SOON[activeTab]} />
           )}
         </main>

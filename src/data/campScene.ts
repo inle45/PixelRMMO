@@ -134,6 +134,12 @@ export const PROP_BY_ID: Record<string, CampProp> = Object.fromEntries(
 export interface CampScene {
   id: TimeOfDayId;
   background: string;
+  /** Fills the screen above the backdrop when the viewport is taller than the art's 16:9 box.
+   * The bottom stop is sampled from the backdrop's own top row so the join is seamless. */
+  skyExtension: string;
+  /** That same sampled top-row colour on its own, painted as the stage's base background so any
+   * sub-pixel rounding at the join shows the right colour instead of a dark sliver. */
+  skySeamColor: string;
   heroFrames: string[];
   /** ms per frame for the hero routine — sleeping breathes slower than sharpening a blade. */
   heroFrameDuration: number;
@@ -162,6 +168,26 @@ const HERO_CAPTION: Record<TimeOfDayId, string> = {
   noon: "Le héros aiguise sa lame en plein soleil.",
   sunset: "Le héros prépare le repas du soir.",
   night: "Le héros dort à la belle étoile.",
+};
+
+/** A phone held upright is roughly 9:18; the backdrops are 16:9. Rather than crop the scene down
+ * to its centre third (object-cover on that aspect gap is a ~3x zoom that throws away the tent and
+ * half the props) or letterbox it, the backdrop fills the full width anchored to the bottom and the
+ * leftover space above is painted as more sky. Each gradient's *last* stop is the exact colour of
+ * that backdrop's top pixel row (sampled from the PNG), so there is no visible seam at the join —
+ * it reads as open sky above the camp, not as a bar. */
+const SKY_SEAM_COLOR: Record<TimeOfDayId, string> = {
+  morning: "#e7dccd",
+  noon: "#1ad4f8",
+  sunset: "#35034e",
+  night: "#040421",
+};
+
+const SKY_EXTENSION: Record<TimeOfDayId, string> = {
+  morning: "linear-gradient(180deg, #b9aab4 0%, #d2c4c4 45%, #e7dccd 100%)",
+  noon: "linear-gradient(180deg, #0763c4 0%, #0f9fe4 50%, #1ad4f8 100%)",
+  sunset: "linear-gradient(180deg, #150120 0%, #250236 50%, #35034e 100%)",
+  night: "linear-gradient(180deg, #01010a 0%, #020317 55%, #040421 100%)",
 };
 
 /** Ambient light per period. Morning is a soft low sun from the left, noon a hard white zenith
@@ -208,6 +234,8 @@ function buildScene(id: TimeOfDayId): CampScene {
   return {
     id,
     background: getSingle(bgModules, id),
+    skyExtension: SKY_EXTENSION[id],
+    skySeamColor: SKY_SEAM_COLOR[id],
     heroFrames: getFrames(heroModules, id),
     heroFrameDuration: HERO_FRAME_DURATION[id],
     props: PERIOD_PROP_IDS[id].map((propId) => PROP_BY_ID[propId]),

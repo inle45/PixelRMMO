@@ -14,6 +14,12 @@
 
 :root {
   color-scheme: dark;
+
+  /* Height of the fixed BottomNav, including the iOS/Android safe-area inset it pads itself with.
+     Declared once here so the fullscreen Camp scene can size itself to exactly the space above the
+     bar — hardcoding the number in both places is how you end up with a sliver of gap or a clipped
+     caption when the nav's padding changes. */
+  --nav-height: calc(4.75rem + env(safe-area-inset-bottom));
 }
 
 * {
