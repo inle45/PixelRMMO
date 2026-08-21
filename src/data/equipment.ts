@@ -1,6 +1,7 @@
 import rawEquipment from "./equipment.json";
 import type { RarityId } from "./rarity";
 import type { DamageTypeId } from "./typeSystem";
+import type { ClassId } from "./classes";
 
 export type EquipmentSlotId = "head" | "chest" | "legs" | "boots" | "weapon" | "offhand";
 
@@ -40,11 +41,14 @@ interface RawEquipmentItem {
   name: string;
   slot: EquipmentSlotId;
   rarity: RarityId;
-  levelRequired: number;
   value: number;
+  /** Which classes may equip this piece — a Mage can't pick up a sword, an Archer can't wear a shield. */
+  classes: ClassId[];
   lore: string;
   stats: EquipmentStats;
   damageType?: DamageTypeId;
+  /** Higher-rarity tiers of the same base item reuse its icon instead of a new PixelLab generation. */
+  iconRef?: string;
 }
 
 export interface EquipmentItemDef extends RawEquipmentItem {
@@ -63,7 +67,7 @@ function getIcon(id: string): string {
 
 export const EQUIPMENT: EquipmentItemDef[] = (rawEquipment as RawEquipmentItem[]).map((e) => ({
   ...e,
-  icon: getIcon(e.id),
+  icon: getIcon(e.iconRef ?? e.id),
 }));
 
 export const EQUIPMENT_BY_ID: Record<string, EquipmentItemDef> = Object.fromEntries(
@@ -139,4 +143,19 @@ export function aggregateEquipmentBonuses(
     if (item.slot === "weapon" && item.damageType) bonuses.damageType = item.damageType;
   }
   return bonuses;
+}
+
+/** Naive single-number "power score" for comparing two items in the same slot — flat stats weighted
+ * by rough combat impact, percentage stats weighted heavier since they compound. Not a min-max
+ * optimizer, just enough to drive the "Équiper le meilleur" auto-equip button. */
+export function scoreEquipment(item: EquipmentItemDef): number {
+  const s = item.stats;
+  return (
+    (s.hp ?? 0) +
+    (s.mana ?? 0) +
+    (s.atk ?? 0) * 3 +
+    (s.def ?? 0) * 3 +
+    (s.speed ?? 0) * 5 +
+    ((s.critChance ?? 0) + (s.dodgeChance ?? 0) + (s.blockChance ?? 0) + (s.magicPenetration ?? 0)) * 100
+  );
 }

@@ -18,6 +18,10 @@ export interface InventoryEntry {
   equipment?: EquipmentItemDef;
   material?: MaterialDef;
   consumable?: BattleItem;
+  /** Equipment only — true when the hero's class can't equip this piece (e.g. Archer + sword). */
+  locked?: boolean;
+  /** Not yet opened in the details modal at least once. */
+  isNew?: boolean;
 }
 
 type FilterId = "all" | "equipment" | "materials" | "potions" | "relics";
@@ -112,12 +116,27 @@ export default function InventoryGrid({ entries, onSelect }: InventoryGridProps)
         {slots.map((entry, i) =>
           entry ? (
             <RarityFrame key={`${entry.kind}-${entry.id}`} rarity={entry.rarity} radius="rounded-lg" onClick={() => onSelect(entry)}>
-              <div className="relative flex aspect-square w-full items-center justify-center rounded-lg bg-black/30 p-1.5">
+              <div
+                className={
+                  "relative flex aspect-square w-full items-center justify-center rounded-lg bg-black/30 p-1.5 " +
+                  (entry.locked ? "opacity-45" : "")
+                }
+              >
                 <img src={entry.icon} alt={entry.name} className="h-full w-full object-contain" style={{ imageRendering: "pixelated" }} />
                 {entry.count > 1 && (
                   <span className="absolute bottom-0.5 right-0.5 rounded bg-black/80 px-1 text-[9px] font-bold text-white">
                     x{entry.count}
                   </span>
+                )}
+                {entry.isNew && !entry.locked && (
+                  <span className="absolute -left-1 -top-1 rounded-full bg-emerald-500 px-1 text-[8px] font-bold text-black shadow-[0_0_6px_rgba(52,211,153,0.7)]">
+                    NEW
+                  </span>
+                )}
+                {entry.locked && (
+                  <svg viewBox="0 0 24 24" className="absolute h-4 w-4 text-white/80" fill="currentColor">
+                    <path d="M12 2a4 4 0 0 0-4 4v3H7a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-1V6a4 4 0 0 0-4-4Zm0 2a2 2 0 0 1 2 2v3h-4V6a2 2 0 0 1 2-2Z" />
+                  </svg>
                 )}
               </div>
             </RarityFrame>

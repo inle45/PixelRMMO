@@ -1,63 +1,37 @@
 [
-  {
-    "id": "cracked_bone_helm",
-    "name": "Heaume d'Os Fendu",
-    "slot": "head",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 45,
-    "lore": "Taillé dans le crâne d'un garde déchu de la Crypte Ancestrale, ce heaume grince encore du dernier souffle de son propriétaire.",
-    "stats": { "hp": 20, "mana": 10, "def": 2 }
-  },
-  {
-    "id": "chitin_plate",
-    "name": "Plastron de Chitine",
-    "slot": "chest",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 60,
-    "lore": "Assemblé à partir de carapaces de vermines géantes, ce plastron reste étonnamment léger malgré sa robustesse.",
-    "stats": { "hp": 15, "def": 8 }
-  },
-  {
-    "id": "scale_greaves",
-    "name": "Jambières d'Écailles",
-    "slot": "legs",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 55,
-    "lore": "Cousues d'écailles récupérées sur des créatures rampantes, elles absorbent les coups sans entraver la foulée.",
-    "stats": { "def": 5, "dodgeChance": 0.02 }
-  },
-  {
-    "id": "tracker_boots",
-    "name": "Bottes de Traqueur",
-    "slot": "boots",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 40,
-    "lore": "Portées par les éclaireurs qui cartographièrent les premiers niveaux de la Crypte — semelles silencieuses, prise infaillible.",
-    "stats": { "speed": 1, "dodgeChance": 0.05 }
-  },
-  {
-    "id": "rusty_steel_sword",
-    "name": "Épée d'Acier Rouillé",
-    "slot": "weapon",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 70,
-    "lore": "La rouille ronge la lame mais pas le tranchant — une arme d'aventurier, fiable dans les premières profondeurs.",
-    "stats": { "atk": 10 },
-    "damageType": "physical"
-  },
-  {
-    "id": "bone_pavise",
-    "name": "Pavois d'Ossement",
-    "slot": "offhand",
-    "rarity": "common",
-    "levelRequired": 1,
-    "value": 50,
-    "lore": "Un bouclier assemblé à la hâte à partir de côtes et de plaques osseuses — grossier, mais il a déjà arrêté bien des lames.",
-    "stats": { "def": 3, "blockChance": 0.08 }
-  }
+  { "id": "cracked_bone_helm", "name": "Heaume d'Os Fendu", "slot": "head", "rarity": "common", "value": 45, "classes": ["knight", "archer", "mage"], "lore": "Taillé dans le crâne d'un garde déchu de la Crypte Ancestrale.", "stats": { "hp": 20, "mana": 10, "def": 2 } },
+  { "id": "reinforced_bone_helm", "name": "Heaume d'Os Renforcé", "slot": "head", "rarity": "uncommon", "value": 90, "classes": ["knight", "archer", "mage"], "iconRef": "cracked_bone_helm", "lore": "Renforcé de bandes de fer par un forgeron de fortune.", "stats": { "hp": 32, "mana": 16, "def": 3 } },
+  { "id": "sacred_bone_helm", "name": "Heaume d'Os Sacré", "slot": "head", "rarity": "rare", "value": 160, "classes": ["knight", "archer", "mage"], "iconRef": "cracked_bone_helm", "lore": "Béni par un prêtre avant la chute de la crypte, il protège encore.", "stats": { "hp": 48, "mana": 24, "def": 5 } },
+
+  { "id": "chitin_plate", "name": "Plastron de Chitine", "slot": "chest", "rarity": "common", "value": 60, "classes": ["knight", "archer", "mage"], "lore": "Assemblé à partir de carapaces de vermines géantes.", "stats": { "hp": 15, "def": 8 } },
+  { "id": "reinforced_chitin_plate", "name": "Plastron de Chitine Renforcé", "slot": "chest", "rarity": "uncommon", "value": 120, "classes": ["knight", "archer", "mage"], "iconRef": "chitin_plate", "lore": "Des plaques supplémentaires rivetées sur la carapace d'origine.", "stats": { "hp": 24, "def": 13 } },
+  { "id": "sacred_chitin_plate", "name": "Plastron de Chitine Sacré", "slot": "chest", "rarity": "rare", "value": 210, "classes": ["knight", "archer", "mage"], "iconRef": "chitin_plate", "lore": "Sa carapace luit faiblement, comme animée d'une volonté ancienne.", "stats": { "hp": 36, "def": 19 } },
+
+  { "id": "scale_greaves", "name": "Jambières d'Écailles", "slot": "legs", "rarity": "common", "value": 55, "classes": ["knight", "archer", "mage"], "lore": "Cousues d'écailles récupérées sur des créatures rampantes.", "stats": { "def": 5, "dodgeChance": 0.02 } },
+  { "id": "reinforced_scale_greaves", "name": "Jambières d'Écailles Renforcées", "slot": "legs", "rarity": "uncommon", "value": 110, "classes": ["knight", "archer", "mage"], "iconRef": "scale_greaves", "lore": "Un double rang d'écailles pour encaisser les coups les plus vifs.", "stats": { "def": 8, "dodgeChance": 0.03 } },
+  { "id": "sacred_scale_greaves", "name": "Jambières d'Écailles Sacrées", "slot": "legs", "rarity": "rare", "value": 195, "classes": ["knight", "archer", "mage"], "iconRef": "scale_greaves", "lore": "Les écailles semblent se resserrer d'elles-mêmes à l'approche du danger.", "stats": { "def": 12, "dodgeChance": 0.05 } },
+
+  { "id": "tracker_boots", "name": "Bottes de Traqueur", "slot": "boots", "rarity": "common", "value": 40, "classes": ["knight", "archer", "mage"], "lore": "Portées par les éclaireurs des premiers niveaux de la Crypte.", "stats": { "speed": 1, "dodgeChance": 0.05 } },
+  { "id": "reinforced_tracker_boots", "name": "Bottes de Traqueur Renforcées", "slot": "boots", "rarity": "uncommon", "value": 80, "classes": ["knight", "archer", "mage"], "iconRef": "tracker_boots", "lore": "Ressemelées avec du cuir de meilleure qualité pour tenir la distance.", "stats": { "speed": 2, "dodgeChance": 0.08 } },
+  { "id": "elite_tracker_boots", "name": "Bottes de Traqueur d'Élite", "slot": "boots", "rarity": "rare", "value": 140, "classes": ["knight", "archer", "mage"], "iconRef": "tracker_boots", "lore": "Portées par les meilleurs éclaireurs de la garde, jamais prises en défaut.", "stats": { "speed": 3, "dodgeChance": 0.12 } },
+
+  { "id": "rusty_steel_sword", "name": "Épée d'Acier Rouillé", "slot": "weapon", "rarity": "common", "value": 70, "classes": ["knight"], "damageType": "physical", "lore": "La rouille ronge la lame mais pas le tranchant.", "stats": { "atk": 10 } },
+  { "id": "tempered_steel_sword", "name": "Épée en Acier Trempé", "slot": "weapon", "rarity": "uncommon", "value": 140, "classes": ["knight"], "damageType": "physical", "iconRef": "rusty_steel_sword", "lore": "Retrempée par un forgeron de la garde, elle a retrouvé son tranchant.", "stats": { "atk": 16 } },
+  { "id": "runic_sword", "name": "Épée Runique", "slot": "weapon", "rarity": "rare", "value": 245, "classes": ["knight"], "damageType": "physical", "iconRef": "rusty_steel_sword", "lore": "Des runes anciennes courent le long de la lame, encore tièdes au toucher.", "stats": { "atk": 24 } },
+
+  { "id": "short_bow", "name": "Arc Court", "slot": "weapon", "rarity": "common", "value": 65, "classes": ["archer"], "damageType": "physical", "lore": "Un arc simple mais fiable, taillé dans un if de la surface.", "stats": { "atk": 9, "critChance": 0.03 } },
+  { "id": "reinforced_longbow", "name": "Arc Long Renforcé", "slot": "weapon", "rarity": "uncommon", "value": 130, "classes": ["archer"], "damageType": "physical", "iconRef": "short_bow", "lore": "Une corde tressée à la main double sa portée effective.", "stats": { "atk": 14, "critChance": 0.05 } },
+  { "id": "elven_hunting_bow", "name": "Arc de Chasse Elfique", "slot": "weapon", "rarity": "rare", "value": 230, "classes": ["archer"], "damageType": "physical", "iconRef": "short_bow", "lore": "Un vestige d'un peuple disparu, précis au-delà de toute raison.", "stats": { "atk": 21, "critChance": 0.08 } },
+
+  { "id": "gnarled_staff", "name": "Bâton Noueux", "slot": "weapon", "rarity": "common", "value": 65, "classes": ["mage"], "damageType": "physical", "lore": "Un bâton d'apprenti, encore imprégné de magie résiduelle.", "stats": { "atk": 7, "magicPenetration": 0.05 } },
+  { "id": "runic_staff", "name": "Bâton Runique", "slot": "weapon", "rarity": "uncommon", "value": 130, "classes": ["mage"], "damageType": "physical", "iconRef": "gnarled_staff", "lore": "Gravé de runes qui canalisent le mana avec moins de perte.", "stats": { "atk": 11, "magicPenetration": 0.08 } },
+  { "id": "archmage_staff", "name": "Bâton d'Archimage", "slot": "weapon", "rarity": "rare", "value": 230, "classes": ["mage"], "damageType": "physical", "iconRef": "gnarled_staff", "lore": "Autrefois brandi par un archimage de la Crypte, avant sa chute.", "stats": { "atk": 17, "magicPenetration": 0.12 } },
+
+  { "id": "bone_pavise", "name": "Pavois d'Ossement", "slot": "offhand", "rarity": "common", "value": 50, "classes": ["knight"], "lore": "Un bouclier assemblé à la hâte à partir de côtes et de plaques osseuses.", "stats": { "def": 3, "blockChance": 0.08 } },
+  { "id": "reinforced_pavise", "name": "Pavois d'Ossement Renforcé", "slot": "offhand", "rarity": "uncommon", "value": 100, "classes": ["knight"], "iconRef": "bone_pavise", "lore": "Consolidé de plaques métalliques récupérées sur des gardes déchus.", "stats": { "def": 5, "blockChance": 0.12 } },
+  { "id": "guardian_pavise", "name": "Pavois du Gardien", "slot": "offhand", "rarity": "rare", "value": 175, "classes": ["knight"], "iconRef": "bone_pavise", "lore": "Porté par les gardiens de la crypte, il n'a jamais cédé.", "stats": { "def": 7, "blockChance": 0.18 } },
+
+  { "id": "elemental_grimoire", "name": "Grimoire Élémentaire", "slot": "offhand", "rarity": "common", "value": 50, "classes": ["mage"], "lore": "Un recueil de formules élémentaires de base, encore lisible.", "stats": { "mana": 15, "magicPenetration": 0.05 } },
+  { "id": "arcane_grimoire", "name": "Grimoire des Arcanes", "slot": "offhand", "rarity": "uncommon", "value": 100, "classes": ["mage"], "iconRef": "elemental_grimoire", "lore": "Ses pages tournent parfois seules, comme animées par le savoir qu'elles contiennent.", "stats": { "mana": 24, "magicPenetration": 0.08 } },
+  { "id": "forbidden_grimoire", "name": "Grimoire Interdit", "slot": "offhand", "rarity": "rare", "value": 175, "classes": ["mage"], "iconRef": "elemental_grimoire", "lore": "Son savoir dépasse celui des mages de la surface — à quel prix, nul ne sait.", "stats": { "mana": 36, "magicPenetration": 0.12 } }
 ]

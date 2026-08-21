@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { RARITY_BY_ID } from "../../data/rarity";
-import { SLOT_META, type EquipmentStats } from "../../data/equipment";
+import { SLOT_META, type EquipmentItemDef, type EquipmentStats } from "../../data/equipment";
+import { CLASSES } from "../../data/classes";
 import { TYPE_BY_ID } from "../../data/typeSystem";
 import RarityFrame from "../codex/RarityFrame";
 import type { InventoryEntry } from "./InventoryGrid";
@@ -8,6 +9,8 @@ import ecuIcon from "../../assets/icons/ecu.png";
 
 interface ItemDetailsModalProps {
   entry: InventoryEntry;
+  /** Whatever's currently equipped in this item's slot, for the +/- stat comparator. */
+  comparedTo?: EquipmentItemDef;
   onClose: () => void;
   onEquip: () => void;
   onConsume: () => void;
@@ -28,14 +31,17 @@ const STAT_LABELS: Record<keyof EquipmentStats, string> = {
 
 const PERCENT_STATS = new Set<keyof EquipmentStats>(["critChance", "dodgeChance", "blockChance", "magicPenetration"]);
 
-export default function ItemDetailsModal({ entry, onClose, onEquip, onConsume, onDiscard }: ItemDetailsModalProps) {
+export default function ItemDetailsModal({ entry, comparedTo, onClose, onEquip, onConsume, onDiscard }: ItemDetailsModalProps) {
   const rarity = RARITY_BY_ID[entry.rarity];
-  const { equipment, material, consumable } = entry;
+  const { equipment, material, consumable, locked } = entry;
 
   const lore = equipment?.lore ?? material?.lore ?? consumable?.description ?? "";
   const sellValue = equipment?.value ?? material?.value ?? consumable?.sellValue ?? 0;
-  const levelRequired = equipment?.levelRequired;
   const affinity = equipment?.damageType ? TYPE_BY_ID[equipment.damageType] : undefined;
+  const restrictedTo =
+    equipment && equipment.classes.length < CLASSES.length
+      ? CLASSES.filter((c) => equipment.classes.includes(c.id))
+      : [];
 
   return (
     <motion.div
@@ -82,8 +88,10 @@ export default function ItemDetailsModal({ entry, onClose, onEquip, onConsume, o
 
             <div className="mt-3 text-center">
               <h2 className="text-lg font-bold text-white">{entry.name}</h2>
-              {typeof levelRequired === "number" && (
-                <p className="mt-0.5 text-xs text-white/50">Niveau requis : {levelRequired}</p>
+              {restrictedTo.length > 0 && (
+                <p className="mt-0.5 text-xs text-white/50">
+                  Réservé à : {restrictedTo.map((c) => c.names.male).join(", ")}
+                </p>
               )}
             </div>
 
@@ -91,14 +99,24 @@ export default function ItemDetailsModal({ entry, onClose, onEquip, onConsume, o
               <div className="mt-4 grid grid-cols-2 gap-1.5">
                 {(Object.entries(equipment.stats) as [keyof EquipmentStats, number | undefined][])
                   .filter(([, v]) => !!v)
-                  .map(([key, v]) => (
-                    <div key={key} className="rounded-lg bg-black/20 px-2 py-1.5 text-center">
-                      <p className="text-[9px] font-medium uppercase tracking-wide text-white/45">{STAT_LABELS[key]}</p>
-                      <p className="mt-0.5 text-xs font-bold text-emerald-300">
-                        +{PERCENT_STATS.has(key) ? `${Math.round((v ?? 0) * 100)}%` : v}
-                      </p>
-                    </div>
-                  ))}
+                  .map(([key, v]) => {
+                    const isPercent = PERCENT_STATS.has(key);
+                    const delta = comparedTo ? (v ?? 0) - (comparedTo.stats[key] ?? 0) : 0;
+                    return (
+                      <div key={key} className="rounded-lg bg-black/20 px-2 py-1.5 text-center">
+                        <p className="text-[9px] font-medium uppercase tracking-wide text-white/45">{STAT_LABELS[key]}</p>
+                        <p className="mt-0.5 text-xs font-bold text-emerald-300">
+                          +{isPercent ? `${Math.round((v ?? 0) * 100)}%` : v}
+                        </p>
+                        {comparedTo && delta !== 0 && (
+                          <p className={`text-[10px] font-bold ${delta > 0 ? "text-emerald-400" : "text-rose-400"}`}>
+                            ({delta > 0 ? "+" : ""}
+                            {isPercent ? `${Math.round(delta * 100)}%` : Math.round(delta * 10) / 10})
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 {affinity && (
                   <div className="col-span-2 flex items-center justify-center gap-1.5 rounded-lg bg-black/20 px-2 py-1.5">
                     {affinity.icon && <img src={affinity.icon} alt="" className="h-3.5 w-3.5" style={{ imageRendering: "pixelated" }} />}
@@ -122,9 +140,16 @@ export default function ItemDetailsModal({ entry, onClose, onEquip, onConsume, o
                 <button
                   type="button"
                   onClick={onEquip}
-                  className="flex-1 rounded-xl bg-gradient-to-r from-lantern to-lantern-glow px-3 py-2.5 text-xs font-bold text-black transition-opacity hover:opacity-90"
+                  disabled={locked}
+                  title={locked ? `Réservé à : ${restrictedTo.map((c) => c.names.male).join(", ")}` : undefined}
+                  className={
+                    "flex-1 rounded-xl px-3 py-2.5 text-xs font-bold transition-opacity " +
+                    (locked
+                      ? "cursor-not-allowed bg-white/10 text-white/40"
+                      : "bg-gradient-to-r from-lantern to-lantern-glow text-black hover:opacity-90")
+                  }
                 >
-                  Équiper
+                  {locked ? "Classe incompatible" : "Équiper"}
                 </button>
               )}
               {consumable && (

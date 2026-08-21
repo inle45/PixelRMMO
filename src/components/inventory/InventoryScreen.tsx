@@ -10,9 +10,12 @@ import {
   unequipSlot,
   consumeConsumable,
   discardItem,
+  autoEquipBest,
+  isItemNew,
+  markItemSeen,
   type DiscardableKind,
 } from "../../data/inventory";
-import type { EquipmentSlotId } from "../../data/equipment";
+import { EQUIPMENT_BY_ID, type EquipmentSlotId } from "../../data/equipment";
 import HeroPaperDoll from "./HeroPaperDoll";
 import InventoryGrid, { type InventoryEntry } from "./InventoryGrid";
 import ItemDetailsModal from "./ItemDetailsModal";
@@ -36,16 +39,44 @@ function readStoredHero(): StoredHero | null {
   }
 }
 
-function buildEntries(): InventoryEntry[] {
+function buildEntries(classId: ClassId): InventoryEntry[] {
   const entries: InventoryEntry[] = [];
   for (const { item, count } of getOwnedEquipment()) {
-    entries.push({ kind: "equipment", id: item.id, name: item.name, icon: item.icon, rarity: item.rarity, count, equipment: item });
+    entries.push({
+      kind: "equipment",
+      id: item.id,
+      name: item.name,
+      icon: item.icon,
+      rarity: item.rarity,
+      count,
+      equipment: item,
+      locked: !item.classes.includes(classId),
+      isNew: isItemNew("equipment", item.id),
+    });
   }
   for (const { material, count } of getOwnedMaterials()) {
-    entries.push({ kind: "material", id: material.id, name: material.name, icon: material.icon, rarity: material.rarity, count, material });
+    entries.push({
+      kind: "material",
+      id: material.id,
+      name: material.name,
+      icon: material.icon,
+      rarity: material.rarity,
+      count,
+      material,
+      isNew: isItemNew("material", material.id),
+    });
   }
   for (const { item, count } of getOwnedConsumables()) {
-    entries.push({ kind: "consumable", id: item.id, name: item.name, icon: item.icon, rarity: item.rarity, count, consumable: item });
+    entries.push({
+      kind: "consumable",
+      id: item.id,
+      name: item.name,
+      icon: item.icon,
+      rarity: item.rarity,
+      count,
+      consumable: item,
+      isNew: isItemNew("consumable", item.id),
+    });
   }
   return entries;
 }
@@ -64,8 +95,10 @@ export default function InventoryScreen() {
   // localStorage after equip/unequip/consume/discard mutate it directly.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const inventory = useMemo(() => getInventory(), [version]);
+  // Falls back to "knight" when there's no hero yet — harmless, since the component bails out to
+  // the "no hero" screen right below before these entries are ever rendered.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const entries = useMemo(() => buildEntries(), [version]);
+  const entries = useMemo(() => buildEntries(hero?.classId ?? "knight"), [version]);
 
   if (!classDef || !hero) {
     return (
@@ -80,11 +113,22 @@ export default function InventoryScreen() {
     refresh();
   }
 
+  function handleSelect(entry: InventoryEntry) {
+    markItemSeen(entry.kind, entry.id);
+    refresh();
+    setSelected(entry);
+  }
+
   function handleEquip() {
     if (!selected) return;
-    equipItem(selected.id);
+    equipItem(selected.id, hero!.classId);
     refresh();
     setSelected(null);
+  }
+
+  function handleAutoEquip() {
+    autoEquipBest(hero!.classId);
+    refresh();
   }
 
   function handleConsume() {
@@ -120,14 +164,16 @@ export default function InventoryScreen() {
         level={inventory.level}
         equippedItemIds={inventory.equippedItems}
         onUnequipSlot={handleUnequipSlot}
+        onAutoEquipBest={handleAutoEquip}
       />
 
-      <InventoryGrid entries={entries} onSelect={setSelected} />
+      <InventoryGrid entries={entries} onSelect={handleSelect} />
 
       <AnimatePresence>
         {selected && (
           <ItemDetailsModal
             entry={selected}
+            comparedTo={selected.equipment ? EQUIPMENT_BY_ID[inventory.equippedItems[selected.equipment.slot] ?? ""] : undefined}
             onClose={() => setSelected(null)}
             onEquip={handleEquip}
             onConsume={handleConsume}

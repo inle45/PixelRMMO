@@ -1,6 +1,7 @@
 import { MATERIALS, type MaterialDef } from "./materials";
-import { EQUIPMENT_BY_ID, type EquipmentItemDef, type EquipmentSlotId } from "./equipment";
+import { EQUIPMENT_BY_ID, EQUIPMENT_SLOTS, scoreEquipment, type EquipmentItemDef, type EquipmentSlotId } from "./equipment";
 import { BATTLE_ITEM_BY_ID, type BattleItem } from "./items";
+import type { ClassId } from "./classes";
 
 const STORAGE_KEY = "pixelrmmo:inventory";
 
@@ -14,17 +15,30 @@ export interface InventoryState {
   /** One item id per slot, or absent if the slot is empty. */
   equippedItems: Partial<Record<EquipmentSlotId, string>>;
   ownedConsumables: Record<string, number>;
+  /** `${kind}:${id}` keys the player has already opened at least once — drives the "Nouveau" badge. */
+  seen: Record<string, boolean>;
 }
 
-/** Starter loadout: the 6 base equipment pieces pre-equipped (so the paper doll and combat stats
- * are testable immediately) plus a couple of demo potions. */
+/** Starter loadout: the 4 armor slots (usable by any class) pre-equipped so the paper doll and
+ * combat stats are testable immediately. Weapon/offhand are class-restricted (a Mage can't equip
+ * a sword, an Archer has no shield/grimoire) so they start empty — the matching starter piece sits
+ * unequipped in the bag instead, for every class, since inventory.ts has no notion of hero class. */
 const DEFAULT_EQUIPPED: Partial<Record<EquipmentSlotId, string>> = {
   head: "cracked_bone_helm",
   chest: "chitin_plate",
   legs: "scale_greaves",
   boots: "tracker_boots",
-  weapon: "rusty_steel_sword",
-  offhand: "bone_pavise",
+};
+
+/** One starter weapon per class, the matching starter offhand for classes that use one, plus a
+ * spare upgraded pair of boots so "Équiper le meilleur" has something to demonstrate immediately. */
+const DEFAULT_OWNED_EQUIPMENT: Record<string, number> = {
+  rusty_steel_sword: 1,
+  short_bow: 1,
+  gnarled_staff: 1,
+  bone_pavise: 1,
+  elemental_grimoire: 1,
+  reinforced_tracker_boots: 1,
 };
 
 const DEFAULT_STATE: InventoryState = {
@@ -32,9 +46,10 @@ const DEFAULT_STATE: InventoryState = {
   materials: {},
   xp: 0,
   level: 1,
-  ownedEquipment: {},
+  ownedEquipment: { ...DEFAULT_OWNED_EQUIPMENT },
   equippedItems: { ...DEFAULT_EQUIPPED },
   ownedConsumables: { heal_potion: 2, remedy: 1 },
+  seen: Object.fromEntries(Object.values(DEFAULT_EQUIPPED).map((id) => [`equipment:${id}`, true])),
 };
 
 /** Flat curve — 400 XP per level. A demo game doesn't need a tuned escalating curve. */
@@ -54,9 +69,10 @@ export function getInventory(): InventoryState {
       materials: parsed.materials ?? {},
       xp: typeof parsed.xp === "number" ? parsed.xp : 0,
       level: typeof parsed.level === "number" ? parsed.level : 1,
-      ownedEquipment: parsed.ownedEquipment ?? {},
+      ownedEquipment: parsed.ownedEquipment ?? { ...DEFAULT_OWNED_EQUIPMENT },
       equippedItems: parsed.equippedItems ?? { ...DEFAULT_EQUIPPED },
       ownedConsumables: parsed.ownedConsumables ?? { ...DEFAULT_STATE.ownedConsumables },
+      seen: parsed.seen ?? { ...DEFAULT_STATE.seen },
     };
   } catch {
     return structuredClone(DEFAULT_STATE);
@@ -170,11 +186,12 @@ export function getOwnedConsumables(): OwnedConsumable[] {
 }
 
 /** Moves one copy of `itemId` from the bag into its assigned slot, swapping out whatever was
- * already equipped there (which returns to the bag) rather than requiring an explicit unequip first. */
-export function equipItem(itemId: string): InventoryState {
+ * already equipped there (which returns to the bag) rather than requiring an explicit unequip first.
+ * Refuses silently if `classId` isn't allowed to use this item (e.g. an Archer trying a sword). */
+export function equipItem(itemId: string, classId: ClassId): InventoryState {
   const item = EQUIPMENT_BY_ID[itemId];
   const state = getInventory();
-  if (!item || (state.ownedEquipment[itemId] ?? 0) <= 0) return state;
+  if (!item || !item.classes.includes(classId) || (state.ownedEquipment[itemId] ?? 0) <= 0) return state;
 
   const previousId = state.equippedItems[item.slot];
   if (previousId) {
@@ -185,6 +202,33 @@ export function equipItem(itemId: string): InventoryState {
   if (state.ownedEquipment[itemId] <= 0) delete state.ownedEquipment[itemId];
   state.equippedItems[item.slot] = itemId;
 
+  write(state);
+  return state;
+}
+
+/** For each of the 6 slots, equips the highest-`scoreEquipment` item the class can use among what's
+ * already equipped there plus whatever matching copies sit in the bag. One atomic write for all 6. */
+export function autoEquipBest(classId: ClassId): InventoryState {
+  const state = getInventory();
+  for (const slot of EQUIPMENT_SLOTS) {
+    const equippedId = state.equippedItems[slot];
+    const candidateIds = new Set<string>(equippedId ? [equippedId] : []);
+    for (const [id, count] of Object.entries(state.ownedEquipment)) {
+      if (count > 0 && EQUIPMENT_BY_ID[id]?.slot === slot) candidateIds.add(id);
+    }
+    const candidates = [...candidateIds]
+      .map((id) => EQUIPMENT_BY_ID[id])
+      .filter((i): i is EquipmentItemDef => !!i && i.classes.includes(classId));
+    if (candidates.length === 0) continue;
+
+    const best = candidates.reduce((a, b) => (scoreEquipment(b) > scoreEquipment(a) ? b : a));
+    if (best.id === equippedId) continue;
+
+    if (equippedId) state.ownedEquipment[equippedId] = (state.ownedEquipment[equippedId] ?? 0) + 1;
+    state.ownedEquipment[best.id] -= 1;
+    if (state.ownedEquipment[best.id] <= 0) delete state.ownedEquipment[best.id];
+    state.equippedItems[slot] = best.id;
+  }
   write(state);
   return state;
 }
@@ -222,6 +266,21 @@ export function discardItem(kind: DiscardableKind, itemId: string): InventorySta
   if ((bucket[itemId] ?? 0) <= 0) return state;
   bucket[itemId] -= 1;
   if (bucket[itemId] <= 0) delete bucket[itemId];
+  write(state);
+  return state;
+}
+
+/** True until the player has opened this bag item's details modal at least once — drives the
+ * "Nouveau" badge. Works for any owned item, including future dungeon-loot equipment drops, since
+ * it just checks for the absence of a "seen" flag rather than requiring explicit grant-time wiring. */
+export function isItemNew(kind: DiscardableKind, itemId: string): boolean {
+  return !getInventory().seen[`${kind}:${itemId}`];
+}
+
+export function markItemSeen(kind: DiscardableKind, itemId: string): InventoryState {
+  const state = getInventory();
+  if (state.seen[`${kind}:${itemId}`]) return state;
+  state.seen[`${kind}:${itemId}`] = true;
   write(state);
   return state;
 }

@@ -20,6 +20,7 @@ interface HeroPaperDollProps {
   level: number;
   equippedItemIds: Partial<Record<EquipmentSlotId, string>>;
   onUnequipSlot: (slot: EquipmentSlotId) => void;
+  onAutoEquipBest: () => void;
 }
 
 /** Where each of the 6 strict slots sits in the 3x3 grid around the centered hero sprite. */
@@ -45,14 +46,26 @@ const STAT_ROWS: { key: NumericStatKey; label: string; format: (v: number) => st
   { key: "critChance", label: "Coup Critique", format: (v) => `${Math.round(v * 100)}%` },
 ];
 
-export default function HeroPaperDoll({ classDef, gender, level, equippedItemIds, onUnequipSlot }: HeroPaperDollProps) {
+export default function HeroPaperDoll({ classDef, gender, level, equippedItemIds, onUnequipSlot, onAutoEquipBest }: HeroPaperDollProps) {
   const bonuses = useMemo(() => aggregateEquipmentBonuses(equippedItemIds), [equippedItemIds]);
   const stats = useMemo(() => computeHeroStats(classDef, level, bonuses), [classDef, level, bonuses]);
   const affinity = TYPE_BY_ID[stats.damageType];
 
   return (
     <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-2xl">
-      <h3 className="text-xs font-bold uppercase tracking-wide text-white/60">Fiche de Héros</h3>
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-white/60">Fiche de Héros</h3>
+        <button
+          type="button"
+          onClick={onAutoEquipBest}
+          className="flex items-center gap-1 rounded-full border border-lantern/40 bg-lantern/10 px-2.5 py-1 text-[10px] font-bold text-lantern-glow transition-colors hover:bg-lantern/20"
+        >
+          <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
+            <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" />
+          </svg>
+          Meilleur Équipement
+        </button>
+      </div>
 
       <div className="mt-3 grid grid-cols-3 grid-rows-3 items-center justify-items-center gap-2">
         {EQUIPMENT_SLOTS.map((slot) => (
