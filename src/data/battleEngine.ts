@@ -191,8 +191,15 @@ export function getWeatherDamageMultiplier(weather: WeatherDef, damageType: Dama
   return Math.max(0, mult);
 }
 
+/** Control effects (freeze/stun skip the target's whole turn) roll for a chance to land instead of
+ * applying every time — a guaranteed-freeze skill used every turn locks the enemy out of the fight
+ * entirely, which trivializes combat. DOT/debuff statuses stay deterministic on a landed hit. */
+const CONTROL_STATUS_CHANCE = 0.45;
+
 export function canInflictStatus(target: Combatant, statusId: string): boolean {
-  return !target.combat?.immunities.includes(statusId);
+  if (target.combat?.immunities.includes(statusId)) return false;
+  if (STATUS_BY_ID[statusId]?.category === "control") return Math.random() < CONTROL_STATUS_CHANCE;
+  return true;
 }
 
 export function inflictStatus(combatant: Combatant, statusId: string, maxStacks = 1): Combatant {

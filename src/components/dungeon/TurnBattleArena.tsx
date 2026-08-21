@@ -82,6 +82,7 @@ interface Internal {
   deathBursts: Record<string, DeathBurst[]>;
   projectiles: Projectile[];
   shieldCasts: Record<string, ShieldCast[]>;
+  waveFading: boolean;
 }
 
 interface RunStats {
@@ -124,6 +125,10 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
   function triggerShake() {
     setShakeKey((k) => k + 1);
   }
+  const [critFlashKey, setCritFlashKey] = useState(0);
+  function triggerCritFlash() {
+    setCritFlashKey((k) => k + 1);
+  }
   const skillList = CLASS_SKILLS[classDef.id];
 
   useEffect(() => {
@@ -147,8 +152,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
   function setPlaying(id: string | null) {
     set({ playingId: id });
   }
-  function addFloatingText(targetId: string, text: string, kind: FloatingText["kind"]) {
-    const ft: FloatingText = { id: `f${floatId++}`, text, kind };
+  function addFloatingText(targetId: string, text: string, kind: FloatingText["kind"], isMagic?: boolean) {
+    const dx = Math.round((Math.random() - 0.5) * 34);
+    const ft: FloatingText = { id: `f${floatId++}`, text, kind, isMagic, dx };
     const current = stateRef.current.floatingTexts;
     set({ floatingTexts: { ...current, [targetId]: [...(current[targetId] ?? []), ft] } });
   }
@@ -211,8 +217,14 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
         case "damage": {
           addProjectile(ev.damageType, ev.actorId === "hero" ? "hero" : "enemy");
           await sleep(260);
-          addFloatingText(ev.targetId, ev.crit ? `-${ev.amount} CRIT !` : `-${ev.amount}`, ev.crit ? "crit" : "damage");
+          addFloatingText(
+            ev.targetId,
+            ev.crit ? `-${ev.amount} CRIT !` : `-${ev.amount}`,
+            ev.crit ? "crit" : "damage",
+            ev.damageType !== "physical"
+          );
           addImpactBurst(ev.targetId, ev.damageType);
+          if (ev.crit) triggerCritFlash();
           if (ev.effectiveness === "weak") {
             const target = stateRef.current.combatants.find((c) => c.instanceId === ev.targetId);
             const mult = target?.combat ? getTypeEffectiveness(target.damageType, target.combat).mult : undefined;
@@ -319,7 +331,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     }
     showBanner(`VAGUE ${st.wave} TERMINÉE !`, 1800);
     set({ phase: "wave_transition" });
-    await sleep(1800);
+    await sleep(1200);
+    set({ waveFading: true });
+    await sleep(500);
     const hero = st.combatants.find((c) => c.side === "hero")!;
     const nextWaveNum = st.wave === 1 ? 2 : 3;
     const plan = nextWaveNum === 2 ? generateWave2() : generateWave3();
@@ -333,6 +347,9 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       menu: "none",
       targetMode: null,
     });
+    await sleep(150);
+    set({ waveFading: false });
+    await sleep(500);
     if (plan.isRareEvent) showBanner("★ RENCONTRE RARE !", 2200);
     battleEndedRef.current = false;
     void runRound();
@@ -546,7 +563,14 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="absolute inset-0 flex flex-col overflow-hidden"
       >
-        <ArenaBackdrop weatherId={activeWeather.id} isBossWave={st.wave === 3} />
+        <ArenaBackdrop
+          weatherId={activeWeather.id}
+          isBossWave={st.wave === 3}
+          bossHpPct={(() => {
+            const boss = st.combatants.find((c) => c.isBoss);
+            return boss ? Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100)) : 100;
+          })()}
+        />
         <WeatherParticles weatherId={activeWeather.id} />
 
       {/* Manga-style diagonal slash-open on combat entry — two clipped black panels retract off-screen. */}
@@ -696,6 +720,22 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
           transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
+
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-[90] bg-black"
+        animate={{ opacity: st.waveFading ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+      />
+
+      {critFlashKey > 0 && (
+        <motion.div
+          key={critFlashKey}
+          className="pointer-events-none absolute inset-0 z-[85] bg-white"
+          initial={{ opacity: 0.45 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+        />
+      )}
       </motion.div>
     </motion.div>
   );
@@ -723,6 +763,7 @@ function buildInitialState(classDef: ClassDefinition, gender: Gender, level: num
     deathBursts: {},
     projectiles: [],
     shieldCasts: {},
+    waveFading: false,
   };
 }
 

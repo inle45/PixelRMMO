@@ -18,6 +18,8 @@ export interface FloatingText {
   id: string;
   text: string;
   kind: "damage" | "crit" | "heal" | "miss" | "status" | "shield";
+  isMagic?: boolean;
+  dx?: number;
 }
 
 interface CombatantPanelProps {
@@ -74,6 +76,7 @@ export default function CombatantPanel({
     combatant.maxMana > 0 ? Math.max(0, Math.min(100, ((combatant.mana - manaPreviewCost) / combatant.maxMana) * 100)) : 0;
   const dim = size === "lg" ? "h-32 w-32" : "h-20 w-20";
   const isHero = combatant.side === "hero";
+  const lowHp = combatant.alive && hpPct > 0 && hpPct < 30;
 
   // "Ghost" HP trail (Pokémon-style): on a drop, the lighter trail bar holds at the old value
   // for a beat before draining down to match, so a hit reads as a visible bite out of the bar.
@@ -165,14 +168,15 @@ export default function CombatantPanel({
           {floatingTexts.map((ft, i) => (
             <motion.span
               key={ft.id}
-              initial={{ opacity: 0, y: 0, x: "-50%" }}
+              initial={{ opacity: 0, y: 0, x: `calc(-50% + ${ft.dx ?? 0}px)` }}
               animate={{ opacity: [0, 1, 1, 0], y: -52 }}
               transition={{ duration: 1.15, delay: i * 0.12 }}
               onAnimationComplete={() => onFloatingTextDone?.(ft.id)}
               className={
-                "pointer-events-none absolute left-1/2 top-2 z-30 whitespace-nowrap text-sm font-extrabold drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] " +
+                "pointer-events-none absolute left-1/2 top-2 z-30 whitespace-nowrap font-extrabold drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)] " +
                 FLOAT_STYLE[ft.kind] +
-                (ft.kind === "crit" ? " text-lg" : "")
+                (ft.kind === "crit" ? " text-lg" : " text-sm") +
+                (ft.isMagic ? " italic tracking-wide" : "")
               }
             >
               {ft.text}
@@ -192,7 +196,13 @@ export default function CombatantPanel({
 
         <div
           className={dim + " relative flex items-center justify-center"}
-          style={{ filter: "drop-shadow(0 10px 16px rgba(0,0,0,0.65)) brightness(0.93) contrast(1.06) saturate(0.9)" }}
+          style={{
+            filter:
+              "drop-shadow(0 10px 16px rgba(0,0,0,0.65)) brightness(0.93) contrast(1.06) saturate(0.9)" +
+              (lowHp ? (isHero ? " brightness(0.82) saturate(0.6)" : " saturate(1.5) hue-rotate(-12deg) brightness(0.85)") : ""),
+            transform: lowHp && isHero ? "rotate(-3deg) translateY(3px)" : undefined,
+            transition: "filter 0.6s, transform 0.6s",
+          }}
         >
           <AnimatedSprite
             idleSrc={combatant.portrait}
@@ -201,6 +211,7 @@ export default function CombatantPanel({
             playing={playing}
             onFinish={onFinishAttack}
             alt={combatant.name}
+            idleFrameDuration={lowHp ? (isHero ? 340 : 140) : undefined}
           />
 
           {impactBursts.map((burst) => (

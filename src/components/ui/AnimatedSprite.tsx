@@ -37,8 +37,23 @@ export default function AnimatedSprite({
 
   useEffect(() => {
     if (idleFrames.length < 2 || playing) return;
-    const id = setInterval(() => setIdleTick((t) => t + 1), idleFrameDuration);
-    return () => clearInterval(id);
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    // A perfectly uniform interval reads as mechanical — occasionally hold a frame a beat longer,
+    // like a breath caught, so the loop doesn't feel like a metronome.
+    function schedule() {
+      const extraPause = Math.random() < 0.15 ? 400 + Math.random() * 300 : 0;
+      timeoutId = setTimeout(() => {
+        if (cancelled) return;
+        setIdleTick((t) => t + 1);
+        schedule();
+      }, idleFrameDuration + extraPause);
+    }
+    schedule();
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [idleFrames.length, playing, idleFrameDuration]);
 
   useEffect(() => {
