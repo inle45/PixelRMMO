@@ -120,23 +120,36 @@ export default function WorldMap({ onClose }: WorldMapProps) {
 
   // Bounded to how far the (scaled) box actually overhangs the viewport on that axis — the box can
   // never be dragged far enough to expose the black backdrop behind it, on either axis, at any zoom.
-  function clampX(v: number): number {
-    const bound = Math.max(0, (boxPxRef.current * scale - viewportSizeRef.current.w) / 2);
+  // `s` defaults to the current render's scale but takes an explicit override so applyZoom can clamp
+  // against the *target* scale before that state update has actually landed.
+  function clampX(v: number, s: number = scale): number {
+    const bound = Math.max(0, (boxPxRef.current * s - viewportSizeRef.current.w) / 2);
     return clamp(v, -bound, bound);
   }
-  function clampY(v: number): number {
-    const bound = Math.max(0, (boxPxRef.current * scale - viewportSizeRef.current.h) / 2);
+  function clampY(v: number, s: number = scale): number {
+    const bound = Math.max(0, (boxPxRef.current * s - viewportSizeRef.current.h) / 2);
     return clamp(v, -bound, bound);
   }
 
-  // Re-clamps after every zoom change, not just after a drag: the bound shrinks as `scale` shrinks
-  // (there's less overhang to hide behind at 1x than at 3x), so zooming back out from a pan near the
-  // edge could otherwise leave tx/ty pointing past the box's new, smaller overhang and expose black.
-  useEffect(() => {
-    setTx((v) => clampX(v));
-    setTy((v) => clampY(v));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scale]);
+  // Changes scale AND compensates tx/ty in the same breath, atomically, so the point currently under
+  // the viewport's centre stays there — a bare `setScale` alone leaves tx/ty untouched, and since the
+  // box's own transform-origin is its own centre (not the viewport's), the visible content jumps to a
+  // completely different part of the map the instant scale changes, worse the further off-centre the
+  // current pan already is. tx/ty scale by the same (new/old) ratio needed to hold a fixed box-local
+  // point at a fixed screen position under a scale change, then get clamped against the *new* scale
+  // (not the old one) so a zoom-out can never leave them pointing past the box's new, smaller overhang
+  // — the previous version clamped a tick *after* the scale state had already landed, which on a big
+  // zoom-out (especially in the same gesture as an already off-centre pan) read as the view suddenly
+  // snapping to a totally different, often still-fogged part of the map.
+  function applyZoom(rawScale: number) {
+    const newScale = clamp(rawScale, MIN_SCALE, MAX_SCALE);
+    setScale((oldScale) => {
+      const ratio = newScale / oldScale;
+      setTx((v) => clampX(v * ratio, newScale));
+      setTy((v) => clampY(v * ratio, newScale));
+      return newScale;
+    });
+  }
 
   // Recenters the pan so `node` sits at the viewport's centre, at the *current* zoom level — never
   // exactly centering a node near the map's edge (that would require the box to extend past its own
@@ -244,7 +257,7 @@ export default function WorldMap({ onClose }: WorldMapProps) {
     if (pointers.current.size === 2) {
       const dist = pinchDistance();
       if (dist && pinchStartDist.current) {
-        setScale((s) => clamp(s * (dist / pinchStartDist.current!), MIN_SCALE, MAX_SCALE));
+        applyZoom(scale * (dist / pinchStartDist.current));
       }
       pinchStartDist.current = dist;
     } else if (pointers.current.size === 1 && dragStart.current) {
@@ -270,7 +283,7 @@ export default function WorldMap({ onClose }: WorldMapProps) {
 
   function onWheel(e: ReactWheelEvent) {
     e.preventDefault();
-    setScale((s) => clamp(s * (1 - e.deltaY * 0.0015), MIN_SCALE, MAX_SCALE));
+    applyZoom(scale * (1 - e.deltaY * 0.0015));
   }
 
   function onBoxClick(e: ReactMouseEvent) {
