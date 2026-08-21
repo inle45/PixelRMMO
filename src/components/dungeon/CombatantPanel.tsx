@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import AnimatedSprite from "../ui/AnimatedSprite";
 import OneShotFx from "./OneShotFx";
@@ -59,6 +60,21 @@ export default function CombatantPanel({
   const dim = size === "lg" ? "h-32 w-32" : "h-20 w-20";
   const isHero = combatant.side === "hero";
 
+  // "Ghost" HP trail (Pokémon-style): on a drop, the lighter trail bar holds at the old value
+  // for a beat before draining down to match, so a hit reads as a visible bite out of the bar.
+  const prevHpPct = useRef(hpPct);
+  const [ghostPct, setGhostPct] = useState(hpPct);
+  useEffect(() => {
+    if (hpPct < prevHpPct.current) {
+      setGhostPct(prevHpPct.current);
+      const t = setTimeout(() => setGhostPct(hpPct), 350);
+      prevHpPct.current = hpPct;
+      return () => clearTimeout(t);
+    }
+    prevHpPct.current = hpPct;
+    setGhostPct(hpPct);
+  }, [hpPct]);
+
   const content = (
     <motion.div
       className="relative flex flex-col items-center"
@@ -71,11 +87,16 @@ export default function CombatantPanel({
           {combatant.name}
         </p>
         <div className="w-20 sm:w-24">
-          <div className="h-[5px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
+          <div className="relative h-[5px] w-full overflow-hidden rounded-full bg-black/40 backdrop-blur-sm">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-300 shadow-[0_0_6px_rgba(244,63,94,0.9)]"
+              className="absolute inset-y-0 left-0 h-full rounded-full bg-amber-300/70"
+              animate={{ width: `${ghostPct}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+            <motion.div
+              className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-300 shadow-[0_0_6px_rgba(244,63,94,0.9)]"
               animate={{ width: `${hpPct}%` }}
-              transition={{ duration: 0.4 }}
+              transition={{ duration: 0.2 }}
             />
           </div>
           {combatant.maxMana > 0 && (

@@ -35,6 +35,7 @@ import CombatantPanel, { type FloatingText } from "./CombatantPanel";
 import TurnQueueBar from "./TurnQueueBar";
 import ActionMenu from "./ActionMenu";
 import ArenaBackdrop from "./ArenaBackdrop";
+import WeatherParticles from "./WeatherParticles";
 import { DAMAGE_TYPES } from "../../data/typeSystem";
 import type { ImpactBurst, DeathBurst } from "../../data/battleVfx";
 
@@ -511,6 +512,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       exit={{ opacity: 0 }}
     >
       <ArenaBackdrop />
+      <WeatherParticles weatherId={activeWeather.id} />
 
       <div className="relative flex flex-1 flex-col px-3 pt-[calc(0.6rem+env(safe-area-inset-top))]">
         {/* Streamlined top bar: weather + wave + initiative */}
