@@ -1,0 +1,353 @@
+[
+  {
+    "id": "poule_huppee",
+    "name": "Poule Huppée",
+    "tier": 1,
+    "tierLabel": "Basse-cour",
+    "levelRequired": 1,
+    "feedId": "graines_sauvages",
+    "feedName": "Graines Sauvages",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "oeufs_frais",
+        "name": "Œufs Frais",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 180000,
+    "gestationMs": 480000,
+    "growthHarvests": 2,
+    "cost": 70,
+    "accent": "#fbbf24"
+  },
+  {
+    "id": "mouton_cornu",
+    "name": "Mouton Cornu",
+    "tier": 1,
+    "tierLabel": "Basse-cour",
+    "levelRequired": 2,
+    "feedId": "herbe_tendre",
+    "feedName": "Herbe Tendre",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "laine_brute",
+        "name": "Laine Brute",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 180000,
+    "gestationMs": 480000,
+    "growthHarvests": 2,
+    "cost": 85,
+    "accent": "#e7e5e4"
+  },
+  {
+    "id": "chevre_bosquets",
+    "name": "Chèvre des Bosquets",
+    "tier": 1,
+    "tierLabel": "Basse-cour",
+    "levelRequired": 2,
+    "feedId": "ecorces_tendres",
+    "feedName": "Écorces Tendres",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "lait_doux",
+        "name": "Lait Doux",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 180000,
+    "gestationMs": 480000,
+    "growthHarvests": 2,
+    "cost": 85,
+    "accent": "#d6d3d1"
+  },
+  {
+    "id": "lapin_agile",
+    "name": "Lapin Agile",
+    "tier": 1,
+    "tierLabel": "Basse-cour",
+    "levelRequired": 1,
+    "feedId": "racines_comestibles",
+    "feedName": "Racines Comestibles",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "duvet_soyeux",
+        "name": "Duvet Soyeux",
+        "qty": 1,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 180000,
+    "gestationMs": 480000,
+    "growthHarvests": 2,
+    "cost": 75,
+    "accent": "#a8a29e"
+  },
+  {
+    "id": "oie_vigilante",
+    "name": "Oie Vigilante",
+    "tier": 1,
+    "tierLabel": "Basse-cour",
+    "levelRequired": 3,
+    "feedId": "graines_sauvages",
+    "feedName": "Graines Sauvages",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "plumes_legeres",
+        "name": "Plumes Légères",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 180000,
+    "gestationMs": 480000,
+    "growthHarvests": 2,
+    "cost": 95,
+    "accent": "#f5f5f4"
+  },
+  {
+    "id": "sanglier_fourres",
+    "name": "Sanglier des Fourrés",
+    "tier": 2,
+    "tierLabel": "Étable des Bois",
+    "levelRequired": 11,
+    "feedId": "glands",
+    "feedName": "Glands",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "cuir_epais",
+        "name": "Cuir Épais",
+        "qty": 1,
+        "chance": 100
+      },
+      {
+        "materialId": "truffes",
+        "name": "Truffes des Fourrés",
+        "qty": 1,
+        "chance": 25
+      }
+    ],
+    "cycleMs": 480000,
+    "gestationMs": 1200000,
+    "growthHarvests": 3,
+    "cost": 420,
+    "accent": "#78350f"
+  },
+  {
+    "id": "boeuf_rustique",
+    "name": "Bœuf Rustique",
+    "tier": 2,
+    "tierLabel": "Étable des Bois",
+    "levelRequired": 12,
+    "feedId": "fourrage",
+    "feedName": "Fourrage",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "lait_concentre",
+        "name": "Lait Concentré",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 480000,
+    "gestationMs": 1200000,
+    "growthHarvests": 3,
+    "cost": 460,
+    "accent": "#92400e"
+  },
+  {
+    "id": "cerf_sylvestre",
+    "name": "Cerf Sylvestre",
+    "tier": 2,
+    "tierLabel": "Étable des Bois",
+    "levelRequired": 13,
+    "feedId": "seve_ambree",
+    "feedName": "Sève Ambrée",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "velours_bois",
+        "name": "Velours de Bois Magique",
+        "qty": 1,
+        "chance": 70
+      }
+    ],
+    "cycleMs": 480000,
+    "gestationMs": 1200000,
+    "growthHarvests": 3,
+    "cost": 540,
+    "accent": "#ca8a04"
+  },
+  {
+    "id": "blaireau_fouisseur",
+    "name": "Blaireau Fouisseur",
+    "tier": 2,
+    "tierLabel": "Étable des Bois",
+    "levelRequired": 11,
+    "feedId": "glands",
+    "feedName": "Glands",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "pepites_metal",
+        "name": "Pépites de Cuivre et Fer",
+        "qty": 2,
+        "chance": 100
+      }
+    ],
+    "cycleMs": 480000,
+    "gestationMs": 1200000,
+    "growthHarvests": 3,
+    "cost": 430,
+    "accent": "#57534e"
+  },
+  {
+    "id": "faucon_chasseur",
+    "name": "Faucon Chasseur",
+    "tier": 2,
+    "tierLabel": "Étable des Bois",
+    "levelRequired": 14,
+    "feedId": "viande_sechee",
+    "feedName": "Viande Séchée",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "serres_tranchantes",
+        "name": "Serres Tranchantes",
+        "qty": 1,
+        "chance": 65
+      }
+    ],
+    "cycleMs": 480000,
+    "gestationMs": 1200000,
+    "growthHarvests": 3,
+    "cost": 580,
+    "accent": "#b45309"
+  },
+  {
+    "id": "salamandre_braise",
+    "name": "Salamandre de Braise",
+    "tier": 3,
+    "tierLabel": "Ménagerie Mystique",
+    "levelRequired": 21,
+    "feedId": "fruits_ambre",
+    "feedName": "Fruits d'Ambre",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "ecailles_ignifugees",
+        "name": "Écailles Ignifugées",
+        "qty": 1,
+        "chance": 60
+      }
+    ],
+    "cycleMs": 1200000,
+    "gestationMs": 2700000,
+    "growthHarvests": 4,
+    "cost": 1800,
+    "accent": "#f97316"
+  },
+  {
+    "id": "loup_ombre",
+    "name": "Loup d'Ombre",
+    "tier": 3,
+    "tierLabel": "Ménagerie Mystique",
+    "levelRequired": 22,
+    "feedId": "viandes_rares",
+    "feedName": "Viandes Rares",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "fourrure_spectrale",
+        "name": "Fourrure Spectrale",
+        "qty": 1,
+        "chance": 55
+      }
+    ],
+    "cycleMs": 1200000,
+    "gestationMs": 2700000,
+    "growthHarvests": 4,
+    "cost": 2000,
+    "accent": "#7c3aed"
+  },
+  {
+    "id": "jeune_griffon",
+    "name": "Jeune Griffon",
+    "tier": 3,
+    "tierLabel": "Ménagerie Mystique",
+    "levelRequired": 23,
+    "feedId": "poisson_cuisine",
+    "feedName": "Poisson Cuisiné",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "plumes_tempetueuses",
+        "name": "Plumes Tempétueuses",
+        "qty": 1,
+        "chance": 55
+      }
+    ],
+    "cycleMs": 1200000,
+    "gestationMs": 2700000,
+    "growthHarvests": 4,
+    "cost": 2200,
+    "accent": "#38bdf8"
+  },
+  {
+    "id": "tortue_cristalline",
+    "name": "Tortue Cristalline",
+    "tier": 3,
+    "tierLabel": "Ménagerie Mystique",
+    "levelRequired": 24,
+    "feedId": "seve_petrifiee",
+    "feedName": "Sève Pétrifiée",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "carapace_vivante",
+        "name": "Carapace Vivante",
+        "qty": 1,
+        "chance": 35
+      }
+    ],
+    "cycleMs": 1200000,
+    "gestationMs": 2700000,
+    "growthHarvests": 4,
+    "cost": 2600,
+    "accent": "#22d3ee"
+  },
+  {
+    "id": "phenix_cendre",
+    "name": "Phénix Cendré",
+    "tier": 3,
+    "tierLabel": "Ménagerie Mystique",
+    "levelRequired": 25,
+    "feedId": "baies_incandescentes",
+    "feedName": "Baies Incandescentes",
+    "feedPerCycle": 2,
+    "products": [
+      {
+        "materialId": "cendres_renaissance",
+        "name": "Cendres de Renaissance",
+        "qty": 1,
+        "chance": 25
+      }
+    ],
+    "cycleMs": 1200000,
+    "gestationMs": 2700000,
+    "growthHarvests": 4,
+    "cost": 3400,
+    "accent": "#ef4444"
+  }
+]

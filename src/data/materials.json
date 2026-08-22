@@ -642,5 +642,407 @@
     "value": 180,
     "tradeable": true,
     "eurValue": 14.0
+  },
+  {
+    "id": "buche_frene",
+    "name": "Bûche de Frêne",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Menuiserie légère (T1)",
+    "lore": "Bois clair et souple des jeunes frênes de la lisière, facile à fendre d'un seul coup net.",
+    "value": 8,
+    "tradeable": true
+  },
+  {
+    "id": "buche_chene",
+    "name": "Bûche de Chêne Noueux",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Menuiserie lourde (T2)",
+    "lore": "Dense et capricieux : chaque nœud renvoie la hache dans les mains du bûcheron mal assuré.",
+    "value": 22,
+    "tradeable": true
+  },
+  {
+    "id": "buche_bois_fer",
+    "name": "Bûche de Bois de Fer",
+    "rarity": "rare",
+    "category": "forge",
+    "usage": "Menuiserie ancienne (T3)",
+    "lore": "Le tronc des ironwoods sonne comme du métal sous la lame. On dit qu'il se souvient des coups reçus.",
+    "value": 60,
+    "tradeable": true,
+    "eurValue": 4.5
+  },
+  {
+    "id": "graines_sauvages",
+    "name": "Graines Sauvages",
+    "rarity": "poor",
+    "category": "elevage",
+    "usage": "Nourriture — basse-cour",
+    "lore": "Ramassées à poignées dans les herbes hautes de la lisière.",
+    "value": 3,
+    "tradeable": true
+  },
+  {
+    "id": "herbe_tendre",
+    "name": "Herbe Tendre",
+    "rarity": "poor",
+    "category": "elevage",
+    "usage": "Nourriture — basse-cour",
+    "lore": "Les jeunes pousses grasses qui repoussent après la coupe.",
+    "value": 3,
+    "tradeable": true
+  },
+  {
+    "id": "ecorces_tendres",
+    "name": "Écorces Tendres",
+    "rarity": "poor",
+    "category": "elevage",
+    "usage": "Nourriture — basse-cour",
+    "lore": "Lanières d'écorce fraîche que les chèvres réclament en bêlant.",
+    "value": 4,
+    "tradeable": true
+  },
+  {
+    "id": "racines_comestibles",
+    "name": "Racines Comestibles",
+    "rarity": "poor",
+    "category": "elevage",
+    "usage": "Nourriture — basse-cour",
+    "lore": "Arrachées au pied des souches, terreuses et croquantes.",
+    "value": 4,
+    "tradeable": true
+  },
+  {
+    "id": "glands",
+    "name": "Glands",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Nourriture — étable",
+    "lore": "La manne des vieux chênes, âprement disputée entre sangliers et blaireaux.",
+    "value": 6,
+    "tradeable": true
+  },
+  {
+    "id": "fourrage",
+    "name": "Fourrage",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Nourriture — étable",
+    "lore": "Foin coupé et séché en meules derrière la grange.",
+    "value": 7,
+    "tradeable": true
+  },
+  {
+    "id": "seve_ambree",
+    "name": "Sève Ambrée",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Nourriture — étable",
+    "lore": "Récoltée goutte à goutte à l'entaille : les cerfs la suivent à l'odeur.",
+    "value": 14,
+    "tradeable": true
+  },
+  {
+    "id": "viande_sechee",
+    "name": "Viande Séchée",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Nourriture — étable",
+    "lore": "Lanières fumées au-dessus du feu de camp, de quoi tenir un rapace en main.",
+    "value": 16,
+    "tradeable": true
+  },
+  {
+    "id": "fruits_ambre",
+    "name": "Fruits d'Ambre",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Nourriture — ménagerie",
+    "lore": "Ils gardent la chaleur du soleil bien après la tombée de la nuit.",
+    "value": 32,
+    "tradeable": true
+  },
+  {
+    "id": "viandes_rares",
+    "name": "Viandes Rares",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Nourriture — ménagerie",
+    "lore": "Les pièces de choix, réservées à ce qui a des crocs et de la mémoire.",
+    "value": 36,
+    "tradeable": true
+  },
+  {
+    "id": "poisson_cuisine",
+    "name": "Poisson Cuisiné",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Nourriture — ménagerie",
+    "lore": "Grillé au chaudron : le seul plat qu'un griffonneau daigne accepter.",
+    "value": 34,
+    "tradeable": true
+  },
+  {
+    "id": "seve_petrifiee",
+    "name": "Sève Pétrifiée",
+    "rarity": "epic",
+    "category": "elevage",
+    "usage": "Nourriture — ménagerie",
+    "lore": "De l'ambre si vieux qu'il est redevenu pierre. La tortue la broie sans effort.",
+    "value": 70,
+    "tradeable": true
+  },
+  {
+    "id": "baies_incandescentes",
+    "name": "Baies Incandescentes",
+    "rarity": "epic",
+    "category": "elevage",
+    "usage": "Nourriture — ménagerie",
+    "lore": "Elles brûlent encore dans la paume. Seul un phénix y trouve du goût.",
+    "value": 78,
+    "tradeable": true
+  },
+  {
+    "id": "oeufs_frais",
+    "name": "Œufs Frais",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Cuisine, alchimie légère",
+    "lore": "Encore tièdes au ramassage, la coquille mouchetée de brun.",
+    "value": 9,
+    "tradeable": true
+  },
+  {
+    "id": "laine_brute",
+    "name": "Laine Brute",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Tissage, rembourrage",
+    "lore": "Grasse de suint, elle sent la prairie et tient chaud avant même d'être filée.",
+    "value": 11,
+    "tradeable": true
+  },
+  {
+    "id": "lait_doux",
+    "name": "Lait Doux",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Cuisine, fromages",
+    "lore": "Onctueux et légèrement herbacé — le goût du bosquet dans un seau de bois.",
+    "value": 10,
+    "tradeable": true
+  },
+  {
+    "id": "duvet_soyeux",
+    "name": "Duvet Soyeux",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Doublures, flèches empennées",
+    "lore": "Si léger qu'une seule respiration en disperse une pleine poignée.",
+    "value": 19,
+    "tradeable": true
+  },
+  {
+    "id": "plumes_legeres",
+    "name": "Plumes Légères",
+    "rarity": "common",
+    "category": "elevage",
+    "usage": "Empennage, écriture",
+    "lore": "L'oie les cède sans plaisir et le fait savoir à tout le campement.",
+    "value": 12,
+    "tradeable": true
+  },
+  {
+    "id": "cuir_epais",
+    "name": "Cuir Épais",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Armures souples (T2)",
+    "lore": "Une peau que rien ne perce facilement, marquée par les ronces des fourrés.",
+    "value": 30,
+    "tradeable": true
+  },
+  {
+    "id": "truffes",
+    "name": "Truffes des Fourrés",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Haute cuisine, commerce",
+    "lore": "Le sanglier les trouve, jamais le bûcheron. Elles valent leur poids en Écus.",
+    "value": 65,
+    "tradeable": true,
+    "eurValue": 3.5
+  },
+  {
+    "id": "lait_concentre",
+    "name": "Lait Concentré",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Cuisine de festin",
+    "lore": "Réduit des heures durant sur la braise jusqu'à napper la cuillère.",
+    "value": 26,
+    "tradeable": true
+  },
+  {
+    "id": "velours_bois",
+    "name": "Velours de Bois Magique",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Enchantement, philtres",
+    "lore": "La peau qui recouvre les jeunes bois du cerf, encore chargée de sève vive.",
+    "value": 72,
+    "tradeable": true,
+    "eurValue": 4.0
+  },
+  {
+    "id": "pepites_metal",
+    "name": "Pépites de Cuivre et Fer",
+    "rarity": "uncommon",
+    "category": "elevage",
+    "usage": "Fonderie",
+    "lore": "Ce que le blaireau remonte de ses galeries et abandonne à l'entrée du terrier.",
+    "value": 34,
+    "tradeable": true
+  },
+  {
+    "id": "serres_tranchantes",
+    "name": "Serres Tranchantes",
+    "rarity": "rare",
+    "category": "elevage",
+    "usage": "Armes légères, pointes",
+    "lore": "Elles gardent leur fil sans affûtage. Le faucon les use plus vite qu'on ne les récolte.",
+    "value": 68,
+    "tradeable": true,
+    "eurValue": 3.8
+  },
+  {
+    "id": "ecailles_ignifugees",
+    "name": "Écailles Ignifugées",
+    "rarity": "epic",
+    "category": "elevage",
+    "usage": "Armures ignifuges",
+    "lore": "Elles refroidissent la main qui les tient au lieu de la brûler.",
+    "value": 130,
+    "tradeable": true,
+    "eurValue": 9.0
+  },
+  {
+    "id": "fourrure_spectrale",
+    "name": "Fourrure Spectrale",
+    "rarity": "epic",
+    "category": "elevage",
+    "usage": "Capes d'ombre, furtivité",
+    "lore": "On la voit mal en plein jour et pas du tout la nuit.",
+    "value": 140,
+    "tradeable": true,
+    "eurValue": 9.5
+  },
+  {
+    "id": "plumes_tempetueuses",
+    "name": "Plumes Tempétueuses",
+    "rarity": "epic",
+    "category": "elevage",
+    "usage": "Enchantement de foudre",
+    "lore": "Chacune crépite doucement, comme si l'orage y était resté coincé.",
+    "value": 150,
+    "tradeable": true,
+    "eurValue": 10.0
+  },
+  {
+    "id": "carapace_vivante",
+    "name": "Carapace Vivante",
+    "rarity": "legendary",
+    "category": "elevage",
+    "usage": "Boucliers légendaires",
+    "lore": "Elle repousse là où on l'entaille, lentement, siècle après siècle.",
+    "value": 240,
+    "tradeable": true,
+    "eurValue": 17.0
+  },
+  {
+    "id": "cendres_renaissance",
+    "name": "Cendres de Renaissance",
+    "rarity": "mythic",
+    "category": "elevage",
+    "usage": "Résurrection, haute magie",
+    "lore": "Tièdes des années durant. On les recueille le matin, là où l'oiseau a dormi.",
+    "value": 420,
+    "tradeable": true,
+    "eurValue": 32.0
+  },
+  {
+    "id": "fil_de_soie",
+    "name": "Fil de Soie",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Cordes, arcs, pièges",
+    "lore": "Tendu entre deux frênes, il siffle avant de céder — quand il cède.",
+    "provenance": {
+      "monsterId": "bark_weaver_spider",
+      "dropChance": 55
+    },
+    "value": 13,
+    "tradeable": true
+  },
+  {
+    "id": "aiguillon_acere",
+    "name": "Aiguillon Acéré",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Dagues, pointes empoisonnées",
+    "lore": "Encore humide de venin, il perce le cuir bouilli sans ralentir.",
+    "provenance": {
+      "monsterId": "trunk_hornet",
+      "dropChance": 50
+    },
+    "value": 38,
+    "tradeable": true
+  },
+  {
+    "id": "gelee_royale",
+    "name": "Gelée Royale",
+    "rarity": "rare",
+    "category": "alchimie",
+    "usage": "Potions de vigueur",
+    "lore": "Le cœur sucré de la ruche, arraché à une garde qui ne pardonne pas.",
+    "provenance": {
+      "monsterId": "trunk_hornet",
+      "dropChance": 25
+    },
+    "value": 85,
+    "tradeable": true,
+    "eurValue": 5.0
+  },
+  {
+    "id": "coeur_ecorce",
+    "name": "Cœur d'Écorce Pétrifié",
+    "rarity": "epic",
+    "category": "enchantement",
+    "usage": "Forge sylvestre, talismans",
+    "lore": "Il bat encore, une fois par minute, longtemps après la chute de l'arbre.",
+    "provenance": {
+      "monsterId": "corrupted_treant",
+      "dropChance": 40
+    },
+    "value": 180,
+    "tradeable": true,
+    "eurValue": 12.0
+  },
+  {
+    "id": "seve_ancestrale",
+    "name": "Sève Ancestrale",
+    "rarity": "legendary",
+    "category": "enchantement",
+    "usage": "Enchantement majeur",
+    "lore": "Mille ans de forêt réduits à une fiole. Elle refuse de geler.",
+    "provenance": {
+      "monsterId": "corrupted_treant",
+      "dropChance": 20
+    },
+    "value": 300,
+    "tradeable": true,
+    "eurValue": 22.0
   }
 ]

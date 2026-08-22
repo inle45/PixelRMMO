@@ -5,8 +5,10 @@ import potionCatIcon from "../assets/inventory/filters/potions.png";
 import enchantCatIcon from "../assets/icons/dungeon/skills.png";
 import reliqueCatIcon from "../assets/inventory/filters/relics.png";
 import pecheCatIcon from "../assets/materials/icons/golden_carp.png";
+// The barn's own hen sprite doubles as the Élevage glyph — the species art is already drawn.
+import elevageCatIcon from "../assets/bestiary/portraits/poule_huppee.png";
 
-export type MaterialCategory = "forge" | "alchimie" | "enchantement" | "reliques" | "peche";
+export type MaterialCategory = "forge" | "alchimie" | "enchantement" | "reliques" | "peche" | "elevage";
 
 interface RawMaterial {
   id: string;
@@ -54,6 +56,7 @@ export const CATEGORY_LABELS: Record<MaterialCategory, string> = {
   enchantement: "Enchantement",
   reliques: "Reliques",
   peche: "Faune Aquatique",
+  elevage: "Élevage & Sylve",
 };
 
 /** Sprite paths, not emoji — the app's no-emoji rule applies to the Codex filters too. All four
@@ -65,4 +68,5 @@ export const CATEGORY_ICONS: Record<MaterialCategory, string> = {
   reliques: reliqueCatIcon,
   // Reuses the Carpe Dorée sprite as the category glyph rather than drawing a second fish.
   peche: pecheCatIcon,
+  elevage: elevageCatIcon,
 };

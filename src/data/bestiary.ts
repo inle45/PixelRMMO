@@ -1,6 +1,6 @@
 import rawBestiary from "./bestiary.json";
 
-export type MonsterFamily = "vermin" | "skeleton" | "spectre" | "guardian" | "boss";
+export type MonsterFamily = "vermin" | "skeleton" | "spectre" | "guardian" | "boss" | "faune";
 export type MonsterRarity = "normal" | "rare" | "miniboss" | "boss";
 export type DamageType = "physical" | "magic";
 
@@ -153,6 +153,7 @@ export const FAMILY_LABELS: Record<MonsterFamily, string> = {
   skeleton: "Squelettes",
   spectre: "Spectres",
   guardian: "Gardiens & Rares",
+  faune: "Faune Domestique",
   boss: "Boss & Élites",
 };
 

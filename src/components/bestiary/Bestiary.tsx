@@ -13,10 +13,11 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "skeleton", label: FAMILY_LABELS.skeleton },
   { id: "spectre", label: FAMILY_LABELS.spectre },
   { id: "guardian", label: FAMILY_LABELS.guardian },
+  { id: "faune", label: FAMILY_LABELS.faune },
   { id: "boss", label: FAMILY_LABELS.boss },
 ];
 
-const FAMILY_ORDER: MonsterFamily[] = ["vermin", "skeleton", "spectre", "guardian", "boss"];
+const FAMILY_ORDER: MonsterFamily[] = ["vermin", "skeleton", "spectre", "guardian", "faune", "boss"];
 
 interface BestiaryProps {
   /** Set by CodexHub when a material card's provenance link is clicked, to jump straight to that monster. */
@@ -41,7 +42,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
   }, []);
 
   const counts = useMemo(() => {
-    const c: Record<FilterId, number> = { all: BESTIARY.length, vermin: 0, skeleton: 0, spectre: 0, guardian: 0, boss: 0 };
+    const c: Record<FilterId, number> = { all: BESTIARY.length, vermin: 0, skeleton: 0, spectre: 0, guardian: 0, faune: 0, boss: 0 };
     for (const m of BESTIARY) c[m.family]++;
     return c;
   }, []);

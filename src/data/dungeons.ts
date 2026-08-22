@@ -2,6 +2,8 @@ import skullIcon from "../assets/icons/items/skull.png";
 import caveIcon from "../assets/gathering/nodes/node-t2.png";
 import lakeIcon from "../assets/bestiary/portraits/crater_leviathan.png";
 import canyonIcon from "../assets/bestiary/portraits/sandstone_golem.png";
+import forestIcon from "../assets/bestiary/portraits/corrupted_treant.png";
+import barnIcon from "../assets/bestiary/portraits/mouton_cornu.png";
 
 export interface DungeonDef {
   id: string;
@@ -19,4 +21,6 @@ export const DUNGEONS: DungeonDef[] = [
   { id: "grotte-champignons", name: "Zone de Récolte", subtitle: "La Grotte aux Champignons", icon: caveIcon },
   { id: "bassin-cratere", name: "Zone de Pêche", subtitle: "Le Bassin du Cratère", icon: lakeIcon },
   { id: "canyons-ecarlates", name: "Zone de Minage", subtitle: "Les Canyons Écarlates", icon: canyonIcon },
+  { id: "lisiere-sylvestre", name: "Zone de Bûcheronnage", subtitle: "La Lisière Sylvestre", icon: forestIcon },
+  { id: "elevage-domestique", name: "Élevage", subtitle: "Élevage & Faune Domestique", icon: barnIcon },
 ];

@@ -2035,5 +2035,993 @@
         }
       ]
     }
+  },
+  {
+    "id": "bark_weaver_spider",
+    "dungeonId": "lisiere-sylvestre",
+    "name": "Araignée Tisseuse des Écorces",
+    "family": "vermin",
+    "level": "2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 58,
+      "atk": 9,
+      "def": 5,
+      "speedLabel": "Vive",
+      "speedValue": 4
+    },
+    "extraStats": [
+      {
+        "label": "Entrave",
+        "value": 40,
+        "display": "40%"
+      }
+    ],
+    "traits": [
+      "Camouflage d'écorce",
+      "Toiles collantes"
+    ],
+    "skill": {
+      "name": "Toile Engluante",
+      "iconId": "nature",
+      "description": "Projette une toile épaisse qui ralentit la cible et la colle au sol."
+    },
+    "lore": "Dissimulée dans le feuillage bas des frênes, elle tisse des toiles collantes pour piéger les bûcherons imprudents.",
+    "drops": [
+      {
+        "name": "Fil de Soie",
+        "chance": 55,
+        "materialId": "fil_de_soie"
+      },
+      {
+        "name": "Glande de Venin Mineure",
+        "chance": 35,
+        "materialId": "minor_venom_gland"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 8,
+        "max": 18
+      }
+    ],
+    "combat": {
+      "typeLabel": "Bête / Nature",
+      "combatTypes": [
+        "nature",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [
+        {
+          "type": "nature",
+          "percent": 30
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "trunk_hornet",
+    "dungeonId": "lisiere-sylvestre",
+    "name": "Frelon Géant des Troncs",
+    "family": "vermin",
+    "level": "11",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 140,
+      "atk": 22,
+      "def": 11,
+      "speedLabel": "Fulgurante",
+      "speedValue": 6
+    },
+    "extraStats": [
+      {
+        "label": "Esquive",
+        "value": 35,
+        "display": "35%"
+      }
+    ],
+    "traits": [
+      "Vol stationnaire",
+      "Essaim protecteur"
+    ],
+    "skill": {
+      "name": "Dard Fulgurant",
+      "iconId": "poison",
+      "description": "Enchaîne trois piqûres si rapides que l'armure n'a pas le temps d'absorber la première."
+    },
+    "lore": "Garde agressif des cavités des vieux chênes, protégeant férocement le miel forestier contre toute intrusion.",
+    "drops": [
+      {
+        "name": "Aiguillon Acéré",
+        "chance": 50,
+        "materialId": "aiguillon_acere"
+      },
+      {
+        "name": "Gelée Royale",
+        "chance": 25,
+        "materialId": "gelee_royale"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 22,
+        "max": 45
+      }
+    ],
+    "combat": {
+      "typeLabel": "Insecte / Venin",
+      "combatTypes": [
+        "nature",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [
+        {
+          "type": "physical",
+          "percent": 20
+        }
+      ],
+      "immunities": [
+        {
+          "type": "poison"
+        }
+      ],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "corrupted_treant",
+    "dungeonId": "lisiere-sylvestre",
+    "name": "Tréant Corrompu Vengeur",
+    "family": "boss",
+    "level": "21",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 460,
+      "atk": 36,
+      "def": 28,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [
+      {
+        "label": "Dégâts de Zone",
+        "value": 60,
+        "display": "60%"
+      }
+    ],
+    "traits": [
+      "Colossal",
+      "Écorce de fer",
+      "Racines ancrées"
+    ],
+    "skill": {
+      "name": "Fureur des Racines",
+      "iconId": "nature",
+      "description": "Fait jaillir des racines sous toute la clairière, frappant chaque adversaire et les immobilisant."
+    },
+    "lore": "Arbre millénaire possédé par une rage sourde, éveillé par le son des haches frappant le bois de fer.",
+    "drops": [
+      {
+        "name": "Cœur d'Écorce Pétrifié",
+        "chance": 40,
+        "materialId": "coeur_ecorce"
+      },
+      {
+        "name": "Sève Ancestrale",
+        "chance": 20,
+        "materialId": "seve_ancestrale"
+      },
+      {
+        "name": "Bûche de Bois de Fer",
+        "chance": 60,
+        "materialId": "buche_bois_fer"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 70,
+        "max": 130
+      }
+    ],
+    "combat": {
+      "typeLabel": "Nature / Colosse",
+      "combatTypes": [
+        "nature",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.5
+        }
+      ],
+      "resistances": [
+        {
+          "type": "physical",
+          "percent": 40
+        },
+        {
+          "type": "nature"
+        }
+      ],
+      "immunities": [
+        {
+          "type": "poison"
+        }
+      ],
+      "inflicts": [
+        {
+          "status": "stun"
+        }
+      ]
+    }
+  },
+  {
+    "id": "poule_huppee",
+    "dungeonId": "elevage-domestique",
+    "name": "Poule Huppée",
+    "family": "faune",
+    "level": "1",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 24,
+      "atk": 4,
+      "def": 2,
+      "speedLabel": "Modérée",
+      "speedValue": 4
+    },
+    "extraStats": [],
+    "traits": [
+      "Basse-cour",
+      "Régime : Graines Sauvages"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Graines Sauvages, produit Œufs Frais à chaque cycle d'élevage."
+    },
+    "lore": "Sa huppe frémit au moindre bruit. Elle pond mieux quand le campement est calme.",
+    "drops": [
+      {
+        "name": "Œufs Frais",
+        "chance": 100,
+        "materialId": "oeufs_frais"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "physical",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "mouton_cornu",
+    "dungeonId": "elevage-domestique",
+    "name": "Mouton Cornu",
+    "family": "faune",
+    "level": "2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 46,
+      "atk": 6,
+      "def": 6,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [],
+    "traits": [
+      "Basse-cour",
+      "Régime : Herbe Tendre"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Herbe Tendre, produit Laine Brute à chaque cycle d'élevage."
+    },
+    "lore": "Placide jusqu'à ce qu'on approche de sa mangeoire. Ses cornes ont déjà plié un enclos.",
+    "drops": [
+      {
+        "name": "Laine Brute",
+        "chance": 100,
+        "materialId": "laine_brute"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "physical",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "chevre_bosquets",
+    "dungeonId": "elevage-domestique",
+    "name": "Chèvre des Bosquets",
+    "family": "faune",
+    "level": "2",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 38,
+      "atk": 7,
+      "def": 4,
+      "speedLabel": "Modérée",
+      "speedValue": 5
+    },
+    "extraStats": [],
+    "traits": [
+      "Basse-cour",
+      "Régime : Écorces Tendres"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Écorces Tendres, produit Lait Doux à chaque cycle d'élevage."
+    },
+    "lore": "Grimpe partout, mange tout, et regarde le bûcheron droit dans les yeux en le faisant.",
+    "drops": [
+      {
+        "name": "Lait Doux",
+        "chance": 100,
+        "materialId": "lait_doux"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "physical",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "lapin_agile",
+    "dungeonId": "elevage-domestique",
+    "name": "Lapin Agile",
+    "family": "faune",
+    "level": "1",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 20,
+      "atk": 3,
+      "def": 2,
+      "speedLabel": "Vive",
+      "speedValue": 7
+    },
+    "extraStats": [],
+    "traits": [
+      "Basse-cour",
+      "Régime : Racines Comestibles"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Racines Comestibles, produit Duvet Soyeux à chaque cycle d'élevage."
+    },
+    "lore": "On ne l'attrape jamais deux fois de la même manière.",
+    "drops": [
+      {
+        "name": "Duvet Soyeux",
+        "chance": 100,
+        "materialId": "duvet_soyeux"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "physical",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "oie_vigilante",
+    "dungeonId": "elevage-domestique",
+    "name": "Oie Vigilante",
+    "family": "faune",
+    "level": "3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 30,
+      "atk": 8,
+      "def": 3,
+      "speedLabel": "Modérée",
+      "speedValue": 4
+    },
+    "extraStats": [],
+    "traits": [
+      "Basse-cour",
+      "Régime : Graines Sauvages"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Graines Sauvages, produit Plumes Légères à chaque cycle d'élevage."
+    },
+    "lore": "Meilleure sentinelle que bien des gardes : rien n'entre au campement sans qu'elle le crie.",
+    "drops": [
+      {
+        "name": "Plumes Légères",
+        "chance": 100,
+        "materialId": "plumes_legeres"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "physical",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "sanglier_fourres",
+    "dungeonId": "elevage-domestique",
+    "name": "Sanglier des Fourrés",
+    "family": "faune",
+    "level": "11",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 130,
+      "atk": 20,
+      "def": 14,
+      "speedLabel": "Modérée",
+      "speedValue": 4
+    },
+    "extraStats": [],
+    "traits": [
+      "Étable des Bois",
+      "Régime : Glands"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Glands, produit Cuir Épais à chaque cycle d'élevage."
+    },
+    "lore": "Il trouve les truffes sous trente centimètres de terre et charge quiconque en approche.",
+    "drops": [
+      {
+        "name": "Cuir Épais",
+        "chance": 100,
+        "materialId": "cuir_epais"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "boeuf_rustique",
+    "dungeonId": "elevage-domestique",
+    "name": "Bœuf Rustique",
+    "family": "faune",
+    "level": "12",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 180,
+      "atk": 16,
+      "def": 18,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [],
+    "traits": [
+      "Étable des Bois",
+      "Régime : Fourrage"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Fourrage, produit Lait Concentré à chaque cycle d'élevage."
+    },
+    "lore": "Lent, lourd, inébranlable. Il tire la charrette et ne se plaint jamais.",
+    "drops": [
+      {
+        "name": "Lait Concentré",
+        "chance": 100,
+        "materialId": "lait_concentre"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "cerf_sylvestre",
+    "dungeonId": "elevage-domestique",
+    "name": "Cerf Sylvestre",
+    "family": "faune",
+    "level": "13",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 120,
+      "atk": 22,
+      "def": 10,
+      "speedLabel": "Vive",
+      "speedValue": 6
+    },
+    "extraStats": [],
+    "traits": [
+      "Étable des Bois",
+      "Régime : Sève Ambrée"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Sève Ambrée, produit Velours de Bois Magique à chaque cycle d'élevage."
+    },
+    "lore": "Ses bois repoussent chaque année, chargés d'une sève que les enchanteurs s'arrachent.",
+    "drops": [
+      {
+        "name": "Velours de Bois Magique",
+        "chance": 100,
+        "materialId": "velours_bois"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "nature",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "blaireau_fouisseur",
+    "dungeonId": "elevage-domestique",
+    "name": "Blaireau Fouisseur",
+    "family": "faune",
+    "level": "11",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 110,
+      "atk": 19,
+      "def": 15,
+      "speedLabel": "Lente",
+      "speedValue": 3
+    },
+    "extraStats": [],
+    "traits": [
+      "Étable des Bois",
+      "Régime : Glands"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Glands, produit Pépites de Cuivre et Fer à chaque cycle d'élevage."
+    },
+    "lore": "Il creuse plus vite qu'une équipe de mineurs et remonte ce qu'elle aurait manqué.",
+    "drops": [
+      {
+        "name": "Pépites de Cuivre et Fer",
+        "chance": 100,
+        "materialId": "pepites_metal"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "faucon_chasseur",
+    "dungeonId": "elevage-domestique",
+    "name": "Faucon Chasseur",
+    "family": "faune",
+    "level": "14",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 95,
+      "atk": 26,
+      "def": 8,
+      "speedLabel": "Vive",
+      "speedValue": 8
+    },
+    "extraStats": [],
+    "traits": [
+      "Étable des Bois",
+      "Régime : Viande Séchée"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Viande Séchée, produit Serres Tranchantes à chaque cycle d'élevage."
+    },
+    "lore": "Il revient toujours au gant — mais seulement une fois qu'il a fini de chasser.",
+    "drops": [
+      {
+        "name": "Serres Tranchantes",
+        "chance": 100,
+        "materialId": "serres_tranchantes"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "salamandre_braise",
+    "dungeonId": "elevage-domestique",
+    "name": "Salamandre de Braise",
+    "family": "faune",
+    "level": "21",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 210,
+      "atk": 34,
+      "def": 20,
+      "speedLabel": "Modérée",
+      "speedValue": 5
+    },
+    "extraStats": [],
+    "traits": [
+      "Ménagerie Mystique",
+      "Régime : Fruits d'Ambre"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Fruits d'Ambre, produit Écailles Ignifugées à chaque cycle d'élevage."
+    },
+    "lore": "Elle dort dans les braises du feu de camp et se réveille de mauvaise humeur si on l'éteint.",
+    "drops": [
+      {
+        "name": "Écailles Ignifugées",
+        "chance": 100,
+        "materialId": "ecailles_ignifugees"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "fire"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "loup_ombre",
+    "dungeonId": "elevage-domestique",
+    "name": "Loup d'Ombre",
+    "family": "faune",
+    "level": "22",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 230,
+      "atk": 40,
+      "def": 18,
+      "speedLabel": "Vive",
+      "speedValue": 7
+    },
+    "extraStats": [],
+    "traits": [
+      "Ménagerie Mystique",
+      "Régime : Viandes Rares"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Viandes Rares, produit Fourrure Spectrale à chaque cycle d'élevage."
+    },
+    "lore": "Apprivoisé, dit-on. Personne au campement n'a osé vérifier de nuit.",
+    "drops": [
+      {
+        "name": "Fourrure Spectrale",
+        "chance": 100,
+        "materialId": "fourrure_spectrale"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "shadow",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "holy",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "jeune_griffon",
+    "dungeonId": "elevage-domestique",
+    "name": "Jeune Griffon",
+    "family": "faune",
+    "level": "23",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 250,
+      "atk": 38,
+      "def": 22,
+      "speedLabel": "Vive",
+      "speedValue": 7
+    },
+    "extraStats": [],
+    "traits": [
+      "Ménagerie Mystique",
+      "Régime : Poisson Cuisiné"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Poisson Cuisiné, produit Plumes Tempétueuses à chaque cycle d'élevage."
+    },
+    "lore": "Encore incapable de voler droit, déjà capable de soulever un mouton.",
+    "drops": [
+      {
+        "name": "Plumes Tempétueuses",
+        "chance": 100,
+        "materialId": "plumes_tempetueuses"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "lightning",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "tortue_cristalline",
+    "dungeonId": "elevage-domestique",
+    "name": "Tortue Cristalline",
+    "family": "faune",
+    "level": "24",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 320,
+      "atk": 24,
+      "def": 38,
+      "speedLabel": "Lente",
+      "speedValue": 1
+    },
+    "extraStats": [],
+    "traits": [
+      "Ménagerie Mystique",
+      "Régime : Sève Pétrifiée"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Sève Pétrifiée, produit Carapace Vivante à chaque cycle d'élevage."
+    },
+    "lore": "Sa carapace pousse d'un doigt par décennie. Celle-ci en a plusieurs siècles.",
+    "drops": [
+      {
+        "name": "Carapace Vivante",
+        "chance": 100,
+        "materialId": "carapace_vivante"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "ice",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
+  },
+  {
+    "id": "phenix_cendre",
+    "dungeonId": "elevage-domestique",
+    "name": "Phénix Cendré",
+    "family": "faune",
+    "level": "25",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 280,
+      "atk": 44,
+      "def": 24,
+      "speedLabel": "Vive",
+      "speedValue": 8
+    },
+    "extraStats": [],
+    "traits": [
+      "Ménagerie Mystique",
+      "Régime : Baies Incandescentes"
+    ],
+    "skill": {
+      "name": "Production",
+      "iconId": "nature",
+      "description": "Nourri de Baies Incandescentes, produit Cendres de Renaissance à chaque cycle d'élevage."
+    },
+    "lore": "Il brûle chaque nuit et se réveille chaque matin dans un nid de cendres tièdes.",
+    "drops": [
+      {
+        "name": "Cendres de Renaissance",
+        "chance": 100,
+        "materialId": "cendres_renaissance"
+      }
+    ],
+    "combat": {
+      "typeLabel": "Faune Domestique",
+      "combatTypes": [
+        "fire",
+        "holy"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [],
+      "immunities": [],
+      "inflicts": []
+    }
   }
 ]

@@ -25,6 +25,12 @@ export const FAMILY_THEME: Record<MonsterFamily, { border: string; accentText: s
     accentBg: "bg-amber-400/15",
     glow: "shadow-[0_0_25px_rgba(251,191,36,0.25)]",
   },
+  faune: {
+    border: "border-lime-400/25",
+    accentText: "text-lime-300",
+    accentBg: "bg-lime-400/15",
+    glow: "shadow-[0_0_25px_rgba(163,230,53,0.25)]",
+  },
   boss: {
     border: "border-red-500/30",
     accentText: "text-red-300",
