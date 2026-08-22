@@ -1,12 +1,14 @@
 import { useState } from "react";
 import ForgeStation from "./ForgeStation";
 import EnchantStation from "./EnchantStation";
+import KitchenStation from "./KitchenStation";
 
-type CraftTab = "forge" | "enchant";
+type CraftTab = "forge" | "enchant" | "kitchen";
 
 const TABS: { id: CraftTab; label: string }[] = [
   { id: "forge", label: "Forge" },
   { id: "enchant", label: "Enchantement" },
+  { id: "kitchen", label: "Cuisine" },
 ];
 
 interface CraftingScreenProps {
@@ -46,7 +48,7 @@ export default function CraftingScreen({ onOpenTown }: CraftingScreenProps) {
         ))}
       </div>
 
-      {tab === "forge" ? <ForgeStation /> : <EnchantStation />}
+      {tab === "forge" ? <ForgeStation /> : tab === "enchant" ? <EnchantStation /> : <KitchenStation />}
 
       <button
         type="button"

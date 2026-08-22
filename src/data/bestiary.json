@@ -1552,5 +1552,249 @@
         }
       ]
     }
+  },
+  {
+    "id": "marsh_leech_toad",
+    "dungeonId": "bassin-cratere",
+    "name": "Crapaud-Sangsue des Marais",
+    "family": "vermin",
+    "level": "3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 70,
+      "atk": 9,
+      "def": 4,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [],
+    "traits": [
+      "Amphibie"
+    ],
+    "skill": {
+      "name": "Succion Vorace",
+      "iconId": "bleed",
+      "description": "S'accroche à sa cible et draine son sang, se soignant de la moitié des dégâts infligés."
+    },
+    "lore": "Amphibie opportuniste rôdant sur les berges vaseuses, attiré par la mousse fraîche pour dérober les lignes des pêcheurs novices.",
+    "drops": [
+      {
+        "name": "Mucus Gluant",
+        "chance": 75,
+        "materialId": "slimy_mucus"
+      },
+      {
+        "name": "Cuir Brut",
+        "chance": 60,
+        "materialId": "raw_hide"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 6,
+        "max": 14
+      }
+    ],
+    "combat": {
+      "typeLabel": "Eau / Bête",
+      "combatTypes": [
+        "nature"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.0
+        },
+        {
+          "type": "fire",
+          "multiplier": 1.4
+        }
+      ],
+      "resistances": [
+        {
+          "type": "physical",
+          "percent": 25
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "mist_stalker",
+    "dungeonId": "bassin-cratere",
+    "name": "Rôdeur des Brumes Lacustres",
+    "family": "spectre",
+    "level": "12",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 150,
+      "atk": 24,
+      "def": 8,
+      "speedLabel": "Très Rapide",
+      "speedValue": 5
+    },
+    "extraStats": [
+      {
+        "label": "Esquive",
+        "value": 25,
+        "display": "25%"
+      }
+    ],
+    "traits": [
+      "Embuscade"
+    ],
+    "skill": {
+      "name": "Charge Silencieuse",
+      "iconId": "ice",
+      "description": "Fond sur sa proie depuis la brume : la première frappe du combat inflige +80 % de dégâts."
+    },
+    "lore": "Prédateur aquatique silencieux hantant le cœur brumeux du cratère. Il pourchasse les lueurs phosphorescentes et attaque les pêcheurs isolés.",
+    "drops": [
+      {
+        "name": "Écailles de Brume",
+        "chance": 65,
+        "materialId": "mist_scale"
+      },
+      {
+        "name": "Nageoire Tranchante",
+        "chance": 45,
+        "materialId": "razor_fin"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 20,
+        "max": 38
+      }
+    ],
+    "combat": {
+      "typeLabel": "Eau / Spectre",
+      "combatTypes": [
+        "ice"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.25
+        },
+        {
+          "type": "holy",
+          "multiplier": 1.5
+        }
+      ],
+      "resistances": [
+        {
+          "type": "ice"
+        },
+        {
+          "type": "physical",
+          "percent": 20
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "blind"
+        }
+      ]
+    }
+  },
+  {
+    "id": "crater_leviathan",
+    "dungeonId": "bassin-cratere",
+    "name": "Léviathan Primordial du Cratère",
+    "family": "boss",
+    "level": "22",
+    "rarity": "miniboss",
+    "damageType": "physical",
+    "stats": {
+      "hp": 460,
+      "atk": 33,
+      "def": 18,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [
+      {
+        "label": "Dégâts de Zone",
+        "value": 60,
+        "display": "60%"
+      }
+    ],
+    "traits": [
+      "Colossal",
+      "Éveillé par les toxines"
+    ],
+    "skill": {
+      "name": "Déferlante Abyssale",
+      "iconId": "ice",
+      "description": "Soulève le lac en une vague qui frappe toutes les cibles présentes et les ralentit."
+    },
+    "lore": "Entité millénaire assoupie au fond des failles sous-marines. Réveillée par les toxines royales, elle défend les trésors engloutis de l'ancien royaume.",
+    "drops": [
+      {
+        "name": "Écaille Primordiale",
+        "chance": 35,
+        "materialId": "primordial_scale"
+      },
+      {
+        "name": "Clé de Coffre Ancien",
+        "chance": 45,
+        "materialId": "ancient_chest_key"
+      },
+      {
+        "name": "Perle Brillante",
+        "chance": 30,
+        "materialId": "shining_pearl"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 70,
+        "max": 130
+      }
+    ],
+    "combat": {
+      "typeLabel": "Eau / Primordial",
+      "combatTypes": [
+        "ice",
+        "nature"
+      ],
+      "weaknesses": [
+        {
+          "type": "lightning",
+          "multiplier": 2.5
+        }
+      ],
+      "resistances": [
+        {
+          "type": "ice"
+        },
+        {
+          "type": "physical",
+          "percent": 35
+        }
+      ],
+      "immunities": [
+        {
+          "type": "poison"
+        }
+      ],
+      "inflicts": [
+        {
+          "status": "freeze"
+        }
+      ]
+    }
   }
 ]

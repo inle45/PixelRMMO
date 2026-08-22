@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import LoopSprite from "../camp/LoopSprite";
+import { isNight } from "../../data/fishing";
+
+/** Lives in /public alongside the other world-map overlay art. */
+const FISH_SPLASH = "/assets/worldmap/fish_splash.png";
 import {
   BANNER_FRAMES,
   BAT_FRAMES,
@@ -28,12 +32,36 @@ const STATUS_LABEL: Record<NodeStatus, string> = {
  * existing asset or a plain CSS glow — none of it commissions new PixelLab art at the node scale. */
 function NodeDecoration({ kind, paused }: { kind: MapNodeDef["kind"]; paused?: boolean }) {
   const [batVisible, setBatVisible] = useState(true);
+  const [splashing, setSplashing] = useState(false);
+  const isNightNow = isNight();
 
   // "Chauves-souris périodiques": on-screen for ~2s out of every ~6s rather than a constant loop.
   useEffect(() => {
     if (kind !== "dungeon" || paused) return;
     const id = setInterval(() => setBatVisible((v) => !v), 2000);
     return () => clearInterval(id);
+  }, [kind, paused]);
+
+  // A fish breaks the surface every 8-12s, per spec. Self-rescheduling rather than a fixed
+  // setInterval so the gap is genuinely irregular instead of metronomic.
+  useEffect(() => {
+    if (kind !== "lake" || paused) return;
+    let showTimer: ReturnType<typeof setTimeout>;
+    let nextTimer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      nextTimer = setTimeout(() => {
+        setSplashing(true);
+        showTimer = setTimeout(() => {
+          setSplashing(false);
+          schedule();
+        }, 700);
+      }, 8000 + Math.random() * 4000);
+    };
+    schedule();
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(nextTimer);
+    };
   }, [kind, paused]);
 
   if (kind === "camp") {
@@ -76,6 +104,48 @@ function NodeDecoration({ kind, paused }: { kind: MapNodeDef["kind"]; paused?: b
       <div className="pointer-events-none absolute inset-x-0 bottom-full flex items-end justify-center gap-1">
         <LoopSprite frames={BANNER_FRAMES} frameDuration={180} alt="" paused={paused} className="h-8 w-8" />
         <span className="animate-lantern h-3 w-3 rounded-full bg-lantern" />
+      </div>
+    );
+  }
+
+  if (kind === "lake") {
+    // Ripples and the night glow are CSS, not generated spritesheets — one animated ring scales
+    // cleanly at map-marker size where a 64px sprite would just be a blur, and it is the same call
+    // the Cité's LIGHT_SOURCES made. Only the periodic fish jump gets real art, because a leaping
+    // fish is a *shape* CSS cannot fake.
+    return (
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+        {[0, 1].map((i) => (
+          <motion.span
+            key={i}
+            className="absolute rounded-full border border-cyan-300/50"
+            initial={{ width: 8, height: 8, opacity: 0.65 }}
+            animate={paused ? {} : { width: 44, height: 44, opacity: 0 }}
+            transition={{ duration: 3.4, repeat: Infinity, delay: i * 1.7, ease: "easeOut" }}
+          />
+        ))}
+        {/* Night-only bluish haze over the water, matching the 21h-06h fishing window. */}
+        {isNightNow && (
+          <motion.span
+            className="absolute h-10 w-10 rounded-full bg-cyan-300/25 blur-md"
+            animate={paused ? {} : { opacity: [0.25, 0.6, 0.25], scale: [1, 1.15, 1] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
+          />
+        )}
+        <AnimatePresence>
+          {splashing && (
+            <motion.img
+              src={FISH_SPLASH}
+              alt=""
+              className="absolute h-8 w-8 object-contain"
+              style={{ imageRendering: "pixelated" }}
+              initial={{ opacity: 0, y: 4, scale: 0.6 }}
+              animate={{ opacity: 1, y: -8, scale: 1 }}
+              exit={{ opacity: 0, y: -14, scale: 0.8 }}
+              transition={{ duration: 0.5 }}
+            />
+          )}
+        </AnimatePresence>
       </div>
     );
   }

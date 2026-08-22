@@ -1,7 +1,15 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { getInventory } from "../../data/inventory";
-import { FORGE_RECIPES, resolveForgeRecipe, canAfford, forgeItem } from "../../data/recipes";
+import {
+  FORGE_RECIPES,
+  AQUATIC_FORGE_RECIPES,
+  BAIT_RECIPES,
+  resolveForgeRecipe,
+  canAfford,
+  forgeItem,
+} from "../../data/recipes";
+import ConsumableRecipeList from "./ConsumableRecipeList";
 import { RARITY_BY_ID } from "../../data/rarity";
 import TownPanel from "./TownPanel";
 import ecuIcon from "../../assets/icons/ecu.png";
@@ -44,7 +52,7 @@ export default function ForgeStation({ onClose }: ForgeStationProps) {
       }
     >
       <div className="mt-3 max-h-[440px] space-y-1.5 overflow-y-auto pr-0.5">
-        {FORGE_RECIPES.map((recipe) => {
+        {[...FORGE_RECIPES, ...AQUATIC_FORGE_RECIPES].map((recipe) => {
           const { result, materials } = resolveForgeRecipe(recipe);
           if (!result) return null;
           const rarity = RARITY_BY_ID[result.rarity];
@@ -109,6 +117,11 @@ export default function ForgeStation({ onClose }: ForgeStationProps) {
             </div>
           );
         })}
+
+        {/* Baits and the harpoon are forged here too — they are tools, not food, and gating the
+            fishing zone behind the Forge is what ties the two gathering zones into one economy. */}
+        <p className="pt-2 text-[10px] font-bold uppercase tracking-wide text-white/45">Appâts & Outils de Pêche</p>
+        <ConsumableRecipeList recipes={BAIT_RECIPES} onCrafted={() => setVersion((v) => v + 1)} />
       </div>
     </TownPanel>
   );

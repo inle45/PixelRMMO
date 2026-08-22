@@ -297,5 +297,163 @@
       "dropChance": 40
     },
     "value": 70
+  },
+  {
+    "id": "slimy_mucus",
+    "name": "Mucus Gluant",
+    "rarity": "common",
+    "category": "alchimie",
+    "usage": "Liant de tannage",
+    "lore": "Une glaire épaisse et tiède qui refuse obstinément de sécher.",
+    "provenance": {
+      "monsterId": "marsh_leech_toad",
+      "dropChance": 75
+    },
+    "value": 5,
+    "tradeable": true
+  },
+  {
+    "id": "raw_hide",
+    "name": "Cuir Brut",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Armures de cuir",
+    "lore": "Une peau d'amphibien mal dégrossie, encore raide et odorante.",
+    "provenance": {
+      "monsterId": "marsh_leech_toad",
+      "dropChance": 60
+    },
+    "value": 6,
+    "tradeable": true
+  },
+  {
+    "id": "mist_scale",
+    "name": "Écailles de Brume",
+    "rarity": "rare",
+    "category": "forge",
+    "usage": "Capuchons & armures légères",
+    "lore": "Translucides, elles se fondent dans le brouillard au point de faire disparaître celui qui les porte.",
+    "provenance": {
+      "monsterId": "mist_stalker",
+      "dropChance": 65
+    },
+    "value": 26,
+    "tradeable": true
+  },
+  {
+    "id": "razor_fin",
+    "name": "Nageoire Tranchante",
+    "rarity": "rare",
+    "category": "forge",
+    "usage": "Lames et bordures d'armure",
+    "lore": "Un aileron cartilagineux si affûté qu'il entaille le cuir d'un seul passage.",
+    "provenance": {
+      "monsterId": "mist_stalker",
+      "dropChance": 45
+    },
+    "value": 30,
+    "tradeable": true
+  },
+  {
+    "id": "primordial_scale",
+    "name": "Écaille Primordiale",
+    "rarity": "legendary",
+    "category": "reliques",
+    "usage": "Composant d'arme légendaire",
+    "lore": "Une seule écaille pèse plus lourd qu'un bouclier. Elle date d'avant le royaume lui-même.",
+    "provenance": {
+      "monsterId": "crater_leviathan",
+      "dropChance": 35
+    },
+    "value": 240,
+    "tradeable": true,
+    "eurValue": 18.0
+  },
+  {
+    "id": "shining_pearl",
+    "name": "Perle Brillante",
+    "rarity": "epic",
+    "category": "reliques",
+    "usage": "Sertissage & orfèvrerie",
+    "lore": "Arrachée à une huître abyssale, elle brille d'une lueur laiteuse qui ne s'éteint jamais.",
+    "provenance": {
+      "monsterId": "crater_leviathan",
+      "dropChance": 30
+    },
+    "value": 85,
+    "tradeable": true,
+    "eurValue": 6.5
+  },
+  {
+    "id": "ancient_chest_key",
+    "name": "Clé de Coffre Ancien",
+    "rarity": "rare",
+    "category": "reliques",
+    "usage": "Ouvre un Coffre Englouti Scellé",
+    "lore": "Une clé de bronze rongée par le sel, gravée aux armes d'une maison engloutie.",
+    "provenance": {
+      "monsterId": "crater_leviathan",
+      "dropChance": 45
+    },
+    "value": 40,
+    "tradeable": true
+  },
+  {
+    "id": "sunken_chest",
+    "name": "Coffre Englouti Scellé",
+    "rarity": "epic",
+    "category": "reliques",
+    "usage": "Actif C2C — se revend scellé, ou s'ouvre avec une Clé de Coffre Ancien",
+    "lore": "Personne ne sait ce qu'il contient tant qu'il reste scellé, et c'est précisément ce qui fait son prix.",
+    "provenance": {
+      "monsterId": "crater_leviathan",
+      "dropChance": 20
+    },
+    "value": 150,
+    "tradeable": true,
+    "eurValue": 12.0
+  },
+  {
+    "id": "golden_carp",
+    "name": "Carpe Dorée",
+    "rarity": "common",
+    "category": "peche",
+    "usage": "Cuisine du campement",
+    "lore": "Une carpe replète aux écailles cuivrées, qui frétille encore longtemps après la prise.",
+    "provenance": {
+      "monsterId": "marsh_leech_toad",
+      "dropChance": 0
+    },
+    "value": 10,
+    "tradeable": true
+  },
+  {
+    "id": "spectral_eel",
+    "name": "Anguille Spectrale",
+    "rarity": "rare",
+    "category": "peche",
+    "usage": "Cuisine du campement",
+    "lore": "Elle ne mord qu'à la lueur des spores. Sa chair reste phosphorescente dans l'assiette.",
+    "provenance": {
+      "monsterId": "mist_stalker",
+      "dropChance": 0
+    },
+    "value": 32,
+    "tradeable": true
+  },
+  {
+    "id": "ancestral_catfish",
+    "name": "Silure Ancestral",
+    "rarity": "epic",
+    "category": "peche",
+    "usage": "Cuisine du campement",
+    "lore": "Un silure aveugle des failles abyssales, couvert de cicatrices plus vieilles que la Cité.",
+    "provenance": {
+      "monsterId": "crater_leviathan",
+      "dropChance": 0
+    },
+    "value": 95,
+    "tradeable": true,
+    "eurValue": 7.0
   }
 ]

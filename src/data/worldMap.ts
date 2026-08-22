@@ -6,11 +6,12 @@ import campNavIcon from "../assets/icons/nav/anim/camp-0.png";
 import heroMarker from "../assets/map/hero-marker.png";
 import talkIcon from "../assets/icons/map/talk-bubble.png";
 import caveIcon from "../assets/bestiary/portraits/myconid_guard.png";
+import lakeIcon from "../assets/materials/icons/golden_carp.png";
 import eclaireurPortrait from "../assets/map/npc/eclaireur.png";
 import eruditPortrait from "../assets/map/npc/erudit.png";
 import capitainePortrait from "../assets/map/npc/capitaine.png";
 
-export type NodeKind = "camp" | "dungeon" | "city" | "volcano" | "cave";
+export type NodeKind = "camp" | "dungeon" | "city" | "volcano" | "cave" | "lake";
 export type NodeStatus = "accessible" | "locked" | "current";
 
 export interface BiomeDef {
@@ -77,6 +78,8 @@ export const NODE_ICON_BY_KIND: Record<NodeKind, string> = {
   // Reuses the Bestiaire's own mushroom-guardian portrait as the map glyph rather than a new
   // generation — the node IS that creature's lair, so it is the correct picture for it.
   cave: caveIcon,
+  // Same reuse call as `cave`: the zone's own headline catch is the correct picture for its pin.
+  lake: lakeIcon,
 };
 
 export const talkBubbleIcon = talkIcon;

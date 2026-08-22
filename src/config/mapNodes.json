@@ -132,7 +132,8 @@
       "y": 83,
       "connectsTo": [
         "crypte",
-        "cite"
+        "cite",
+        "crater_lake"
       ],
       "dialogueId": "eclaireur"
     },
@@ -179,6 +180,17 @@
       "levelRecommended": 1,
       "x": 62,
       "y": 52,
+      "connectsTo": [],
+      "dialogueId": null
+    },
+    {
+      "id": "crater_lake",
+      "biomeIndex": 2,
+      "kind": "lake",
+      "name": "Bassin du Cratère",
+      "levelRecommended": 1,
+      "x": 52,
+      "y": 88,
       "connectsTo": [],
       "dialogueId": null
     }

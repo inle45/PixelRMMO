@@ -4,8 +4,9 @@ import forgeCatIcon from "../assets/inventory/filters/equipment.png";
 import potionCatIcon from "../assets/inventory/filters/potions.png";
 import enchantCatIcon from "../assets/icons/dungeon/skills.png";
 import reliqueCatIcon from "../assets/inventory/filters/relics.png";
+import pecheCatIcon from "../assets/materials/icons/golden_carp.png";
 
-export type MaterialCategory = "forge" | "alchimie" | "enchantement" | "reliques";
+export type MaterialCategory = "forge" | "alchimie" | "enchantement" | "reliques" | "peche";
 
 interface RawMaterial {
   id: string;
@@ -15,7 +16,13 @@ interface RawMaterial {
   usage: string;
   lore: string;
   provenance: { monsterId: string; dropChance: number };
+  /** Base resale value in Écus. */
   value: number;
+  /** Listable on the Cité's Marché C2C. Absent = not listable. */
+  tradeable?: boolean;
+  /** Indicative euro price shown alongside the Écus price on the C2C board. NOTE: the game has no
+   * payment backend — nothing here charges or pays real money; this is a displayed valuation only. */
+  eurValue?: number;
 }
 
 export interface MaterialDef extends RawMaterial {
@@ -44,6 +51,7 @@ export const CATEGORY_LABELS: Record<MaterialCategory, string> = {
   alchimie: "Alchimie",
   enchantement: "Enchantement",
   reliques: "Reliques",
+  peche: "Faune Aquatique",
 };
 
 /** Sprite paths, not emoji — the app's no-emoji rule applies to the Codex filters too. All four
@@ -53,4 +61,6 @@ export const CATEGORY_ICONS: Record<MaterialCategory, string> = {
   alchimie: potionCatIcon,
   enchantement: enchantCatIcon,
   reliques: reliqueCatIcon,
+  // Reuses the Carpe Dorée sprite as the category glyph rather than drawing a second fish.
+  peche: pecheCatIcon,
 };

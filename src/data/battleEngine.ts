@@ -6,6 +6,7 @@ import type { ClassSkill } from "./skills";
 import type { BattleItem } from "./items";
 import { STATUS_BY_ID, TYPE_BY_ID, type DamageTypeId, type WeatherDef } from "./typeSystem";
 import { aggregateEquipmentBonuses, type EquipmentBonuses } from "./equipment";
+import { getActiveMealBuff, mealGrantsImmunity } from "./mealBuffs";
 
 export type Effectiveness = "weak" | "resist" | "immune" | "normal";
 
@@ -109,13 +110,17 @@ export function computeHeroStats(
   equipment: EquipmentBonuses = aggregateEquipmentBonuses({})
 ): HeroStats {
   const base = HERO_BASE_COMBAT[classDef.id];
+  // The active campfire meal, if any, layers on top of gear — read here rather than threaded
+  // through every call site so the paper doll and the combatant can't disagree about it.
+  const meal = getActiveMealBuff()?.stats;
+  const rawMaxHp = abs(classDef, "PV") + (level - 1) * 15 + equipment.hp;
   return {
-    maxHp: abs(classDef, "PV") + (level - 1) * 15 + equipment.hp,
+    maxHp: Math.round(rawMaxHp * (1 + (meal?.maxHpPct ?? 0))),
     maxMana: abs(classDef, "Mana") + equipment.mana,
     atk: base.atk + (level - 1) * 2 + equipment.atk,
     def: base.def + (level - 1) * 1 + equipment.def,
     speed: base.speed + equipment.speed,
-    critChance: (pct(classDef, "Critique") || 0.1) + equipment.critChance,
+    critChance: (pct(classDef, "Critique") || 0.1) + equipment.critChance + (meal?.critChance ?? 0),
     // Mage has neither an Esquive nor Parade display stat (unlike Knight/Archer), leaving it with
     // zero damage-negation — a small innate "arcane evasion" keeps it from being purely deterministic.
     dodgeChance: (pct(classDef, "Esquive") || (classDef.id === "mage" ? 0.2 : 0)) + equipment.dodgeChance,
@@ -236,6 +241,8 @@ const CONTROL_STATUS_CHANCE = 0.45;
 
 export function canInflictStatus(target: Combatant, statusId: string): boolean {
   if (target.combat?.immunities.includes(statusId)) return false;
+  // A meal's immunity only ever protects the hero — a monster never ate one.
+  if (target.side === "hero" && mealGrantsImmunity(statusId)) return false;
   if (STATUS_BY_ID[statusId]?.category === "control") return Math.random() < CONTROL_STATUS_CHANCE;
   return true;
 }
@@ -509,6 +516,16 @@ export function processTurnStart(combatant: Combatant): { combatant: Combatant; 
   let hp = combatant.hp;
   let skipTurn = false;
   const nextStatuses: ActiveStatus[] = [];
+
+  // Soupe de Carpe's passive regeneration. The meal is specced per *second*; this discrete turn
+  // loop reinterprets it as a flat per-turn heal, the same approximation STATUS_DURATIONS already
+  // makes for the per-second DOT formulas in statuses.json.
+  const regen = combatant.side === "hero" ? getActiveMealBuff()?.stats?.regenPerTurn ?? 0 : 0;
+  if (regen > 0 && combatant.alive && hp < combatant.maxHp) {
+    const healed = Math.min(regen, combatant.maxHp - hp);
+    hp += healed;
+    events.push({ type: "heal", targetId: combatant.instanceId, amount: healed });
+  }
 
   for (const s of combatant.statuses) {
     let tickDamage = 0;
