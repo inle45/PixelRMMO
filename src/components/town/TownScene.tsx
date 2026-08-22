@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useTownTimeOfDay, TOWN_PERIOD_BY_ID, TOWN_TIME_PERIODS } from "../../hooks/useTownTimeOfDay";
 import {
@@ -8,12 +8,10 @@ import {
   TIME_GRADE,
   LIGHT_SOURCES,
   SMOKE_SOURCE,
-  GUARD_POSTS,
-  GUARD_FRAMES,
   type TownZoneId,
   type TownZoneDef,
 } from "../../data/town";
-import LoopSprite from "../camp/LoopSprite";
+import TownFolk from "./TownFolk";
 import TownZoneMarker from "./TownZoneMarker";
 import ForgeStation from "./ForgeStation";
 import EnchantStation from "./EnchantStation";
@@ -49,8 +47,6 @@ export default function TownScene({ onClose, onOpenMap, initialZone }: TownScene
   const reduceMotion = useReducedMotion();
   const grade = TIME_GRADE[period];
   const periodDef = TOWN_PERIOD_BY_ID[period];
-
-  const guards = useMemo(() => GUARD_POSTS, []);
 
   return (
     <motion.div
@@ -135,29 +131,8 @@ export default function TownScene({ onClose, onOpenMap, initialZone }: TownScene
               />
             ))}
 
-          {/* --------------------------------------------------- patrolling guards (only sprite kept) */}
-          {GUARD_FRAMES.length > 0 &&
-            guards.map((post, i) => (
-              <div
-                key={i}
-                className="pointer-events-none absolute"
-                style={{ left: `${post.x}%`, top: `${post.y}%`, width: "6%", transform: "translate(-50%, -100%)" }}
-              >
-                <LoopSprite
-                  frames={GUARD_FRAMES}
-                  frameDuration={230 + i * 70}
-                  alt=""
-                  className="h-auto w-full"
-                  style={{
-                    transform: post.flip ? "scaleX(-1)" : undefined,
-                    // Same merged-filter trick as the battle arena's sprite integration: a drop
-                    // shadow to sit them on the cobbles, plus the period's own brightness so they
-                    // don't read as full-brightness cutouts on a graded scene.
-                    filter: `drop-shadow(0 2px 3px rgba(0,0,0,0.6)) ${grade.filter}`,
-                  }}
-                />
-              </div>
-            ))}
+          {/* ------------------------------------------------------- the crowd (see TownFolk) */}
+          <TownFolk gradeFilter={grade.filter} />
 
           {/* ------------------------------------------------------------------ district hotspots */}
           {TOWN_ZONES.map((zone) => (

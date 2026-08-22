@@ -116,13 +116,71 @@ export const LIGHT_SOURCES: LightSource[] = [
  * instead of inventing a new one somewhere the art has no chimney. */
 export const SMOKE_SOURCE = { x: 32.5, y: 23 };
 
-/** Two guards on patrol in the lower plaza. This is the *only* overlaid sprite kept, because it's
- * the one thing the new artwork genuinely lacks: it has no people in it at all. Both spots were
- * verified against a zoomed crop to be open cobblestone, not a roof or a wall. */
-export const GUARD_POSTS = [
-  { x: 36, y: 93, flip: false },
-  { x: 70, y: 94, flip: true },
+/* ------------------------------------------------------------------------ townsfolk */
+
+export type FolkId = "guard" | "merchant" | "woman" | "man";
+
+/** Someone standing still. Idle sprites are a single frame on purpose: a person standing perfectly
+ * still is natural, whereas a walk loop played in place reads as marching on the spot. */
+export interface FolkStander {
+  folk: FolkId;
+  x: number;
+  y: number;
+  flip?: boolean;
+}
+
+/** Someone walking a stretch of street, back and forth. `x` is the start, `toX` the far end — both
+ * ends and everything between were confirmed walkable by the stone-coverage scan described below. */
+export interface FolkWalker {
+  folk: FolkId;
+  x: number;
+  toX: number;
+  y: number;
+  /** Seconds for one leg of the round trip. Varied per walker so the crowd doesn't move in lockstep. */
+  duration: number;
+  delay: number;
+}
+
+/**
+ * Where people can actually stand.
+ *
+ * The artwork has no inhabitants at all, so the whole crowd is overlaid — which makes "is this spot
+ * ground or a roof?" the entire problem, and the reason the first town pass put a guard in the
+ * water. Rather than eyeball it again, every coordinate below comes from a stone-coverage scan of
+ * the background: a pixel counts as cobblestone when it's warm-leaning (b <= r+6) and either a
+ * mid-bright desaturated face or a dark mortar line, and a spot qualifies only when >=92% of the
+ * 18x12 patch under its feet passes. That scan produced a walkability map of the plaza, the street
+ * below the gate and the forecourt in front of the forge; these are points from it.
+ */
+export const FOLK_STANDERS: FolkStander[] = [
+  { folk: "merchant", x: 63, y: 24 }, // street below the castle gate
+  { folk: "woman", x: 69, y: 30, flip: true },
+  { folk: "man", x: 33, y: 55 }, // forecourt in front of the forge
+  { folk: "woman", x: 57, y: 68 }, // mid street
+  { folk: "merchant", x: 78, y: 82, flip: true }, // lower plaza, right of the fountain
+  { folk: "man", x: 33, y: 88 }, // lower plaza, left
+  { folk: "guard", x: 36, y: 94 }, // the two sentries flanking the fountain
+  { folk: "guard", x: 72, y: 94, flip: true },
+  // Second pass purely for density — a handful of people reads as a quiet square, not a capital.
+  { folk: "man", x: 45, y: 31, flip: true },
+  { folk: "merchant", x: 39, y: 52, flip: true },
+  { folk: "man", x: 45, y: 64 },
+  { folk: "woman", x: 69, y: 79 },
+  { folk: "merchant", x: 66, y: 88 },
 ];
+
+export const FOLK_WALKERS: FolkWalker[] = [
+  { folk: "man", x: 48, toX: 72, y: 27, duration: 15, delay: 0 },
+  { folk: "woman", x: 24, toX: 42, y: 57, duration: 13, delay: 3 },
+  { folk: "merchant", x: 24, toX: 40, y: 82, duration: 12, delay: 1.5 },
+  { folk: "woman", x: 60, toX: 82, y: 82, duration: 16, delay: 5 },
+];
+
+/** A crude depth cue: someone at the top of the frame is further away, so slightly smaller. Keeps
+ * the crowd from looking like cut-outs all pasted at one scale. */
+export function folkWidth(y: number): number {
+  return 4.6 + (y / 100) * 2.2;
+}
 
 /* ------------------------------------------------------------------------ animated prop loops */
 
@@ -143,4 +201,11 @@ function getFrames(prefix: string): string[] {
   return frames;
 }
 
-export const GUARD_FRAMES = getFrames("guard");
+/** Walk cycles, keyed by folk id. Standers use `[0]` (the original still frame) and walkers use the
+ * whole loop — one asset set serving both, rather than a separate idle generation per villager. */
+export const FOLK_FRAMES: Record<FolkId, string[]> = {
+  guard: getFrames("guard"),
+  merchant: getFrames("merchant"),
+  woman: getFrames("woman"),
+  man: getFrames("man"),
+};
