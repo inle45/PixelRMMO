@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type CSSProperties } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   FISHING_SPOTS,
   LAKE_BACKGROUND,
@@ -16,6 +16,7 @@ import {
   spotGuardian,
   baitCount,
   isNight,
+  bobberIcon,
   type FishingSpotDef,
 } from "../../../data/fishing";
 import { getInventory } from "../../../data/inventory";
@@ -24,6 +25,7 @@ import { readStoredHeroClass } from "../../../data/storedHero";
 import { buildSoloEncounter } from "../../../data/waves";
 import lakeArenaBg from "../../../assets/dungeon/lake-arena-bg.png";
 import TurnBattleArena from "../../dungeon/TurnBattleArena";
+import LakeAmbience from "./LakeAmbience";
 import CastSequence from "./CastSequence";
 import TensionGauge from "./TensionGauge";
 
@@ -48,6 +50,7 @@ const REFUSAL_TEXT: Record<string, string> = {
  * the SHARED `TurnBattleArena` with an `EncounterDef` rather than any bespoke fight screen.
  */
 export default function FishingScene({ onClose }: FishingSceneProps) {
+  const reduceMotion = useReducedMotion();
   const [version, setVersion] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [now, setNow] = useState(() => new Date());
@@ -153,10 +156,13 @@ export default function FishingScene({ onClose }: FishingSceneProps) {
             }}
           />
 
+          <LakeAmbience night={night} />
+
           {FISHING_SPOTS.map((spot) => {
             const refusal = whyCannotCast(spot, now);
             const locked = heroLevel < spot.levelRequired;
             const baits = baitCount(spot.baitId);
+            const live = !refusal && !reduceMotion;
             return (
               <button
                 key={spot.id}
@@ -166,19 +172,44 @@ export default function FishingScene({ onClose }: FishingSceneProps) {
                 className="group absolute flex -translate-x-1/2 -translate-y-1/2 flex-col items-center"
                 style={{ left: `${spot.x}%`, top: `${spot.y}%` }}
               >
-                <motion.span
-                  className="block h-10 w-10 rounded-full border-2"
-                  style={{
-                    borderColor: spot.accent,
-                    backgroundColor: `${spot.accent}33`,
-                    boxShadow: refusal ? "none" : `0 0 18px 5px ${spot.accent}88`,
-                    opacity: locked ? 0.35 : 1,
-                  }}
-                  animate={refusal ? {} : { scale: [1, 1.18, 1] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                />
+                {/* A castable spot is a floating bobber trailing rings, not a pulsing circle: the
+                    flat ring read as a UI hotspot pasted on a photo rather than as something
+                    sitting in the water. A blocked spot goes still and dim on purpose — the
+                    difference between "you can fish here" and "you can't" should be visible at a
+                    glance without reading the label. */}
+                <span className="relative flex h-11 w-11 items-center justify-center">
+                  {live &&
+                    [0, 1].map((i) => (
+                      <motion.span
+                        key={i}
+                        className="absolute rounded-full border-2"
+                        style={{ borderColor: spot.accent }}
+                        initial={{ width: 12, height: 7, opacity: 0 }}
+                        animate={{ width: 52, height: 30, opacity: [0, 0.75, 0] }}
+                        transition={{ duration: 2.8, delay: i * 1.4, repeat: Infinity, ease: "easeOut" }}
+                      />
+                    ))}
+                  <motion.span
+                    className="absolute h-8 w-8 rounded-full blur-md"
+                    style={{ backgroundColor: `${spot.accent}66`, opacity: locked ? 0.15 : 1 }}
+                    animate={live ? { opacity: [0.35, 0.85, 0.35], scale: [1, 1.2, 1] } : {}}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.img
+                    src={bobberIcon}
+                    alt=""
+                    className="relative h-7 w-7 object-contain"
+                    style={{
+                      imageRendering: "pixelated",
+                      opacity: locked ? 0.4 : 1,
+                      filter: `drop-shadow(0 3px 5px rgba(0,0,0,0.6)) drop-shadow(0 0 6px ${spot.accent})`,
+                    }}
+                    animate={live ? { y: [0, -3.5, 0], rotate: [-5, 5, -5] } : {}}
+                    transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                </span>
                 <span
-                  className="mt-1 whitespace-nowrap rounded-full bg-black/65 px-2 py-0.5 text-[9px] font-bold backdrop-blur-sm"
+                  className="mt-0.5 whitespace-nowrap rounded-full bg-black/65 px-2 py-0.5 text-[9px] font-bold backdrop-blur-sm"
                   style={{ color: locked ? "rgba(255,255,255,0.4)" : spot.accent }}
                 >
                   {locked ? `Niv. ${spot.levelRequired}` : `${spot.name} · ${baits} appât${baits > 1 ? "s" : ""}`}
