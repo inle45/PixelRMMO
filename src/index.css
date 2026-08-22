@@ -176,6 +176,17 @@ textarea {
   animation-delay: var(--delay, 0s);
 }
 
+/* ---------- Camp storage chest ---------- */
+
+@keyframes chest-open-sheet {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 0%;
+  }
+}
+
 /* ---------- Rarity effects (Codex) ---------- */
 
 @keyframes rarity-pulse {

@@ -259,15 +259,39 @@ export function consumeConsumable(itemId: string): InventoryState {
 
 export type DiscardableKind = "equipment" | "material" | "consumable";
 
+function bucketFor(state: InventoryState, kind: DiscardableKind): Record<string, number> {
+  return kind === "equipment" ? state.ownedEquipment : kind === "material" ? state.materials : state.ownedConsumables;
+}
+
 /** Discards one copy of an owned (unequipped) item from the bag. */
 export function discardItem(kind: DiscardableKind, itemId: string): InventoryState {
   const state = getInventory();
-  const bucket = kind === "equipment" ? state.ownedEquipment : kind === "material" ? state.materials : state.ownedConsumables;
+  const bucket = bucketFor(state, kind);
   if ((bucket[itemId] ?? 0) <= 0) return state;
   bucket[itemId] -= 1;
   if (bucket[itemId] <= 0) delete bucket[itemId];
   write(state);
   return state;
+}
+
+/** Adds `qty` copies of an owned (unequipped) item to the bag — the camp chest's "withdraw" half. */
+export function addOwned(kind: DiscardableKind, itemId: string, qty: number): void {
+  const state = getInventory();
+  const bucket = bucketFor(state, kind);
+  bucket[itemId] = (bucket[itemId] ?? 0) + qty;
+  write(state);
+}
+
+/** Removes up to `qty` copies of an owned item from the bag. Returns false (no-op) if the bag holds
+ * fewer than `qty` — guards the camp chest's "deposit" half against a stale UI snapshot. */
+export function removeOwned(kind: DiscardableKind, itemId: string, qty: number): boolean {
+  const state = getInventory();
+  const bucket = bucketFor(state, kind);
+  if ((bucket[itemId] ?? 0) < qty) return false;
+  bucket[itemId] -= qty;
+  if (bucket[itemId] <= 0) delete bucket[itemId];
+  write(state);
+  return true;
 }
 
 /** True until the player has opened this bag item's details modal at least once — drives the

@@ -5,6 +5,7 @@ import type { TimeOfDayId } from "../../hooks/useTimeOfDay";
 import { CAMP_SCENES, mapIcon, type PeriodLayout, type Placement } from "../../data/campScene";
 import { generateStars } from "../background/starfield";
 import LoopSprite from "./LoopSprite";
+import CampChest, { type ChestVisualState } from "./CampChest";
 
 interface CampStageProps {
   period: TimeOfDayId;
@@ -15,7 +16,22 @@ interface CampStageProps {
   showGuides?: boolean;
   /** Freezes every frame loop so a sprite can be lined up against the guides. */
   paused?: boolean;
+  /** The storage chest's own open/close state machine — owned by CampDayCycle (not this component)
+   * since opening it has to show a modal that lives outside this box's own transform, the same
+   * reason the World Map button only opens WorldMap from a level above CampStage. Omitted entirely
+   * hides the chest (e.g. while the calibrator's guide overlay would otherwise compete for space). */
+  chestVisual?: ChestVisualState;
+  onChestActivate?: () => void;
+  onChestAnimationEnd?: () => void;
 }
+
+/** The tent's ground-contact footprint sits in roughly the same spot across all 4 backdrops (they
+ * share one prompt skeleton, varying only the lighting) — so unlike hero/props, one placement works
+ * for every period rather than needing a per-period entry in campConfig.json. x=25 matches the
+ * morning kettle's own x — the scene box overflows the viewport horizontally on a narrow phone (see
+ * the SCENE_BOX_STYLE note above), and that prop's x is the documented safe left-side extreme that
+ * still stays on screen. */
+const CHEST_PLACEMENT: Placement = { x: 28, y: 98, width: 9 };
 
 /** The backdrop's own 16:9 box, pinned to the bottom of the (taller) screen and always spanning the
  * full width. Every sprite coordinate in campConfig.json is a percentage of THIS box, not of the
@@ -69,7 +85,15 @@ function placementStyle(p: Placement): CSSProperties {
   };
 }
 
-export default function CampStage({ period, layout, showGuides = false, paused = false }: CampStageProps) {
+export default function CampStage({
+  period,
+  layout,
+  showGuides = false,
+  paused = false,
+  chestVisual,
+  onChestActivate,
+  onChestAnimationEnd,
+}: CampStageProps) {
   const scene = CAMP_SCENES[period];
   const reduceMotion = useReducedMotion();
   // Seeded so the field is stable across re-renders, same as NightSceneBackground's starfield.
@@ -236,6 +260,17 @@ export default function CampStage({ period, layout, showGuides = false, paused =
           </motion.div>
           {showGuides && <Crosshair label="hero" accent />}
         </div>
+
+        {chestVisual && onChestActivate && onChestAnimationEnd && (
+          <CampChest
+            visual={chestVisual}
+            placement={CHEST_PLACEMENT}
+            spriteFilter={scene.spriteFilter}
+            onActivate={onChestActivate}
+            onAnimationEnd={onChestAnimationEnd}
+            paused={paused}
+          />
+        )}
       </div>
 
       {/* ------------------------------------------------------ Layer 5 — colour grade */}

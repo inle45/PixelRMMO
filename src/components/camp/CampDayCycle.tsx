@@ -4,6 +4,8 @@ import { PERIOD_BY_ID, TIME_PERIODS, useTimeOfDay, type TimeOfDayId } from "../.
 import { CAMP_CONFIG, CAMP_SCENES, type CampConfig } from "../../data/campScene";
 import CampStage, { MapButton } from "./CampStage";
 import CampCalibrator from "./CampCalibrator";
+import type { ChestVisualState } from "./CampChest";
+import StorageModal from "../storage/StorageModal";
 
 interface CampDayCycleProps {
   onOpenMap?: () => void;
@@ -23,6 +25,13 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
   const [showGuides, setShowGuides] = useState(true);
   const [paused, setPaused] = useState(false);
 
+  // The chest's own little state machine: a click starts the opening sweep, whose `animationend`
+  // (CampChest's onAnimationEnd) is what actually reveals the modal — not the click itself — so the
+  // lid visibly finishes opening before the storage screen appears over it. Closing the modal mirrors
+  // that in reverse: it flips to "closing" first, and only the reverse animation's end returns the
+  // chest to "closed".
+  const [chestVisual, setChestVisual] = useState<ChestVisualState>("closed");
+
   const scene = CAMP_SCENES[period];
   const periodDef = PERIOD_BY_ID[period];
 
@@ -33,6 +42,9 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
         layout={config[period]}
         showGuides={calibratorOpen && showGuides}
         paused={calibratorOpen && paused}
+        chestVisual={chestVisual}
+        onChestActivate={() => setChestVisual("opening")}
+        onChestAnimationEnd={() => setChestVisual((v) => (v === "opening" ? "open" : v === "closing" ? "closed" : v))}
       />
 
       {/* ------------------------------------- top left — period badge + time selector, stacked */}
@@ -122,6 +134,10 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
             />
           </div>
         )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {chestVisual === "open" && <StorageModal onClose={() => setChestVisual("closing")} />}
       </AnimatePresence>
     </div>
   );
