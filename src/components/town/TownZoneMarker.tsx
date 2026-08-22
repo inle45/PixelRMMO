@@ -1,63 +1,63 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
-import LoopSprite from "../camp/LoopSprite";
+import { motion, useReducedMotion } from "framer-motion";
 import type { TownZoneDef } from "../../data/town";
 
 interface TownZoneMarkerProps {
   zone: TownZoneDef;
-  frames: string[];
   onSelect: (zone: TownZoneDef) => void;
 }
 
 /**
- * A clickable district marker over the Town plaza — same bottom-anchored placement convention as
- * CampStage/MapNode (translate(-50%,-100%) so `y` is the ground line), a continuously looping prop
- * sprite above it, a pulsing gold ring inviting a tap (same accessible-node affordance as MapNode),
- * and a name pill that's always visible rather than a hover-only tooltip — hover doesn't exist on the
- * touch devices this app targets first, so the label just stays on.
+ * A district hotspot sitting directly on the building it opens.
+ *
+ * Anchored by its CENTRE (`translate(-50%,-50%)`) rather than bottom-anchored the way CampStage's
+ * and MapNode's sprites are: those place a character standing *on* a ground line, whereas this marks
+ * a door or a rooftop, so the measured coordinate is the thing's middle, not its feet.
+ *
+ * It carries no decorative sprite of its own. An earlier version hung a 64px prop (lantern, guard,
+ * orb…) above every pin, which is what produced lanterns floating in the sky and a flag sitting on
+ * top of a neighbouring label — the building underneath is already drawn, so the pin's only job is
+ * to say "this is tappable".
  */
-export default function TownZoneMarker({ zone, frames, onSelect }: TownZoneMarkerProps) {
+export default function TownZoneMarker({ zone, onSelect }: TownZoneMarkerProps) {
   const [flashKey, setFlashKey] = useState(0);
-
-  function handleClick() {
-    setFlashKey((k) => k + 1);
-    onSelect(zone);
-  }
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div
-      className="absolute z-10"
-      style={{ left: `${zone.x}%`, top: `${zone.y}%`, transform: "translate(-50%, -100%)" }}
-    >
-      {frames.length > 0 && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-full mb-1 flex justify-center">
-          <LoopSprite frames={frames} frameDuration={180} alt="" className="h-10 w-10" />
-        </div>
-      )}
-
-      <button type="button" onClick={handleClick} aria-label={zone.name} className="group relative flex flex-col items-center">
-        <motion.span
-          className="absolute -inset-2.5 rounded-full border-2 border-lantern/70"
-          animate={{ scale: [1, 1.35, 1], opacity: [0.9, 0, 0.9] }}
-          transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
-        />
-        {/* Click flash — a quick bright gold pulse layered on top of the standing ring, per spec's
-            "effet de surbrillance dorée" on click, distinct from the always-on idle ring above. */}
+    <div className="absolute z-20" style={{ left: `${zone.x}%`, top: `${zone.y}%`, transform: "translate(-50%, -50%)" }}>
+      <button
+        type="button"
+        onClick={() => {
+          setFlashKey((k) => k + 1);
+          onSelect(zone);
+        }}
+        aria-label={zone.name}
+        className="group relative flex flex-col items-center"
+      >
+        {!reduceMotion && (
+          <motion.span
+            className="pointer-events-none absolute left-1/2 top-0 h-8 w-8 -translate-x-1/2 rounded-full border-2 border-lantern/70"
+            animate={{ scale: [1, 1.6, 1], opacity: [0.85, 0, 0.85] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeOut" }}
+          />
+        )}
+        {/* One-shot gold burst on tap — the spec's "surbrillance dorée", replayed by remounting on
+            each click rather than by toggling a boolean back and forth. */}
         <motion.span
           key={flashKey}
-          className="pointer-events-none absolute -inset-3 rounded-full bg-lantern/50"
-          initial={{ opacity: flashKey > 0 ? 0.9 : 0, scale: 0.6 }}
-          animate={{ opacity: 0, scale: 1.6 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="pointer-events-none absolute left-1/2 top-0 h-8 w-8 -translate-x-1/2 rounded-full bg-lantern"
+          initial={{ opacity: flashKey > 0 ? 0.85 : 0, scale: 0.5 }}
+          animate={{ opacity: 0, scale: 2.4 }}
+          transition={{ duration: 0.55, ease: "easeOut" }}
         />
-        <span className="relative flex h-9 w-9 items-center justify-center rounded-full border-2 border-lantern-glow/80 bg-black/55 shadow-[0_2px_10px_rgba(0,0,0,0.6)] transition-colors group-hover:border-lantern group-hover:bg-black/70">
-          <span className="h-2.5 w-2.5 rounded-full bg-lantern" />
+        <span className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-lantern-glow/85 bg-black/55 shadow-[0_2px_10px_rgba(0,0,0,0.7)] backdrop-blur-[2px] transition-colors group-hover:border-lantern group-hover:bg-black/75">
+          <span className="h-2 w-2 rounded-full bg-lantern" />
         </span>
         <span
-          className="mt-1 whitespace-nowrap rounded-full bg-black/60 px-2 py-0.5 text-[9px] font-bold text-white/90 backdrop-blur-sm"
-          style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)" }}
+          className="mt-1 whitespace-nowrap rounded-full bg-black/65 px-1.5 py-0.5 text-[9px] font-bold text-white/90 backdrop-blur-sm"
+          style={{ textShadow: "0 1px 3px rgba(0,0,0,0.95)" }}
         >
-          {zone.name}
+          {zone.label}
         </span>
       </button>
     </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import StorageModal from "../storage/StorageModal";
-import lanternIcon from "../../assets/town/animations/lantern-0.png";
+import lanternIcon from "../../assets/icons/items/potion.png";
 
 interface TavernModalProps {
   onClose: () => void;

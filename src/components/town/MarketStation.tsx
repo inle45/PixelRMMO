@@ -17,11 +17,13 @@ import {
   type NpcListingTemplate,
   type MyListing,
 } from "../../data/marketListings";
+import TownPanel from "./TownPanel";
 import ecuIcon from "../../assets/icons/ecu.png";
-import marketIcon from "../../assets/town/animations/banner-0.png";
+import marketIcon from "../../assets/inventory/filters/all.png";
 
-interface MarketplaceModalProps {
-  onClose: () => void;
+interface MarketStationProps {
+  /** Omitted = inline (Marché nav tab). Present = modal (tapped the stalls on the plaza). */
+  onClose?: () => void;
 }
 
 type MarketTab = "acheter" | "vendre" | "mesVentes";
@@ -65,7 +67,7 @@ function formatCountdown(ms: number): string {
  * for map directly onto that: Acheter reads the daily NPC catalog, Vendre lists an owned item, Mes
  * Ventes shows/cancels what's still pending and lets the settle-on-read pattern resolve the rest.
  */
-export default function MarketplaceModal({ onClose }: MarketplaceModalProps) {
+export default function MarketStation({ onClose }: MarketStationProps) {
   const [tab, setTab] = useState<MarketTab>("acheter");
   const [version, setVersion] = useState(0);
   const [now, setNow] = useState(() => Date.now());
@@ -118,31 +120,13 @@ export default function MarketplaceModal({ onClose }: MarketplaceModalProps) {
   }
 
   return (
-    <motion.div
-      className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-black/75 p-4 py-8 backdrop-blur-md"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClose}
+    <TownPanel
+      title="Marché C2C"
+      subtitle="Hôtel des ventes entre mercenaires."
+      icon={marketIcon}
+      onClose={onClose}
     >
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl bg-[#12111a]/95 p-4 shadow-[0_25px_60px_rgba(0,0,0,0.6)] backdrop-blur-2xl sm:p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <img src={marketIcon} alt="" className="h-7 w-7" style={{ imageRendering: "pixelated" }} />
-            <h2 className="text-sm font-bold text-white">Marché C2C</h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Fermer"
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 bg-black/40 text-sm text-white/80 backdrop-blur transition-colors hover:bg-black/60 hover:text-white"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div className="mt-3 flex gap-1.5">
+      <div className="mt-3 flex gap-1.5">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -271,8 +255,7 @@ export default function MarketplaceModal({ onClose }: MarketplaceModalProps) {
                 );
               })
             ))}
-        </div>
       </div>
-    </motion.div>
+    </TownPanel>
   );
 }
