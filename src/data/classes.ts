@@ -10,6 +10,9 @@ import archerMaleBg from "../assets/characters/profile-bg/archer-male.png";
 import archerFemaleBg from "../assets/characters/profile-bg/archer-female.png";
 import mageMaleBg from "../assets/characters/profile-bg/mage-male.png";
 import mageFemaleBg from "../assets/characters/profile-bg/mage-female.png";
+import guardIcon from "../assets/icons/dungeon/guard.png";
+import bowIcon from "../assets/icons/items/bow.png";
+import staffIcon from "../assets/icons/items/staff.png";
 
 export type Gender = "male" | "female";
 export type ClassId = "knight" | "archer" | "mage";
@@ -56,6 +59,7 @@ export interface StatBarDef {
 
 export interface ClassDefinition {
   id: ClassId;
+  /** Sprite path for the role badge — see ROLE_ICON below. Render it as an <img>, never as text. */
   icon: string;
   role: string;
   badge: string;
@@ -82,10 +86,18 @@ export interface ClassDefinition {
 
 const MAX_HP_SCALE = 220;
 
+/** Role-badge glyphs. Sprites, not emoji (the app's no-emoji rule covers these too) — all three
+ * reuse art already drawn for other screens rather than commissioning new icons. */
+const ROLE_ICON: Record<ClassId, string> = {
+  knight: guardIcon,
+  archer: bowIcon,
+  mage: staffIcon,
+};
+
 export const CLASSES: ClassDefinition[] = [
   {
     id: "knight",
-    icon: "🛡️",
+    icon: ROLE_ICON.knight,
     role: "Tank d'Usure & Contre-attaque",
     badge: "TANK",
     names: { male: "Chevalier", female: "Chevalière" },
@@ -120,7 +132,7 @@ export const CLASSES: ClassDefinition[] = [
   },
   {
     id: "archer",
-    icon: "🏹",
+    icon: ROLE_ICON.archer,
     role: "DPS Rapide & Coups Critiques",
     badge: "DPS",
     names: { male: "Archer", female: "Archère" },
@@ -155,7 +167,7 @@ export const CLASSES: ClassDefinition[] = [
   },
   {
     id: "mage",
-    icon: "🔮",
+    icon: ROLE_ICON.mage,
     role: "Canon Arcanique & Burst",
     badge: "BURST",
     names: { male: "Mage", female: "Magicienne" },

@@ -18,7 +18,7 @@
     "traits": [],
     "skill": {
       "name": "Morsure Sangsue",
-      "icon": "🩸",
+      "iconId": "bleed",
       "description": "Draine 5 PV pour se soigner à chaque coup critique."
     },
     "lore": "Tapie dans les voûtes humides, elle fond sur les mercenaires isolés pour se repaître de leur sang.",
@@ -83,7 +83,7 @@
     "traits": [],
     "skill": {
       "name": "Morsure Purulente",
-      "icon": "☠️",
+      "iconId": "poison",
       "description": "Inflige un poison infligeant 2 dégâts/sec pendant 4s."
     },
     "lore": "Nourri des immondices de la crypte, ses crocs transmettent une fièvre dévastatrice.",
@@ -153,7 +153,7 @@
     "traits": [],
     "skill": {
       "name": "Carapace de Granit",
-      "icon": "🛡️",
+      "iconId": "aegis",
       "description": "Réduit les 2 premières attaques subies de 50%."
     },
     "lore": "Une créature millénaire dotée d'une carapace dure comme l'acier forgé.",
@@ -216,7 +216,7 @@
     "traits": [],
     "skill": {
       "name": "Toile Entravante",
-      "icon": "🕸️",
+      "iconId": "nature",
       "description": "Réduit la vitesse d'attaque de la cible de 30%."
     },
     "lore": "Elle tisse des toiles spectrales indestructibles au milieu des sarcophages.",
@@ -280,7 +280,7 @@
     "traits": [],
     "skill": {
       "name": "Estoc Rouillé",
-      "icon": "🗡️",
+      "iconId": "physical",
       "description": "15% de chance d'infliger un coup perforant ignorant 30% d'armure."
     },
     "lore": "Les ossements ranimés d'un jeune milicien tombé lors d'un ancien siège.",
@@ -351,7 +351,7 @@
     "traits": [],
     "skill": {
       "name": "Mur d'Ossements",
-      "icon": "🛡️",
+      "iconId": "aegis",
       "description": "Bloque complètement une attaque toutes les 8 secondes."
     },
     "lore": "Ancien protecteur du tombeau royal, il ne baisse jamais sa lourde défense.",
@@ -420,7 +420,7 @@
     ],
     "skill": {
       "name": "Transpercement",
-      "icon": "🔱",
+      "iconId": "physical",
       "description": "Sa première frappe de combat inflige +75% de dégâts."
     },
     "lore": "Sa pique d'os taillée traverse aisément le cuir et la cotte de mailles.",
@@ -489,7 +489,7 @@
     "traits": [],
     "skill": {
       "name": "Tir dans l'Ombre",
-      "icon": "🏹",
+      "iconId": "shadow",
       "description": "Tire une flèche spectrale avec 50% de chance de critique si la cible est à distance."
     },
     "lore": "Ses yeux s'illuminent d'une lueur spectrale au moment de décocher ses traits précis.",
@@ -557,7 +557,7 @@
     "traits": [],
     "skill": {
       "name": "Flash Aveuglant",
-      "icon": "✨",
+      "iconId": "blind",
       "description": "Fait rater la prochaine attaque physique de l'adversaire."
     },
     "lore": "Une lueur trompeuse guidant les voyageurs imprudents vers des fosses sans fond.",
@@ -620,7 +620,7 @@
     "traits": [],
     "skill": {
       "name": "Hurlement Déchirant",
-      "icon": "📢",
+      "iconId": "ice",
       "description": "Réduit l'attaque de la cible de 20% pendant 5 secondes."
     },
     "lore": "Une âme en peine dont le cri glace le sang et paralyse les plus braves guerriers.",
@@ -686,7 +686,7 @@
     "traits": [],
     "skill": {
       "name": "Appel Sépulcral",
-      "icon": "💀",
+      "iconId": "shadow",
       "description": "Invoque un Squelette Recrue quand ses PV tombent sous 50%."
     },
     "lore": "Un adepte des arts noirs qui manipule les cadavres de la crypte à sa guise.",
@@ -750,7 +750,7 @@
     "traits": [],
     "skill": {
       "name": "Attaque Furtive",
-      "icon": "🗡️",
+      "iconId": "shadow",
       "description": "Se téléporte derrière la cible pour lui asséner un coup critique garanti."
     },
     "lore": "Une condensation de pure noirceur qui se glisse dans les angles morts.",
@@ -816,7 +816,7 @@
     "traits": [],
     "skill": {
       "name": "Forme Statuaire",
-      "icon": "🗿",
+      "iconId": "aegis",
       "description": "Se régénère de 30 PV lorsqu'elle ne subit pas d'attaque pendant 3s."
     },
     "lore": "Sculptée pour surveiller le sanctuaire, elle s'éveille dès qu'un intrus s'approche.",
@@ -889,7 +889,7 @@
     "traits": [],
     "skill": {
       "name": "Malédiction d'Ensevelissement",
-      "icon": "⚰️",
+      "iconId": "shadow",
       "description": "Ralentit de 40% la vitesse de régénération du joueur."
     },
     "lore": "Préservée par des baumes interdits, son corps insensible absorbe les pires chocs.",
@@ -958,7 +958,7 @@
     "traits": [],
     "skill": {
       "name": "Tranchant Spectral",
-      "icon": "⚔️",
+      "iconId": "physical",
       "description": "Inflige des dégâts purs ignorant totalement l'armure."
     },
     "lore": "Une cotte de plates possédée par l'esprit rancunier d'un général royal trahi.",
@@ -1019,7 +1019,7 @@
     "traits": [],
     "skill": {
       "name": "Portail de Fuite",
-      "icon": "🌀",
+      "iconId": "lightning",
       "description": "Tente d'ouvrir un portail doré pour fuir au bout de 12 secondes."
     },
     "lore": "Un voleur cupide qui fouille les tombes. S'il est vaincu à temps, ses richesses sont à vous !",
@@ -1083,7 +1083,7 @@
     ],
     "skill": {
       "name": "Mâchoire Traîtresse",
-      "icon": "👄",
+      "iconId": "physical",
       "description": "Inflige le double de dégâts si le joueur n'a pas utilisé de compétence."
     },
     "lore": "Il prend l'apparence exacte d'un coffre rempli d'or pour dévorer les aventuriers cupides.",
@@ -1144,7 +1144,7 @@
     "traits": [],
     "skill": {
       "name": "Guillotine Lourde",
-      "icon": "🪓",
+      "iconId": "stun",
       "description": "Frappe le sol et étourdit l'adversaire pendant 2 secondes."
     },
     "lore": "Autrefois chargé d'exécuter les traîtres du royaume, sa hache est encore imprégnée de tourments.",
@@ -1210,7 +1210,7 @@
     "traits": [],
     "skill": {
       "name": "Nova de Givre Mortel",
-      "icon": "❄️",
+      "iconId": "ice",
       "description": "Déclenche une explosion glacée infligeant 45 dégâts magiques."
     },
     "lore": "Un puissant sorcier qui a troqué sa mortalité contre le pouvoir infini de la nécromancie.",
@@ -1277,7 +1277,7 @@
     "traits": [],
     "skill": {
       "name": "Tempête d'Ossements & Renaissance",
-      "icon": "🌪️",
+      "iconId": "physical",
       "description": "Déchaîne un tourbillon d'épées et ressuscite une fois avec 30% de ses PV."
     },
     "lore": "Le souverain suprême déchu de la crypte. Sa couronne brisée cache un trésor inestimable convoité sur le marché.",
@@ -1347,7 +1347,7 @@
     "traits": [],
     "skill": {
       "name": "Morsure Spongieuse",
-      "icon": "",
+      "iconId": "poison",
       "description": "Une morsure molle mais tenace qui laisse des spores dans la plaie."
     },
     "lore": "Elle se nourrit du mycélium sous la roche et n'émerge que lorsqu'on arrache ses champignons.",
@@ -1418,7 +1418,7 @@
     "traits": [],
     "skill": {
       "name": "Décharge de Spores",
-      "icon": "",
+      "iconId": "poison",
       "description": "Libère un nuage empoisonné qui ronge les poumons sur plusieurs tours."
     },
     "lore": "Sculpté dans le bois mort et le mycélium, il veille sur les gisements bioluminescents depuis des siècles.",
@@ -1494,7 +1494,7 @@
     ],
     "skill": {
       "name": "Souffle du Mycélium",
-      "icon": "",
+      "iconId": "nature",
       "description": "Frappe toutes les cibles et empoisonne lourdement — le sol lui-même se met à respirer."
     },
     "lore": "Le premier myconide, mort depuis si longtemps que son corps n'est plus qu'un souvenir lumineux accroché à la roche.",

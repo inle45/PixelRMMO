@@ -31,6 +31,10 @@ interface ArenaBackdropProps {
   weatherId: string;
   isBossWave: boolean;
   bossHpPct?: number;
+  /** Set by an EncounterDef fought somewhere other than the crypt. When present it replaces the
+   * dungeon art AND suppresses the foreground pillar layer — those pillars are a duplicate crop of
+   * `arena-bg.png` itself, so masking crypt masonry over, say, a mushroom cavern reads as a bug. */
+  background?: string;
 }
 
 /**
@@ -39,8 +43,9 @@ interface ArenaBackdropProps {
  * is a real camera move (the arena is a fixed single screen), but the differential motion between
  * them reads as parallax depth rather than a static painting.
  */
-export default function ArenaBackdrop({ weatherId, isBossWave, bossHpPct = 100 }: ArenaBackdropProps) {
+export default function ArenaBackdrop({ weatherId, isBossWave, bossHpPct = 100, background }: ArenaBackdropProps) {
   const tint = WEATHER_TINT[weatherId];
+  const sceneSrc = background ?? (isBossWave ? bossArenaBg : arenaBg);
 
   const debris = useMemo(
     () =>
@@ -57,8 +62,8 @@ export default function ArenaBackdrop({ weatherId, isBossWave, bossHpPct = 100 }
   return (
     <div className="absolute inset-0 overflow-hidden">
       <motion.img
-        key={isBossWave ? "boss" : "normal"}
-        src={isBossWave ? bossArenaBg : arenaBg}
+        key={sceneSrc}
+        src={sceneSrc}
         alt=""
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, scale: [1, 1.06, 1] }}
@@ -66,18 +71,20 @@ export default function ArenaBackdrop({ weatherId, isBossWave, bossHpPct = 100 }
         className="absolute inset-0 h-full w-full object-cover"
         style={{ imageRendering: "pixelated" }}
       />
-      <motion.img
-        src={fgPillars}
-        alt=""
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          imageRendering: "pixelated",
-          maskImage: EDGE_MASK,
-          WebkitMaskImage: EDGE_MASK,
-        }}
-        animate={{ x: [-3, 3, -3], scale: [1.03, 1.06, 1.03] }}
-        transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-      />
+      {!background && (
+        <motion.img
+          src={fgPillars}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            imageRendering: "pixelated",
+            maskImage: EDGE_MASK,
+            WebkitMaskImage: EDGE_MASK,
+          }}
+          animate={{ x: [-3, 3, -3], scale: [1.03, 1.06, 1.03] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
       {tint && <div className="absolute inset-0" style={{ background: tint }} />}
       {isBossWave && <div className="absolute inset-0 bg-rose-900/15" />}
 

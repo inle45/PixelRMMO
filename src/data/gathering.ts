@@ -1,8 +1,17 @@
 import { addOwned, applyRewards, spendEcus, removeOwned, getInventory } from "./inventory";
-import { MATERIAL_BY_ID } from "./materials";
 import { MONSTER_BY_ID } from "./bestiary";
 
 export type NodeTier = 1 | 2 | 3;
+
+/** One line of a node's harvest table. A node is no longer "cut it, receive its material" — see
+ * GATHERING_NODES below for why that had to change. */
+export interface NodeDrop {
+  materialId: string;
+  /** Percent chance this line lands on a successful cut. */
+  chance: number;
+  /** Units granted when it does. A perfect cut multiplies this by 1.5 (rounded up). */
+  qty: number;
+}
 
 export interface GatheringNodeDef {
   id: string;
@@ -10,11 +19,13 @@ export interface GatheringNodeDef {
   name: string;
   /** Minimum hero level. Below it the node can be inspected but not harvested. */
   levelRequired: number;
+  /** The node's headline material — what the pin is named after and what the Codex links to. It is
+   * NOT necessarily what a given cut yields; `drops` is the actual table. */
   materialId: string;
   /** Bestiary id of the guardian this tier can wake. */
   guardianId: string;
-  /** Base units harvested on a normal success. A perfect run adds +50% (rounded up). */
-  yield: number;
+  /** What a successful cut actually rolls for. */
+  drops: NodeDrop[];
   xp: number;
   /** Mini-game shape, scaled per tier: more points, tighter window, and T3's points drift. */
   points: number;
@@ -32,8 +43,18 @@ export interface GatheringNodeDef {
   accent: string;
 }
 
-/** Three nodes, one per tier, laid out on the two cavern floors of `mushroom_cave_bg.png`: the two
- * easy ones on the near (lower) ledge, the royal one deeper in on the upper ledge. */
+/**
+ * Three nodes, one per tier, laid out on the two cavern floors of `mushroom_cave_bg.png`: the two
+ * easy ones on the near (lower) ledge, the royal one deeper in on the upper ledge.
+ *
+ * EVERY TIER'S HEADLINE MATERIAL IS A CHANCE ROLL, NOT A GUARANTEE. The first version handed the
+ * node's material over on every successful cut, which made an "Épique" Fongus Toxique something you
+ * printed 100% of the time — the rarity badge was a lie, and the player said so directly ("soit ce
+ * matériaux tu le rend épique par sa rareté et son taux de drop soit tu baisse sa rareté"). Rather
+ * than demote the tiers, each node now yields its *bulk* material reliably and its prestige material
+ * on a roll whose odds are pitched at the rarity: ~45% for a Rare, ~20% for an Épique. That also
+ * chains the tiers together (T3 restocks T2's spores) instead of each node being a closed loop.
+ */
 export const GATHERING_NODES: GatheringNodeDef[] = [
   {
     id: "moss_caps",
@@ -42,12 +63,13 @@ export const GATHERING_NODES: GatheringNodeDef[] = [
     levelRequired: 1,
     materialId: "mousse_caverne",
     guardianId: "fungal_larva",
-    yield: 2,
+    // Commun, so it stays guaranteed — the rarity and the drop rate agree here already.
+    drops: [{ materialId: "mousse_caverne", chance: 100, qty: 2 }],
     xp: 20,
     points: 3,
-    reactionWindow: 3.5,
+    reactionWindow: 2.0,
     failToxicity: 10,
-    attemptToxicity: 3,
+    attemptToxicity: 5,
     drifting: false,
     x: 24,
     y: 89,
@@ -60,12 +82,15 @@ export const GATHERING_NODES: GatheringNodeDef[] = [
     levelRequired: 10,
     materialId: "spores_luminescents",
     guardianId: "myconid_guard",
-    yield: 2,
+    drops: [
+      { materialId: "mousse_caverne", chance: 100, qty: 1 },
+      { materialId: "spores_luminescents", chance: 45, qty: 1 },
+    ],
     xp: 55,
     points: 4,
-    reactionWindow: 2.4,
+    reactionWindow: 1.6,
     failToxicity: 20,
-    attemptToxicity: 6,
+    attemptToxicity: 9,
     drifting: false,
     x: 72,
     y: 86,
@@ -78,18 +103,25 @@ export const GATHERING_NODES: GatheringNodeDef[] = [
     levelRequired: 20,
     materialId: "fongus_toxique",
     guardianId: "spectral_myconid",
-    yield: 1,
+    drops: [
+      { materialId: "spores_luminescents", chance: 100, qty: 1 },
+      { materialId: "fongus_toxique", chance: 20, qty: 1 },
+    ],
     xp: 130,
     points: 5,
-    reactionWindow: 1.6,
+    reactionWindow: 1.15,
     failToxicity: 35,
-    attemptToxicity: 10,
+    attemptToxicity: 14,
     drifting: true,
     x: 50,
     y: 44,
     accent: "#c084fc",
   },
 ];
+
+/** Flat bonus added to every drop line's chance on a perfect cut — the real reward for playing the
+ * mini-game well is *better odds on the prestige material*, not just more of the bulk one. */
+export const PERFECT_CHANCE_BONUS = 15;
 
 export const NODE_BY_ID: Record<string, GatheringNodeDef> = Object.fromEntries(
   GATHERING_NODES.map((n) => [n.id, n])
@@ -106,6 +138,17 @@ export const GUARDIAN_CHANCE = 0.2;
 export const MAX_TOXICITY = 100;
 /** Passive build-up just from breathing the cave's air. */
 export const TOXICITY_PER_SECOND = 1;
+/**
+ * Real time spent OUTSIDE the cave that clears one point of toxicity — a full 100% takes 10 minutes
+ * to breathe off.
+ *
+ * This exists because toxicity used to live only in `MushroomCaveScene`'s `useState(0)`, so walking
+ * out and straight back in was a free, instant, unlimited purge. That single hole is what made the
+ * zone farmable forever regardless of any per-cut tuning: no toxicity cost is a real cost if the
+ * player can zero it at will. Persisted + settled on read, the same shape `energy.ts` uses for key
+ * recharge, so leaving to detox now costs exactly what it should — time.
+ */
+export const TOXICITY_DECAY_MS_PER_POINT = 6000;
 export const SICKLE_MAX_DURABILITY = 40;
 export const SICKLE_REPAIR_COST = 60;
 
@@ -121,9 +164,17 @@ export interface NodeState {
 export interface GatheringState {
   sickleDurability: number;
   nodes: Record<string, NodeState>;
+  /** Toxicity as of `toxicityAt`; read it through `getToxicity()`, never raw. */
+  toxicity: number;
+  toxicityAt: number;
 }
 
-const DEFAULT_STATE: GatheringState = { sickleDurability: SICKLE_MAX_DURABILITY, nodes: {} };
+const DEFAULT_STATE: GatheringState = {
+  sickleDurability: SICKLE_MAX_DURABILITY,
+  nodes: {},
+  toxicity: 0,
+  toxicityAt: 0,
+};
 
 export function getGatheringState(): GatheringState {
   try {
@@ -133,10 +184,34 @@ export function getGatheringState(): GatheringState {
     return {
       sickleDurability: typeof parsed.sickleDurability === "number" ? parsed.sickleDurability : SICKLE_MAX_DURABILITY,
       nodes: parsed.nodes ?? {},
+      toxicity: typeof parsed.toxicity === "number" ? parsed.toxicity : 0,
+      toxicityAt: typeof parsed.toxicityAt === "number" ? parsed.toxicityAt : 0,
     };
   } catch {
     return structuredClone(DEFAULT_STATE);
   }
+}
+
+/* ------------------------------------------------------------------------------ toxicity state */
+
+/** Pure read: the stored value with elapsed out-of-cave decay applied. Safe to call every tick. */
+export function getToxicity(now: number = Date.now()): number {
+  const state = getGatheringState();
+  if (state.toxicityAt === 0) return state.toxicity;
+  const decayed = Math.floor((now - state.toxicityAt) / TOXICITY_DECAY_MS_PER_POINT);
+  return Math.max(0, Math.min(MAX_TOXICITY, state.toxicity - decayed));
+}
+
+/** The only writer. Clamps, and stamps `now` so decay is measured from this moment. */
+export function setToxicity(value: number, now: number = Date.now()): number {
+  const state = getGatheringState();
+  const clamped = Math.max(0, Math.min(MAX_TOXICITY, value));
+  write({ ...state, toxicity: clamped, toxicityAt: now });
+  return clamped;
+}
+
+export function msUntilToxicityClear(now: number = Date.now()): number {
+  return getToxicity(now) * TOXICITY_DECAY_MS_PER_POINT;
 }
 
 function write(state: GatheringState) {
@@ -186,23 +261,27 @@ export function repairSickle(): boolean {
 /* --------------------------------------------------------------------------------- harvesting */
 
 export interface HarvestOutcome {
-  materialId: string;
-  amount: number;
+  /** Only the drop lines that actually landed — can be empty in the (rare) case every roll misses. */
+  granted: { materialId: string; amount: number }[];
   xp: number;
   perfect: boolean;
 }
 
-/** Banks a successful cut. A perfect run (every point hit) yields +50% material and double XP. */
+/** Banks a successful cut by rolling the node's own drop table. A perfect run (every vital point
+ * struck) both raises each line's odds by PERFECT_CHANCE_BONUS and grants +50% quantity, plus
+ * double XP. */
 export function grantHarvest(node: GatheringNodeDef, perfect: boolean): HarvestOutcome {
-  const amount = perfect ? Math.ceil(node.yield * 1.5) : node.yield;
+  const granted: { materialId: string; amount: number }[] = [];
+  for (const drop of node.drops) {
+    const chance = perfect ? Math.min(100, drop.chance + PERFECT_CHANCE_BONUS) : drop.chance;
+    if (Math.random() * 100 >= chance) continue;
+    const amount = perfect ? Math.ceil(drop.qty * 1.5) : drop.qty;
+    addOwned("material", drop.materialId, amount);
+    granted.push({ materialId: drop.materialId, amount });
+  }
   const xp = perfect ? node.xp * 2 : node.xp;
-  addOwned("material", node.materialId, amount);
   applyRewards({ xp });
-  return { materialId: node.materialId, amount, xp, perfect };
-}
-
-export function nodeMaterial(node: GatheringNodeDef) {
-  return MATERIAL_BY_ID[node.materialId];
+  return { granted, xp, perfect };
 }
 
 export function nodeGuardian(node: GatheringNodeDef) {

@@ -113,7 +113,10 @@ export default function MonsterModal({ monster, onClose, onViewMaterial }: Monst
 
         <div className={`mt-4 rounded-xl border ${theme.border} bg-black/30 p-3`}>
           <p className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide ${theme.accentText}`}>
-            <span className="text-sm">{monster.skill.icon}</span> {monster.skill.name}
+            {monster.skillIcon && (
+              <img src={monster.skillIcon} alt="" className="h-4 w-4 object-contain" style={{ imageRendering: "pixelated" }} />
+            )}
+            {monster.skill.name}
           </p>
           <p className="mt-1 text-xs leading-snug text-white/70">{monster.skill.description}</p>
         </div>

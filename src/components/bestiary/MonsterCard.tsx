@@ -26,12 +26,23 @@ export default function MonsterCard({ monster, isOpen, onOpen }: MonsterCardProp
   }
 
   return (
-    <motion.button
-      type="button"
+    // A div with role="button", NOT a <button>: the posture toggle below is a pair of real nested
+    // <button>s, and a button can never contain another interactive control — invalid HTML that
+    // React 19 reports as a hydration error on every render. Same trap already documented for
+    // DialogueBox's ✕ control.
+    <motion.div
+      role="button"
+      tabIndex={0}
       layoutId={`monster-card-${monster.id}`}
       onClick={onOpen}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
       transition={{ type: "spring", stiffness: 260, damping: 28 }}
-      className={`group flex flex-col rounded-2xl border bg-white/[0.05] p-3 text-left backdrop-blur-2xl transition-colors hover:bg-white/[0.08] ${theme.border}`}
+      className={`group flex cursor-pointer flex-col rounded-2xl border bg-white/[0.05] p-3 text-left backdrop-blur-2xl transition-colors hover:bg-white/[0.08] ${theme.border}`}
     >
       <div className="flex items-start justify-between gap-1">
         <RarityBadge rarity={monster.rarity} />
@@ -69,6 +80,16 @@ export default function MonsterCard({ monster, isOpen, onOpen }: MonsterCardProp
 
       <h3 className="mt-2 text-center text-sm font-bold leading-tight text-white">{monster.name}</h3>
 
+      {/* The signature move, on the card itself — it used to be buried in the modal, so a monster
+          read as having no special ability at all until you opened it. Name only here; the full
+          rules text stays in the modal where there's room for it. */}
+      <p className={`mt-1.5 flex items-center justify-center gap-1 text-[10px] font-semibold leading-tight ${theme.accentText}`}>
+        {monster.skillIcon && (
+          <img src={monster.skillIcon} alt="" className="h-3.5 w-3.5 shrink-0 object-contain" style={{ imageRendering: "pixelated" }} />
+        )}
+        <span className="truncate">{monster.skill.name}</span>
+      </p>
+
       <div className="mt-2.5 flex flex-col gap-1.5">
         <StatBar label="PV" value={monster.stats.hp} max={STAT_SCALE.hp} display={String(monster.stats.hp)} color="bg-gradient-to-r from-rose-500 to-rose-300" />
         <StatBar
@@ -81,6 +102,6 @@ export default function MonsterCard({ monster, isOpen, onOpen }: MonsterCardProp
         <StatBar label="DEF" value={monster.stats.def} max={STAT_SCALE.def} display={String(monster.stats.def)} color="bg-gradient-to-r from-sky-500 to-sky-300" />
         <StatBar label="VIT" value={monster.stats.speedValue} max={STAT_SCALE.speed} display={monster.stats.speedLabel} color="bg-gradient-to-r from-cyan-500 to-cyan-300" />
       </div>
-    </motion.button>
+    </motion.div>
   );
 }

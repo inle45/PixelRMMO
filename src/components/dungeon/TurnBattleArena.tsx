@@ -5,7 +5,7 @@ import type { MonsterDef } from "../../data/bestiary";
 import { CLASS_SKILLS } from "../../data/skills";
 import type { ClassSkill } from "../../data/skills";
 import { BATTLE_ITEMS, STARTING_ITEM_COUNTS, type BattleItem } from "../../data/items";
-import { generateWave1, generateWave2, generateWave3, generateReinforcements, type WaveMonster } from "../../data/waves";
+import { CRYPT_ENCOUNTER, type EncounterDef, type WaveMonster } from "../../data/waves";
 import { rollDungeonLoot, computeXpReward, toLootCards, type LootCard } from "../../data/lootEngine";
 import { applyRewards, getInventory } from "../../data/inventory";
 import { aggregateEquipmentBonuses, type EquipmentBonuses } from "../../data/equipment";
@@ -60,6 +60,10 @@ interface TurnBattleArenaProps {
   gender: Gender;
   level: number;
   onComplete: (result: BattleResult) => void;
+  /** What is being fought. Defaults to the 3-wave crypt gauntlet; a gathering-zone guardian passes
+   * its own single-wave descriptor instead. See EncounterDef in waves.ts — this is the ONLY
+   * supported way to add a new kind of fight. */
+  encounter?: EncounterDef;
 }
 
 type Phase = "player_turn" | "busy" | "wave_transition" | "victory" | "defeat";
@@ -67,7 +71,8 @@ type TargetMode = { kind: "attack" | "skill"; damageType: Combatant["damageType"
 
 interface Internal {
   combatants: Combatant[];
-  wave: 1 | 2 | 3;
+  /** 1-based, capped by the active EncounterDef's waveCount (which is 1 for a solo guardian fight). */
+  wave: number;
   turnOrder: string[];
   activeId: string | null;
   phase: Phase;
@@ -121,7 +126,13 @@ function formatCountdown(ms: number): string {
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
-export default function TurnBattleArena({ classDef, gender, level, onComplete }: TurnBattleArenaProps) {
+export default function TurnBattleArena({
+  classDef,
+  gender,
+  level,
+  onComplete,
+  encounter = CRYPT_ENCOUNTER,
+}: TurnBattleArenaProps) {
   const [, forceRender] = useReducer((x: number) => x + 1, 0);
   const [now, setNow] = useState(() => Date.now());
   const [shakeKey, setShakeKey] = useState(0);
@@ -139,7 +150,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     return () => clearInterval(id);
   }, []);
 
-  const stateRef = useRef<Internal>(buildInitialState(classDef, gender, level));
+  const stateRef = useRef<Internal>(buildInitialState(classDef, gender, level, encounter));
   const statsRef = useRef<RunStats>({ startedAt: Date.now(), monstersDefeated: [], totalDamageDealt: 0, criticalHits: 0 });
   const battleEndedRef = useRef(false);
   const playerTurnResolveRef = useRef<(() => void) | null>(null);
@@ -316,7 +327,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       }
     } else if (!st.bossPhase2Triggered && shouldEnterPhase2(boss)) {
       const withPhase2 = enterPhase2(st.combatants, boss.instanceId);
-      const reinforcements = generateReinforcements().map(buildEnemyCombatant);
+      const reinforcements = (encounter.reinforcements?.() ?? []).map(buildEnemyCombatant);
       applyCombatants([...withPhase2, ...reinforcements]);
       set({ bossPhase2Triggered: true });
       triggerShake();
@@ -327,7 +338,7 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
 
   async function handleWaveCleared() {
     const st = stateRef.current;
-    if (st.wave === 3) {
+    if (st.wave >= encounter.waveCount) {
       set({ phase: "victory" });
       await finishRun(true);
       return;
@@ -338,8 +349,8 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
     set({ waveFading: true });
     await sleep(500);
     const hero = st.combatants.find((c) => c.side === "hero")!;
-    const nextWaveNum = st.wave === 1 ? 2 : 3;
-    const plan = nextWaveNum === 2 ? generateWave2() : generateWave3();
+    const nextWaveNum = st.wave + 1;
+    const plan = encounter.buildWave(nextWaveNum);
     const carriedHero = buildHeroCombatant(
       classDef,
       gender,
@@ -574,7 +585,8 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
       >
         <ArenaBackdrop
           weatherId={activeWeather.id}
-          isBossWave={st.wave === 3}
+          background={encounter.background}
+          isBossWave={encounter.bossWave !== null && st.wave === encounter.bossWave}
           bossHpPct={(() => {
             const boss = st.combatants.find((c) => c.isBoss);
             return boss ? Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100)) : 100;
@@ -608,8 +620,12 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
             <span className="text-[10px] font-bold text-white">{activeWeather.name}</span>
             <span className="font-mono text-[9px] text-white/50">{formatCountdown(msUntilNextWeather)}</span>
           </div>
+          {/* A single-wave encounter (a guardian ambush) has no gauntlet to count through, so it
+              names the fight instead of showing a meaningless "VAGUE 1/1". */}
           <div className="rounded-full bg-black/35 px-3 py-1 backdrop-blur-md ring-1 ring-lantern/30">
-            <span className="text-[10px] font-bold tracking-wide text-lantern-glow">VAGUE {st.wave}/3</span>
+            <span className="text-[10px] font-bold tracking-wide text-lantern-glow">
+              {encounter.waveCount > 1 ? `VAGUE ${st.wave}/${encounter.waveCount}` : encounter.label}
+            </span>
           </div>
         </div>
         <div className="mt-1.5">
@@ -750,10 +766,15 @@ export default function TurnBattleArena({ classDef, gender, level, onComplete }:
   );
 }
 
-function buildInitialState(classDef: ClassDefinition, gender: Gender, level: number): Internal {
+function buildInitialState(
+  classDef: ClassDefinition,
+  gender: Gender,
+  level: number,
+  encounter: EncounterDef
+): Internal {
   const equipmentBonuses = aggregateEquipmentBonuses(getInventory().equippedItems);
   const hero = buildHeroCombatant(classDef, gender, level, undefined, equipmentBonuses);
-  const plan = generateWave1();
+  const plan = encounter.buildWave(1);
   const enemies = plan.monsters.map((wm: WaveMonster) => buildEnemyCombatant(wm));
   return {
     combatants: [hero, ...enemies],

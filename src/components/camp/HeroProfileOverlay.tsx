@@ -55,7 +55,10 @@ export default function HeroProfileOverlay({ classDef, gender, username, onClose
           <span
             className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wider ${theme.badgeBg} ${theme.badgeText}`}
           >
-            {classDef.icon} {classDef.badge}
+            {classDef.icon && (
+              <img src={classDef.icon} alt="" className="mr-1 inline h-3 w-3 align-[-2px]" style={{ imageRendering: "pixelated" }} />
+            )}
+            {classDef.badge}
           </span>
 
           <div className="mt-4 flex h-40 w-40 items-center justify-center drop-shadow-[0_10px_20px_rgba(0,0,0,0.55)]">

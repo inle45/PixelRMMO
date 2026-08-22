@@ -45,7 +45,7 @@ function toInstances(defs: MonsterDef[]): WaveMonster[] {
 }
 
 export interface WavePlan {
-  wave: 1 | 2 | 3;
+  wave: number;
   monsters: WaveMonster[];
   isRareEvent: boolean;
 }
@@ -70,4 +70,56 @@ export function generateWave3(): WavePlan {
 /** Adds spawned when the boss crosses into Phase 2 — its own "invocation de renforts". */
 export function generateReinforcements(): WaveMonster[] {
   return toInstances(pickRandom(BOSS_REINFORCEMENT_IDS.map(byId), 2));
+}
+
+/* --------------------------------------------------------------------------------- encounters */
+
+/**
+ * What a `TurnBattleArena` mount is fighting.
+ *
+ * THE RULE: there is exactly ONE combat engine in this game. Any fight anywhere — a dungeon
+ * gauntlet, a gathering-zone guardian, whatever comes next — mounts `TurnBattleArena` with a
+ * different `EncounterDef`, and differs only in its wave list and its backdrop. Do NOT write a
+ * second, "lighter" battle screen for a one-off fight: that is exactly what the cave's original
+ * `GuardianEncounter` was, and it was rejected outright ("je veux que ce soit le même moteur de
+ * combat que dans les donjons juste avec un autre decor"). If a fight needs something the arena
+ * can't express, extend this descriptor — don't fork the screen.
+ */
+export interface EncounterDef {
+  id: string;
+  /** Total waves. The "VAGUE n/N" pill hides itself entirely when this is 1. */
+  waveCount: number;
+  /** Built lazily as each wave starts (1-based), so mid-run rolls (rare events) stay random. */
+  buildWave: (wave: number) => WavePlan;
+  /** Phase-2 adds, for an encounter whose boss summons them. Omitted = no reinforcements. */
+  reinforcements?: () => WaveMonster[];
+  /** 1-based wave that swaps in the boss backdrop + cracks/debris layer; null = this fight has none. */
+  bossWave: number | null;
+  /** Overrides ArenaBackdrop's crypt art. Omitted = the default dungeon arena. */
+  background?: string;
+  /** Shown on the summary screen so a defeat/victory card names the right fight. */
+  label: string;
+}
+
+export const CRYPT_ENCOUNTER: EncounterDef = {
+  id: "crypte-roi-squelette",
+  label: "La Crypte du Roi Squelette",
+  waveCount: 3,
+  buildWave: (wave) => (wave === 1 ? generateWave1() : wave === 2 ? generateWave2() : generateWave3()),
+  reinforcements: generateReinforcements,
+  bossWave: 3,
+};
+
+/** A single-wave fight against one named bestiary creature, on its own zone's backdrop — what a
+ * gathering-zone guardian ambush is. No boss machinery: a guardian has no phase 2 and no revive. */
+export function buildSoloEncounter(monsterId: string, opts: { background: string; label: string }): EncounterDef {
+  const def = byId(monsterId);
+  return {
+    id: `solo-${monsterId}`,
+    label: opts.label,
+    waveCount: 1,
+    buildWave: () => ({ wave: 1, monsters: toInstances([def]), isRareEvent: false }),
+    bossWave: null,
+    background: opts.background,
+  };
 }

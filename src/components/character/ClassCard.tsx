@@ -38,7 +38,10 @@ export default function ClassCard({ classDef, gender, selected, onSelect }: Clas
       <span
         className={`absolute right-4 top-4 rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider ${theme.badgeBg} ${theme.badgeText}`}
       >
-        {classDef.icon} {classDef.badge}
+        {classDef.icon && (
+          <img src={classDef.icon} alt="" className="mr-1 inline h-3 w-3 align-[-2px]" style={{ imageRendering: "pixelated" }} />
+        )}
+        {classDef.badge}
       </span>
 
       {attacking && (

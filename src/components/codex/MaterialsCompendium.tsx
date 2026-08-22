@@ -75,13 +75,18 @@ export default function MaterialsCompendium({ onViewMonster, requestedMaterialId
               type="button"
               onClick={() => setCategoryFilter(f.id)}
               className={
-                "rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors " +
+                "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors " +
                 (active
                   ? "border-lantern/50 bg-lantern/15 text-lantern-glow"
                   : "border-white/10 bg-white/[0.04] text-white/55 hover:bg-white/[0.08]")
               }
             >
-              {f.icon ? `${f.icon} ` : ""}
+              {/* An <img>, never string interpolation: CATEGORY_ICONS holds sprite paths (Vite inlines
+                  small PNGs as base64 data URIs), so `${f.icon}` dumps the whole data URI as visible
+                  text across the screen. That is exactly what shipped when these stopped being emoji. */}
+              {f.icon && (
+                <img src={f.icon} alt="" className="h-3.5 w-3.5 object-contain" style={{ imageRendering: "pixelated" }} />
+              )}
               {f.label}
             </button>
           );

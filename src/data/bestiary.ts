@@ -22,7 +22,11 @@ export interface MonsterDrop {
 
 export interface MonsterSkill {
   name: string;
-  icon: string;
+  /** A damage-type or status-effect badge id (`types/*.png` or `statuses/*.png`), NOT an asset path
+   * and NOT an emoji — these were emoji until the no-emoji rule caught up with them. A skill's icon
+   * and the element/effect it applies are the same concept, so this reuses the badges the Types &
+   * Météo matrix already ships rather than commissioning 23 more sprites. Resolved to `skillIcon`. */
+  iconId: string;
   description: string;
 }
 
@@ -78,6 +82,8 @@ export interface MonsterDef extends RawMonster {
   portrait: string;
   idleFrames: string[];
   attackFrames: string[];
+  /** Sprite resolved from `skill.iconId` against the Codex's type/status badges. */
+  skillIcon: string;
 }
 
 /** Relative power caps used to scale every card's PV/ATK/DEF/Vitesse gauges on the same axis. */
@@ -114,11 +120,30 @@ function getFrames(modules: Record<string, string>, id: string): string[] {
   return frames;
 }
 
+/** Both badge folders in one lookup — a skill id resolves against types/ first, then statuses/,
+ * which is unambiguous because the two sets share no filenames. */
+const skillBadgeModules = {
+  ...(import.meta.glob("../assets/codex/badges/types/*.png", { eager: true, import: "default" }) as Record<
+    string,
+    string
+  >),
+  ...(import.meta.glob("../assets/codex/badges/statuses/*.png", { eager: true, import: "default" }) as Record<
+    string,
+    string
+  >),
+};
+
+function getSkillIcon(iconId: string): string {
+  const entry = Object.entries(skillBadgeModules).find(([path]) => path.endsWith(`/${iconId}.png`));
+  return entry?.[1] ?? "";
+}
+
 export const BESTIARY: MonsterDef[] = (rawBestiary as RawMonster[]).map((m) => ({
   ...m,
   portrait: getPortrait(m.id),
   idleFrames: getFrames(idleFrameModules, m.id),
   attackFrames: getFrames(attackFrameModules, m.id),
+  skillIcon: getSkillIcon(m.skill.iconId),
 }));
 
 export const MONSTER_BY_ID: Record<string, MonsterDef> = Object.fromEntries(BESTIARY.map((m) => [m.id, m]));

@@ -19,14 +19,19 @@ import {
   repairSickle,
   purifierCount,
   consumePurifier,
+  getToxicity as readToxicity,
+  setToxicity as persistToxicity,
   nodeSprite,
-  nodeMaterial,
   nodeGuardian,
   type GatheringNodeDef,
 } from "../../data/gathering";
 import { getInventory, removeOwned } from "../../data/inventory";
+import { MATERIAL_BY_ID } from "../../data/materials";
+import { readStoredHeroClass } from "../../data/storedHero";
+import { buildSoloEncounter } from "../../data/waves";
+import caveArenaBg from "../../assets/dungeon/cave-arena-bg.png";
 import HarvestMinigame from "./HarvestMinigame";
-import GuardianEncounter from "./GuardianEncounter";
+import TurnBattleArena from "../dungeon/TurnBattleArena";
 
 interface MushroomCaveSceneProps {
   onClose: () => void;
@@ -43,11 +48,20 @@ function fmt(ms: number) {
 
 export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveSceneProps) {
   const reduceMotion = useReducedMotion();
-  const [toxicity, setToxicity] = useState(0);
+  // Seeded from persisted state, NOT 0 — walking out and back in used to be a free full purge,
+  // which made every other toxicity number meaningless. See TOXICITY_DECAY_MS_PER_POINT.
+  const [toxicity, setToxicityLocal] = useState(() => readToxicity());
   const [version, setVersion] = useState(0);
   const [now, setNow] = useState(() => Date.now());
   const [active, setActive] = useState<GatheringNodeDef | null>(null);
-  const [guardian, setGuardian] = useState<{ node: GatheringNodeDef; perfect: boolean } | null>(null);
+  /** An in-progress guardian ambush. `battleKey` remounts TurnBattleArena per ambush, the same
+   * fresh-instance-per-run trick DungeonScreen uses rather than resetting a live battle in place. */
+  const [guardian, setGuardian] = useState<{
+    node: GatheringNodeDef;
+    perfect: boolean;
+    encounter: ReturnType<typeof buildSoloEncounter>;
+    battleKey: number;
+  } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   /** Everything cut this visit. Wiped, not banked, if the player passes out. */
   const sessionRef = useRef<Record<string, number>>({});
@@ -55,6 +69,7 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
 
   const heroLevel = getInventory().level;
   const state = getGatheringState();
+  const storedHero = readStoredHeroClass();
 
   const flash = useCallback((msg: string) => {
     setToast(msg);
@@ -66,9 +81,15 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
   useEffect(() => {
     const id = setInterval(() => {
       setNow(Date.now());
-      setToxicity((t) => Math.min(MAX_TOXICITY, t + TOXICITY_PER_SECOND));
+      setToxicityLocal((t) => persistToxicity(t + TOXICITY_PER_SECOND));
     }, 1000);
     return () => clearInterval(id);
+  }, []);
+
+  /** Single write path for every toxicity change: persist first, mirror into local state second, so
+   * the stored value and what the gauge shows can never drift apart. */
+  const changeToxicity = useCallback((next: (t: number) => number) => {
+    setToxicityLocal((t) => persistToxicity(next(t)));
   }, []);
 
   useEffect(() => {
@@ -90,10 +111,10 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
   function finishMinigame(node: GatheringNodeDef, result: { success: boolean; perfect: boolean }) {
     setActive(null);
     consumeAttempt(node.id);
-    setToxicity((t) => Math.min(MAX_TOXICITY, t + node.attemptToxicity));
+    changeToxicity((t) => t + node.attemptToxicity);
 
     if (!result.success) {
-      setToxicity((t) => Math.min(MAX_TOXICITY, t + node.failToxicity));
+      changeToxicity((t) => t + node.failToxicity);
       flash(
         node.tier === 3
           ? `Explosion de spores ! +${node.failToxicity}% toxicité, ressource perdue.`
@@ -103,9 +124,17 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
       return;
     }
 
-    // The guardian wakes *before* the loot is banked, so fleeing genuinely forfeits this cut.
-    if (Math.random() < GUARDIAN_CHANCE) {
-      setGuardian({ node, perfect: result.perfect });
+    // The guardian wakes *before* the loot is banked, so losing the fight genuinely forfeits this
+    // cut. There is no flee option any more: the shared engine has none, and an unavoidable fight
+    // is what gives a harvest real stakes instead of being free material printing.
+    const monster = nodeGuardian(node);
+    if (monster && storedHero && Math.random() < GUARDIAN_CHANCE) {
+      setGuardian({
+        node,
+        perfect: result.perfect,
+        encounter: buildSoloEncounter(monster.id, { background: caveArenaBg, label: monster.name }),
+        battleKey: Date.now(),
+      });
       return;
     }
     bank(node, result.perfect);
@@ -113,11 +142,18 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
 
   function bank(node: GatheringNodeDef, perfect: boolean) {
     const out = grantHarvest(node, perfect);
-    sessionRef.current[out.materialId] = (sessionRef.current[out.materialId] ?? 0) + out.amount;
+    for (const g of out.granted) {
+      sessionRef.current[g.materialId] = (sessionRef.current[g.materialId] ?? 0) + g.amount;
+    }
+    // A cut can now come up empty — the prestige line is a roll, not a guarantee — so say so rather
+    // than flashing a reward line with nothing in it.
+    const spoils = out.granted
+      .map((g) => `+${g.amount} ${MATERIAL_BY_ID[g.materialId]?.name ?? g.materialId}`)
+      .join(" · ");
     flash(
-      perfect
-        ? `Coupe parfaite ! +${out.amount} ${nodeMaterial(node)?.name} · +${out.xp} XP`
-        : `+${out.amount} ${nodeMaterial(node)?.name} · +${out.xp} XP`
+      out.granted.length === 0
+        ? `Coupe réussie mais stérile — rien d'exploitable. +${out.xp} XP`
+        : `${perfect ? "Coupe parfaite ! " : ""}${spoils} · +${out.xp} XP`
     );
     setVersion((v) => v + 1);
   }
@@ -226,7 +262,7 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
             onClick={() => {
               const relief = consumePurifier();
               if (relief <= 0) return flash("Aucun purifiant.");
-              setToxicity((t) => Math.max(0, t - relief));
+              changeToxicity((t) => t - relief);
               flash(`Purifiant utilisé — −${relief}% asphyxie.`);
               setVersion((v) => v + 1);
             }}
@@ -262,16 +298,29 @@ export default function MushroomCaveScene({ onClose, onBlackout }: MushroomCaveS
             onFinish={(r) => finishMinigame(active, r)}
           />
         )}
-        {guardian && (
-          <GuardianEncounter
-            guardian={nodeGuardian(guardian.node)}
-            onResolve={({ won, fled }) => {
+        {/* THE guardian fight is the real dungeon engine, not a bespoke mini-screen — same
+            TurnBattleArena, same turn order, same skills/items/statuses, only the EncounterDef and
+            the backdrop differ. The earlier hand-rolled strike/flee exchange was rejected outright
+            ("je veux que ce soit le même moteur de combat que dans les donjons juste avec un autre
+            decor"); see EncounterDef in waves.ts before adding any future fight anywhere. */}
+        {guardian && storedHero && (
+          <TurnBattleArena
+            key={guardian.battleKey}
+            classDef={storedHero.classDef}
+            gender={storedHero.hero.gender}
+            level={heroLevel}
+            encounter={guardian.encounter}
+            onComplete={({ victory }) => {
               const g = guardian;
               setGuardian(null);
-              if (won) bank(g.node, g.perfect);
-              else if (fled) flash("Vous fuyez — les champignons sont abandonnés.");
-              else {
-                setToxicity(MAX_TOXICITY);
+              if (victory) {
+                // Beating the ambush keeps the cut AND banks the guardian's own bestiary drops,
+                // which TurnBattleArena has already applied to the inventory by this point.
+                bank(g.node, g.perfect);
+                flash(`${nodeGuardian(g.node)?.name ?? "Le gardien"} est vaincu — récolte sécurisée !`);
+              } else {
+                // Losing is a blackout: the spores take you and the whole visit's harvest is voided.
+                changeToxicity(() => MAX_TOXICITY);
               }
             }}
           />

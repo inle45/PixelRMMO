@@ -6,26 +6,8 @@ import DungeonSummaryModal from "./DungeonSummaryModal";
 import { consumeKey } from "../../data/energy";
 import { getInventory } from "../../data/inventory";
 import { getWorldState } from "../../data/worldState";
-import { CLASSES, type ClassId, type Gender } from "../../data/classes";
+import { readStoredHeroClass } from "../../data/storedHero";
 import { mapIcon } from "../../data/campScene";
-
-const HERO_STORAGE_KEY = "pixelrmmo:hero";
-
-interface StoredHero {
-  classId: ClassId;
-  gender: Gender;
-}
-
-function readStoredHero(): StoredHero | null {
-  try {
-    const raw = localStorage.getItem(HERO_STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as StoredHero;
-    return parsed?.classId && parsed?.gender ? parsed : null;
-  } catch {
-    return null;
-  }
-}
 
 interface DungeonScreenProps {
   onReturnToCamp: () => void;
@@ -44,8 +26,7 @@ export default function DungeonScreen({ onReturnToCamp, onOpenMap }: DungeonScre
   const [battleKey, setBattleKey] = useState(0);
   const [result, setResult] = useState<BattleResult | null>(null);
 
-  const hero = readStoredHero();
-  const classDef = hero ? CLASSES.find((c) => c.id === hero.classId) : undefined;
+  const stored = readStoredHeroClass();
   const atCrypt = getWorldState().currentNodeId === CRYPT_NODE_ID;
 
   function enterCrypt() {
@@ -55,7 +36,7 @@ export default function DungeonScreen({ onReturnToCamp, onOpenMap }: DungeonScre
     setPhase("battle");
   }
 
-  if (!classDef || !hero) {
+  if (!stored) {
     return (
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.06] p-8 text-center backdrop-blur-2xl">
         <p className="text-sm text-white/55">Choisis d'abord un héros pour accéder aux donjons.</p>
@@ -90,8 +71,8 @@ export default function DungeonScreen({ onReturnToCamp, onOpenMap }: DungeonScre
         {phase === "battle" && (
           <TurnBattleArena
             key={battleKey}
-            classDef={classDef}
-            gender={hero.gender}
+            classDef={stored.classDef}
+            gender={stored.hero.gender}
             level={getInventory().level}
             onComplete={(r) => {
               setResult(r);
