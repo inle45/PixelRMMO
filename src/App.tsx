@@ -10,19 +10,12 @@ import CodexHub from "./components/codex/CodexHub";
 import DungeonScreen from "./components/dungeon/DungeonScreen";
 import InventoryScreen from "./components/inventory/InventoryScreen";
 import WorldMap from "./components/map/WorldMap";
+import TownScene from "./components/town/TownScene";
 import type { TabId } from "./data/tabs";
 
 type Screen = "auth" | "character-select" | "game";
 
 const USERNAME_KEY = "pixelrmmo:username";
-
-const COMING_SOON: Record<Exclude<TabId, "camp" | "bestiary" | "dungeon" | "inventory">, { title: string; text: string }> = {
-  crafting: {
-    title: "Crafting",
-    text: "Forge, cuisine, bijouterie... l'atelier d'artisanat arrive bientôt.",
-  },
-  market: { title: "Hôtel des Ventes", text: "Le marché C2C entre joueurs arrive bientôt." },
-};
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("auth");
@@ -31,6 +24,9 @@ export default function App() {
   // open the World Map (to send a player who hasn't travelled to the crypt yet), so ownership can't
   // live inside CampScreen alone.
   const [mapOpen, setMapOpen] = useState(false);
+  // Same reasoning as mapOpen: entering the Cité from the World Map's "Entrer dans la Cité" button
+  // can happen while any tab is active, so this can't live inside a single tab's branch either.
+  const [townOpen, setTownOpen] = useState(false);
 
   // Still persisted for whoever needs it later — the Camp tab no longer displays it, since the tab
   // is scene-only now, so there's nothing to hold it in React state for.
@@ -41,15 +37,31 @@ export default function App() {
 
   // The Camp tab is a fullscreen, non-scrolling scene: it opts out of the padded, centred, scrolling
   // <main> every other tab shares, and out of DynamicBackground too (its own backdrop is opaque and
-  // full-bleed, so painting a second one underneath would just be wasted work).
-  if (screen === "game" && activeTab === "camp") {
+  // full-bleed, so painting a second one underneath would just be wasted work). The Town scene needs
+  // the exact same treatment, so "market"/"crafting" — which used to be bare ComingSoonPanel
+  // placeholders — join this branch too: tapping either now jumps straight into TownScene's
+  // Marketplace/Forge instead of a dead end.
+  if (screen === "game" && (activeTab === "camp" || activeTab === "market" || activeTab === "crafting")) {
     return (
       <div className="relative h-[100dvh] w-full overflow-hidden">
         <main className="absolute inset-x-0 top-0 bottom-[var(--nav-height)] overflow-hidden">
-          <CampScreen onOpenMap={() => setMapOpen(true)} />
+          {activeTab === "camp" ? (
+            <CampScreen onOpenMap={() => setMapOpen(true)} />
+          ) : (
+            <TownScene
+              initialZone={activeTab === "market" ? "market" : "forge"}
+              onClose={() => setActiveTab("camp")}
+              onOpenMap={() => setMapOpen(true)}
+            />
+          )}
         </main>
         <BottomNav active={activeTab} onChange={setActiveTab} />
-        <AnimatePresence>{mapOpen && <WorldMap onClose={() => setMapOpen(false)} />}</AnimatePresence>
+        <AnimatePresence>
+          {mapOpen && <WorldMap onClose={() => setMapOpen(false)} onEnterTown={() => { setMapOpen(false); setTownOpen(true); }} />}
+        </AnimatePresence>
+        <AnimatePresence>
+          {townOpen && <TownScene onClose={() => setTownOpen(false)} onOpenMap={() => { setTownOpen(false); setMapOpen(true); }} />}
+        </AnimatePresence>
       </div>
     );
   }
@@ -65,14 +77,16 @@ export default function App() {
             <CodexHub />
           ) : activeTab === "dungeon" ? (
             <DungeonScreen onReturnToCamp={() => setActiveTab("camp")} onOpenMap={() => setMapOpen(true)} />
-          ) : activeTab === "camp" ? null : (
-            // "camp" is already handled by the fullscreen branch above, but the narrowing from that
-            // early return doesn't carry across two separate conditions, so it's excluded here too.
-            <ComingSoonPanel {...COMING_SOON[activeTab]} />
-          )}
+          ) : null // camp/market/crafting are already handled by the fullscreen branch above
+          }
         </main>
         <BottomNav active={activeTab} onChange={setActiveTab} />
-        <AnimatePresence>{mapOpen && <WorldMap onClose={() => setMapOpen(false)} />}</AnimatePresence>
+        <AnimatePresence>
+          {mapOpen && <WorldMap onClose={() => setMapOpen(false)} onEnterTown={() => { setMapOpen(false); setTownOpen(true); }} />}
+        </AnimatePresence>
+        <AnimatePresence>
+          {townOpen && <TownScene onClose={() => setTownOpen(false)} onOpenMap={() => { setTownOpen(false); setMapOpen(true); }} />}
+        </AnimatePresence>
       </div>
     );
   }
@@ -87,15 +101,6 @@ export default function App() {
           <CharacterSelectScreen onConfirm={() => setScreen("game")} />
         )}
       </main>
-    </div>
-  );
-}
-
-function ComingSoonPanel({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/[0.06] p-8 text-center backdrop-blur-2xl">
-      <h2 className="text-lg font-bold text-white">{title}</h2>
-      <p className="mt-2 text-sm text-white/55">{text}</p>
     </div>
   );
 }

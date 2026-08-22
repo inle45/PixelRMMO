@@ -39,6 +39,10 @@ function matchesFilter(entry: InventoryEntry, filter: FilterId): boolean {
 
 interface StorageModalProps {
   onClose: () => void;
+  /** The chest is one single shared container reachable from two physical locations (the Camp
+   * tent-side chest, and the Cité's Auberge du Sanglier Doré) — same data, different framing, so the
+   * title is the only thing that changes between call sites rather than forking the component. */
+  title?: string;
 }
 
 /**
@@ -46,7 +50,7 @@ interface StorageModalProps {
  * player's bag on the left, the chest's own 30-slot hold on the right, one item stack (click or
  * drag) at a time between them.
  */
-export default function StorageModal({ onClose }: StorageModalProps) {
+export default function StorageModal({ onClose, title = "Coffre du Campement" }: StorageModalProps) {
   const hero = readStoredHero();
   const classId = hero?.classId ?? "knight";
   const classDef = CLASSES.find((c) => c.id === classId);
@@ -71,7 +75,7 @@ export default function StorageModal({ onClose }: StorageModalProps) {
           <div className="flex items-center gap-2">
             <img src={backpackIcon} alt="" className="h-7 w-7" style={{ imageRendering: "pixelated" }} />
             <div>
-              <h2 className="text-sm font-bold text-white">Coffre du Campement</h2>
+              <h2 className="text-sm font-bold text-white">{title}</h2>
               {classDef && <p className="text-[10px] text-white/45">{classDef.names[hero?.gender ?? "male"]}</p>}
             </div>
           </div>
@@ -135,7 +139,7 @@ export default function StorageModal({ onClose }: StorageModalProps) {
           </div>
 
           <div>
-            <h3 className="mb-1.5 text-center text-[10px] font-bold uppercase tracking-wide text-white/55">Coffre du Camp</h3>
+            <h3 className="mb-1.5 text-center text-[10px] font-bold uppercase tracking-wide text-white/55">Coffre Partagé</h3>
             <div className="max-h-[360px] overflow-y-auto rounded-xl border border-white/10 bg-white/[0.04] p-2">
               <StorageGrid
                 side="chest"

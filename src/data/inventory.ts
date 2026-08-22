@@ -308,3 +308,21 @@ export function markItemSeen(kind: DiscardableKind, itemId: string): InventorySt
   write(state);
   return state;
 }
+
+/** Deducts Écus (floored at 0) — the town's Forge/Enchant/Marketplace stations' only shared need
+ * from this module beyond the item buckets. Refuses (returns false) if the bag can't afford it. */
+export function spendEcus(amount: number): boolean {
+  const state = getInventory();
+  if (state.ecus < amount) return false;
+  state.ecus -= amount;
+  write(state);
+  return true;
+}
+
+/** Credits Écus — the mirror of spendEcus, used when a marketplace listing sells. */
+export function earnEcus(amount: number): InventoryState {
+  const state = getInventory();
+  state.ecus += amount;
+  write(state);
+  return state;
+}

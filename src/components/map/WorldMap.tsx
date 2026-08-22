@@ -21,6 +21,9 @@ import { BIRD_FRAMES, DEER_FRAMES, SMOKE_FRAMES } from "../../data/worldMap";
 
 interface WorldMapProps {
   onClose: () => void;
+  /** Only the city node currently has an actual scene to enter — omitted, the button below never
+   * renders, same optional-prop-gates-a-feature pattern CampScreen/DungeonScreen use for onOpenMap. */
+  onEnterTown?: () => void;
 }
 
 // Zoomed all the way out, the box shrinks to well under the viewport's size — the Ocean layer (see
@@ -106,7 +109,7 @@ const OCEAN_SHIMMER = [
  * deer grazes into view every so often. */
 const DEER_SPOT = { x: 27, y: 80 };
 
-export default function WorldMap({ onClose }: WorldMapProps) {
+export default function WorldMap({ onClose, onEnterTown }: WorldMapProps) {
   const reduceMotion = useReducedMotion();
   const debugEnabled = useMemo(() => isDebugEnabled(), []);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -607,6 +610,16 @@ export default function WorldMap({ onClose }: WorldMapProps) {
         >
           {talkBubbleIcon && <img src={talkBubbleIcon} alt="" className="h-4 w-4" style={{ imageRendering: "pixelated" }} />}
           Parler
+        </button>
+      )}
+
+      {onEnterTown && currentNode?.kind === "city" && !activeDialogue && !travelingTo && (
+        <button
+          type="button"
+          onClick={onEnterTown}
+          className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5 rounded-full border border-lantern/45 bg-black/60 px-3 py-1.5 text-xs font-bold text-lantern-glow backdrop-blur-md transition-colors hover:border-lantern/80 hover:bg-black/75"
+        >
+          Entrer dans la Cité
         </button>
       )}
 
