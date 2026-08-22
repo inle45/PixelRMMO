@@ -259,3 +259,36 @@ export function isDaytime(now: Date = new Date()): boolean {
   const h = now.getHours();
   return h >= 6 && h < 21;
 }
+
+/**
+ * Day/night grading for the canyon backdrop — ONE image, CSS colour grading on top, the exact
+ * mechanism the Cité's rebuild settled on (`town.ts`'s `TIME_GRADE`) rather than a second generated
+ * background: a separately-generated night canyon would put its scaffolding and ore veins in
+ * different places, so no single set of node coordinates could stay correct at both hours.
+ * Deliberately two states, not the Town's four (dawn/day/dusk/night) — the canyon only asked for
+ * "day or night", so a third grading axis would be unused complexity.
+ */
+export type CanyonTimeId = "day" | "night";
+
+export interface CanyonTimeGrade {
+  filter: string;
+  wash: string;
+  caption: string;
+}
+
+export const CANYON_TIME_GRADE: Record<CanyonTimeId, CanyonTimeGrade> = {
+  day: {
+    filter: "brightness(1.15) saturate(1.08) contrast(1.02)",
+    wash: "linear-gradient(180deg, rgba(255,214,150,0.16) 0%, rgba(255,235,200,0.05) 100%)",
+    caption: "Le soleil cogne — la chaleur ondule au sol.",
+  },
+  night: {
+    filter: "brightness(0.55) saturate(0.75) contrast(1.08)",
+    wash: "linear-gradient(180deg, rgba(20,15,45,0.55) 0%, rgba(10,8,30,0.62) 100%)",
+    caption: "Nuit dans le canyon.",
+  },
+};
+
+export function canyonTimeId(now: Date = new Date()): CanyonTimeId {
+  return isDaytime(now) ? "day" : "night";
+}

@@ -14,6 +14,8 @@ import {
   grantOre,
   nodeGuardian,
   isDaytime,
+  canyonTimeId,
+  CANYON_TIME_GRADE,
   type MiningNodeDef,
 } from "../../../data/mining";
 import { getInventory } from "../../../data/inventory";
@@ -53,6 +55,7 @@ export default function MiningScene({ onClose }: MiningSceneProps) {
   const heroLevel = getInventory().level;
   const state = getMiningState();
   const daytime = isDaytime();
+  const grade = CANYON_TIME_GRADE[canyonTimeId()];
 
   const flash = useCallback((msg: string) => {
     setToast(msg);
@@ -118,7 +121,19 @@ export default function MiningScene({ onClose }: MiningSceneProps) {
         <img src={CANYON_BACKGROUND} alt="" aria-hidden className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-2xl" />
 
         <div className="absolute left-1/2 top-0 -translate-x-1/2" style={SCENE_BOX}>
-          <img src={CANYON_BACKGROUND} alt="" className="absolute inset-0 h-full w-full" style={{ imageRendering: "pixelated" }} draggable={false} />
+          <img
+            src={CANYON_BACKGROUND}
+            alt=""
+            className="absolute inset-0 h-full w-full transition-[filter] duration-1000"
+            style={{ imageRendering: "pixelated", filter: grade.filter }}
+            draggable={false}
+          />
+          {/* Colour wash on top of the graded image — one background, day/night expressed purely
+              in CSS, same mechanism as the Cité's TIME_GRADE rather than a second generation. */}
+          <div
+            className="pointer-events-none absolute inset-0 transition-opacity duration-1000"
+            style={{ background: grade.wash }}
+          />
 
           <MiningAmbience daytime={daytime} />
 
@@ -185,7 +200,7 @@ export default function MiningScene({ onClose }: MiningSceneProps) {
             Réparer · {PICKAXE_REPAIR_COST} Écus
           </button>
           <p className="mt-2 text-[9px] leading-snug text-white/40">
-            {daytime ? "Le soleil cogne — la chaleur ondule au sol." : "Nuit dans le canyon."}
+            {grade.caption}
           </p>
         </div>
 
