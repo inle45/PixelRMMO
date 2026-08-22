@@ -7,11 +7,12 @@ import heroMarker from "../assets/map/hero-marker.png";
 import talkIcon from "../assets/icons/map/talk-bubble.png";
 import caveIcon from "../assets/bestiary/portraits/myconid_guard.png";
 import lakeIcon from "../assets/materials/icons/golden_carp.png";
+import canyonNodeIcon from "../assets/bestiary/portraits/sandstone_golem.png";
 import eclaireurPortrait from "../assets/map/npc/eclaireur.png";
 import eruditPortrait from "../assets/map/npc/erudit.png";
 import capitainePortrait from "../assets/map/npc/capitaine.png";
 
-export type NodeKind = "camp" | "dungeon" | "city" | "volcano" | "cave" | "lake";
+export type NodeKind = "camp" | "dungeon" | "city" | "volcano" | "cave" | "lake" | "canyon";
 export type NodeStatus = "accessible" | "locked" | "current";
 
 export interface BiomeDef {
@@ -80,6 +81,7 @@ export const NODE_ICON_BY_KIND: Record<NodeKind, string> = {
   cave: caveIcon,
   // Same reuse call as `cave`: the zone's own headline catch is the correct picture for its pin.
   lake: lakeIcon,
+  canyon: canyonNodeIcon,
 };
 
 export const talkBubbleIcon = talkIcon;

@@ -6,9 +6,9 @@ import ecuIcon from "../../assets/icons/ecu.png";
 
 interface MaterialModalProps {
   material: MaterialDef;
-  monsterName: string;
+  monsterName?: string;
   onClose: () => void;
-  onViewMonster: () => void;
+  onViewMonster?: () => void;
 }
 
 export default function MaterialModal({ material, monsterName, onClose, onViewMonster }: MaterialModalProps) {
@@ -63,17 +63,19 @@ export default function MaterialModal({ material, monsterName, onClose, onViewMo
 
             <p className="mt-4 text-xs italic leading-relaxed text-white/60">{material.lore}</p>
 
-            <div className="mt-4">
-              <h3 className="text-[11px] font-bold uppercase tracking-wide text-white/60">Provenance</h3>
-              <button
-                type="button"
-                onClick={onViewMonster}
-                className="mt-2 flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/20 px-2.5 py-1.5 text-left text-xs transition-colors hover:border-lantern/40 hover:bg-black/35"
-              >
-                <span className="text-white/75">{monsterName}</span>
-                <span className="font-bold text-lantern-glow">{material.provenance.dropChance}%</span>
-              </button>
-            </div>
+            {onViewMonster && material.provenance && (
+              <div className="mt-4">
+                <h3 className="text-[11px] font-bold uppercase tracking-wide text-white/60">Provenance</h3>
+                <button
+                  type="button"
+                  onClick={onViewMonster}
+                  className="mt-2 flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/20 px-2.5 py-1.5 text-left text-xs transition-colors hover:border-lantern/40 hover:bg-black/35"
+                >
+                  <span className="text-white/75">{monsterName}</span>
+                  <span className="font-bold text-lantern-glow">{material.provenance.dropChance}%</span>
+                </button>
+              </div>
+            )}
 
             <div className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-black/20 px-3 py-2.5">
               <img src={ecuIcon} alt="" className="h-6 w-6" style={{ imageRendering: "pixelated" }} />

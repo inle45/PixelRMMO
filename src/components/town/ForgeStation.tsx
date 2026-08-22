@@ -4,16 +4,22 @@ import { getInventory } from "../../data/inventory";
 import {
   FORGE_RECIPES,
   AQUATIC_FORGE_RECIPES,
+  CANYON_FORGE_RECIPES,
   BAIT_RECIPES,
+  FOUNDRY_RECIPES,
   resolveForgeRecipe,
   canAfford,
   forgeItem,
 } from "../../data/recipes";
+import { canUpgradePickaxe, upgradePickaxe, PICKAXE_UPGRADE_MATERIALS, PICKAXE_UPGRADE_ECUS, getMiningState } from "../../data/mining";
+import { MATERIAL_BY_ID } from "../../data/materials";
 import ConsumableRecipeList from "./ConsumableRecipeList";
+import MaterialRecipeList from "./MaterialRecipeList";
 import { RARITY_BY_ID } from "../../data/rarity";
 import TownPanel from "./TownPanel";
 import ecuIcon from "../../assets/icons/ecu.png";
 import forgeIcon from "../../assets/icons/dungeon/attack.png";
+import pickaxeUpgradeIcon from "../../assets/icons/dungeon/skills.png";
 
 interface ForgeStationProps {
   /** Omitted = inline (Crafting tab). Present = modal (tapped the forge on the plaza). */
@@ -52,7 +58,7 @@ export default function ForgeStation({ onClose }: ForgeStationProps) {
       }
     >
       <div className="mt-3 max-h-[440px] space-y-1.5 overflow-y-auto pr-0.5">
-        {[...FORGE_RECIPES, ...AQUATIC_FORGE_RECIPES].map((recipe) => {
+        {[...FORGE_RECIPES, ...AQUATIC_FORGE_RECIPES, ...CANYON_FORGE_RECIPES].map((recipe) => {
           const { result, materials } = resolveForgeRecipe(recipe);
           if (!result) return null;
           const rarity = RARITY_BY_ID[result.rarity];
@@ -117,6 +123,74 @@ export default function ForgeStation({ onClose }: ForgeStationProps) {
             </div>
           );
         })}
+
+        {/* The Fonderie smelts canyon ore into ingots BEFORE any of the equipment recipes above can
+            use them — a Lingot de Fer Rouge never drops, it's always this recipe's output. */}
+        <p className="pt-2 text-[10px] font-bold uppercase tracking-wide text-white/45">Fonderie — Lingots & Gemmes</p>
+        <MaterialRecipeList recipes={FOUNDRY_RECIPES} onCrafted={() => setVersion((v) => v + 1)} />
+
+        {/* Pioche Renforcée: a one-time permanent durability upgrade, not a stored item — there is
+            nowhere in the bag for "a better version of the tool you're already holding". */}
+        <p className="pt-2 text-[10px] font-bold uppercase tracking-wide text-white/45">Outil de Minage</p>
+        {(() => {
+          const upgraded = getMiningState().pickaxeUpgraded;
+          const canUpgrade = canUpgradePickaxe();
+          return (
+            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-2.5">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-orange-400/50 bg-black/25">
+                  <img src={pickaxeUpgradeIcon} alt="" className="h-7 w-7 object-contain" style={{ imageRendering: "pixelated" }} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold leading-tight text-white">Pioche Renforcée en Cuivre</p>
+                  {upgraded ? (
+                    <p className="mt-0.5 text-[9px] text-emerald-300/85">Déjà installée — durabilité maximale +40%.</p>
+                  ) : (
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      {PICKAXE_UPGRADE_MATERIALS.map((cost) => {
+                        const material = MATERIAL_BY_ID[cost.materialId];
+                        if (!material) return null;
+                        const held = inv.materials[cost.materialId] ?? 0;
+                        return (
+                          <span
+                            key={cost.materialId}
+                            title={material.name}
+                            className={
+                              "flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-bold " +
+                              (held >= cost.qty ? "bg-emerald-500/15 text-emerald-300" : "bg-rose-500/15 text-rose-300")
+                            }
+                          >
+                            <img src={material.icon} alt="" className="h-3 w-3" style={{ imageRendering: "pixelated" }} />
+                            {held}/{cost.qty}
+                          </span>
+                        );
+                      })}
+                      <span className="flex items-center gap-1 rounded-full bg-black/25 px-1.5 py-0.5 text-[9px] font-bold text-white/70">
+                        <img src={ecuIcon} alt="" className="h-3 w-3" style={{ imageRendering: "pixelated" }} />
+                        {PICKAXE_UPGRADE_ECUS}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {!upgraded && (
+                  <button
+                    type="button"
+                    disabled={!canUpgrade}
+                    onClick={() => {
+                      if (upgradePickaxe()) setVersion((v) => v + 1);
+                    }}
+                    className={
+                      "shrink-0 rounded-lg px-3 py-2 text-[10px] font-bold transition-opacity " +
+                      (canUpgrade ? "bg-gradient-to-r from-lantern to-lantern-glow text-black hover:opacity-90" : "cursor-not-allowed bg-white/10 text-white/35")
+                    }
+                  >
+                    Installer
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Baits and the harpoon are forged here too — they are tools, not food, and gating the
             fishing zone behind the Forge is what ties the two gathering zones into one economy. */}

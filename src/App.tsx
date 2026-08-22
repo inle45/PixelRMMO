@@ -14,6 +14,7 @@ import TownScene from "./components/town/TownScene";
 import CraftingScreen from "./components/town/CraftingScreen";
 import MushroomCaveScene from "./components/gathering/MushroomCaveScene";
 import FishingScene from "./components/gathering/fishing/FishingScene";
+import MiningScene from "./components/gathering/mining/MiningScene";
 import MarketStation from "./components/town/MarketStation";
 import type { TabId } from "./data/tabs";
 
@@ -31,6 +32,7 @@ export default function App() {
   const [townOpen, setTownOpen] = useState(false);
   const [caveOpen, setCaveOpen] = useState(false);
   const [lakeOpen, setLakeOpen] = useState(false);
+  const [canyonOpen, setCanyonOpen] = useState(false);
 
   // Still persisted for whoever needs it later — the Camp tab no longer displays it, since the tab
   // is scene-only now, so there's nothing to hold it in React state for.
@@ -58,6 +60,10 @@ export default function App() {
               setMapOpen(false);
               setLakeOpen(true);
             }}
+            onEnterCanyon={() => {
+              setMapOpen(false);
+              setCanyonOpen(true);
+            }}
           />
         )}
       </AnimatePresence>
@@ -75,6 +81,9 @@ export default function App() {
       </AnimatePresence>
       <AnimatePresence>
         {lakeOpen && <FishingScene onClose={() => setLakeOpen(false)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {canyonOpen && <MiningScene onClose={() => setCanyonOpen(false)} />}
       </AnimatePresence>
       <AnimatePresence>
         {townOpen && (

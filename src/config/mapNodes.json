@@ -133,7 +133,8 @@
       "connectsTo": [
         "crypte",
         "cite",
-        "crater_lake"
+        "crater_lake",
+        "red_canyon"
       ],
       "dialogueId": "eclaireur"
     },
@@ -191,6 +192,17 @@
       "levelRecommended": 1,
       "x": 52,
       "y": 88,
+      "connectsTo": [],
+      "dialogueId": null
+    },
+    {
+      "id": "red_canyon",
+      "biomeIndex": 9,
+      "kind": "canyon",
+      "name": "Canyons Écarlates",
+      "levelRecommended": 1,
+      "x": 14,
+      "y": 47,
       "connectsTo": [],
       "dialogueId": null
     }

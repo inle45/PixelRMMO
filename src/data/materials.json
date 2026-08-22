@@ -455,5 +455,192 @@
     "value": 95,
     "tradeable": true,
     "eurValue": 7.0
+  },
+  {
+    "id": "clay",
+    "name": "Argile Rougeâtre",
+    "rarity": "poor",
+    "category": "forge",
+    "usage": "Moulage & scellage",
+    "lore": "Une terre grasse et rouge, tassée par des siècles d'érosion au fond des crevasses.",
+    "provenance": {
+      "monsterId": "crevasse_scorpion",
+      "dropChance": 100
+    },
+    "value": 2,
+    "tradeable": true
+  },
+  {
+    "id": "copper_ore",
+    "name": "Minerai de Cuivre Brisé",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Fonderie — Lingot de Cuivre",
+    "lore": "Des nodules verdâtres affleurant la roche tendre, faciles à extraire mais peu purs.",
+    "provenance": {
+      "monsterId": "crevasse_scorpion",
+      "dropChance": 65
+    },
+    "value": 6,
+    "tradeable": true
+  },
+  {
+    "id": "coal",
+    "name": "Charbon",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Combustible de fonderie",
+    "lore": "Des veines noires et friables, indispensables pour alimenter le fourneau de la Cité.",
+    "provenance": {
+      "monsterId": "crevasse_scorpion",
+      "dropChance": 45
+    },
+    "value": 4,
+    "tradeable": true
+  },
+  {
+    "id": "chitin_carapace",
+    "name": "Carapace de Chitine",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Boucliers légers",
+    "lore": "La cuirasse arrachée à un scorpion des crevasses, encore couverte de poussière rouge.",
+    "provenance": {
+      "monsterId": "crevasse_scorpion",
+      "dropChance": 70
+    },
+    "value": 5,
+    "tradeable": true
+  },
+  {
+    "id": "minor_venom_gland",
+    "name": "Glande de Venin Mineur",
+    "rarity": "uncommon",
+    "category": "alchimie",
+    "usage": "Poisons légers",
+    "lore": "Plus petite et moins puissante que celle d'une mygale des tombes, mais encore active.",
+    "provenance": {
+      "monsterId": "crevasse_scorpion",
+      "dropChance": 40
+    },
+    "value": 10,
+    "tradeable": true
+  },
+  {
+    "id": "red_iron_ore",
+    "name": "Minerai de Fer Rouge",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Fonderie — Lingot de Fer Rouge",
+    "lore": "Un minerai oxydé à cœur, teinté par les rubis qui saignent dans la roche environnante.",
+    "provenance": {
+      "monsterId": "canyon_raider",
+      "dropChance": 55
+    },
+    "value": 14,
+    "tradeable": true
+  },
+  {
+    "id": "thick_leather",
+    "name": "Cuir Épais",
+    "rarity": "uncommon",
+    "category": "forge",
+    "usage": "Armures de pillard",
+    "lore": "Tanné à la dure sous le soleil du canyon, ce cuir a la souplesse d'une seconde peau.",
+    "provenance": {
+      "monsterId": "canyon_raider",
+      "dropChance": 60
+    },
+    "value": 12,
+    "tradeable": true
+  },
+  {
+    "id": "ardent_ruby_rough",
+    "name": "Rubis Ardent Brut",
+    "rarity": "epic",
+    "category": "forge",
+    "usage": "Taille de gemmes",
+    "lore": "Encore englué de gangue rocheuse, il irradie déjà une chaleur perceptible au toucher.",
+    "provenance": {
+      "monsterId": "sandstone_golem",
+      "dropChance": 20
+    },
+    "value": 60,
+    "tradeable": true
+  },
+  {
+    "id": "sealed_fossil",
+    "name": "Fossile Scellé",
+    "rarity": "epic",
+    "category": "reliques",
+    "usage": "Actif C2C — non identifié",
+    "lore": "Une empreinte minérale d'une créature disparue, prisonnière de la roche depuis des ères.",
+    "provenance": {
+      "monsterId": "sandstone_golem",
+      "dropChance": 10
+    },
+    "value": 130,
+    "tradeable": true,
+    "eurValue": 10.0
+  },
+  {
+    "id": "sandstone_heart",
+    "name": "Cœur de Grès Poli",
+    "rarity": "epic",
+    "category": "forge",
+    "usage": "Composant d'artisanat lourd",
+    "lore": "Le noyau qui animait le golem, encore chaud, poli comme s'il avait toujours été une gemme.",
+    "provenance": {
+      "monsterId": "sandstone_golem",
+      "dropChance": 45
+    },
+    "value": 90,
+    "tradeable": true
+  },
+  {
+    "id": "ardent_ruby_fragment",
+    "name": "Fragment de Rubis Ardent",
+    "rarity": "legendary",
+    "category": "reliques",
+    "usage": "Composant d'artisanat légendaire",
+    "lore": "Un éclat du cœur du golem, si chaud qu'il faut le manier avec un linge épais.",
+    "provenance": {
+      "monsterId": "sandstone_golem",
+      "dropChance": 30
+    },
+    "value": 260,
+    "tradeable": true,
+    "eurValue": 20.0
+  },
+  {
+    "id": "copper_ingot",
+    "name": "Lingot de Cuivre",
+    "rarity": "common",
+    "category": "forge",
+    "usage": "Forge légère (T1)",
+    "lore": "Coulé et martelé à la Fonderie de la Cité, prêt pour l'enclume.",
+    "value": 15,
+    "tradeable": true
+  },
+  {
+    "id": "red_iron_ingot",
+    "name": "Lingot de Fer Rouge",
+    "rarity": "rare",
+    "category": "forge",
+    "usage": "Forge lourde (T2)",
+    "lore": "Le fer du canyon, purifié au charbon jusqu'à prendre une teinte presque cramoisie.",
+    "value": 45,
+    "tradeable": true
+  },
+  {
+    "id": "ardent_ruby_cut",
+    "name": "Rubis Ardent Taillé",
+    "rarity": "legendary",
+    "category": "enchantement",
+    "usage": "Forge légendaire (T3)",
+    "lore": "Taillé par l'Atelier d'Enchantement, il concentre la chaleur du canyon en une gemme parfaite.",
+    "value": 180,
+    "tradeable": true,
+    "eurValue": 14.0
   }
 ]

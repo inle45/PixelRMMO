@@ -1796,5 +1796,244 @@
         }
       ]
     }
+  },
+  {
+    "id": "crevasse_scorpion",
+    "dungeonId": "canyons-ecarlates",
+    "name": "Scorpion des Crevasses",
+    "family": "vermin",
+    "level": "3",
+    "rarity": "normal",
+    "damageType": "poison",
+    "stats": {
+      "hp": 65,
+      "atk": 14,
+      "def": 3,
+      "speedLabel": "Rapide",
+      "speedValue": 6
+    },
+    "extraStats": [],
+    "traits": [
+      "Embuscade souterraine"
+    ],
+    "skill": {
+      "name": "Piqûre Foudroyante",
+      "iconId": "poison",
+      "description": "Frappe deux fois de suite avec son dard, empoisonnant la cible à chaque coup."
+    },
+    "lore": "Dissimulé sous la poussière rouge, ce prédateur opportuniste fond sur les mineurs dont les coups de pioche troublent son territoire.",
+    "drops": [
+      {
+        "name": "Carapace de Chitine",
+        "chance": 70,
+        "materialId": "chitin_carapace"
+      },
+      {
+        "name": "Glande de Venin Mineur",
+        "chance": 40,
+        "materialId": "minor_venom_gland"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 5,
+        "max": 12
+      }
+    ],
+    "combat": {
+      "typeLabel": "Terre / Vermine",
+      "combatTypes": [
+        "nature"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 1.8
+        },
+        {
+          "type": "fire",
+          "multiplier": 1.3
+        }
+      ],
+      "resistances": [
+        {
+          "type": "poison"
+        },
+        {
+          "type": "physical",
+          "percent": 15
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "canyon_raider",
+    "dungeonId": "canyons-ecarlates",
+    "name": "Pillard Nomade du Canyon",
+    "family": "guardian",
+    "level": "12",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 170,
+      "atk": 27,
+      "def": 10,
+      "speedLabel": "Normale",
+      "speedValue": 4
+    },
+    "extraStats": [
+      {
+        "label": "Parade",
+        "value": 20,
+        "display": "20%"
+      }
+    ],
+    "traits": [
+      "Embuscade"
+    ],
+    "skill": {
+      "name": "Fauche Brutale",
+      "iconId": "physical",
+      "description": "Un coup de lame lourd qui ignore 20% de l'armure de la cible."
+    },
+    "lore": "Hors-la-loi embusqué le long des défilés rocheux, spécialisé dans l'embuscade et le pillage des convois de minerai de fer.",
+    "drops": [
+      {
+        "name": "Cuir Épais",
+        "chance": 60,
+        "materialId": "thick_leather"
+      },
+      {
+        "name": "Lame Rouillée",
+        "chance": 30
+      },
+      {
+        "name": "Bourse de Pièces d'Or",
+        "chance": 100,
+        "currency": true,
+        "min": 25,
+        "max": 48
+      }
+    ],
+    "combat": {
+      "typeLabel": "Terre / Nomade",
+      "combatTypes": [
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 1.6
+        },
+        {
+          "type": "holy",
+          "multiplier": 1.4
+        }
+      ],
+      "resistances": [
+        {
+          "type": "physical",
+          "percent": 20,
+          "note": "Parade"
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "bleed"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sandstone_golem",
+    "dungeonId": "canyons-ecarlates",
+    "name": "Golem de Grès Écarlate",
+    "family": "boss",
+    "level": "22",
+    "rarity": "miniboss",
+    "damageType": "fire",
+    "stats": {
+      "hp": 430,
+      "atk": 34,
+      "def": 26,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [
+      {
+        "label": "Dégâts de Zone",
+        "value": 55,
+        "display": "55%"
+      }
+    ],
+    "traits": [
+      "Colossal",
+      "Armure de pierre vivante"
+    ],
+    "skill": {
+      "name": "Onde Sismique Ardente",
+      "iconId": "fire",
+      "description": "Frappe le sol de ses poings, projetant des éclats de rubis brûlants sur toutes les cibles."
+    },
+    "lore": "Ancien gardien sculpté par une civilisation disparue, animé par l'énergie des rubis ardents et réveillé par les extractions minières profondes.",
+    "drops": [
+      {
+        "name": "Cœur de Grès Poli",
+        "chance": 45,
+        "materialId": "sandstone_heart"
+      },
+      {
+        "name": "Fragment de Rubis Ardent",
+        "chance": 30,
+        "materialId": "ardent_ruby_fragment"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 65,
+        "max": 120
+      }
+    ],
+    "combat": {
+      "typeLabel": "Terre / Golem",
+      "combatTypes": [
+        "fire",
+        "physical"
+      ],
+      "weaknesses": [
+        {
+          "type": "ice",
+          "multiplier": 2.25
+        }
+      ],
+      "resistances": [
+        {
+          "type": "physical",
+          "percent": 45
+        },
+        {
+          "type": "fire"
+        }
+      ],
+      "immunities": [
+        {
+          "type": "poison"
+        }
+      ],
+      "inflicts": [
+        {
+          "status": "burn"
+        }
+      ]
+    }
   }
 ]

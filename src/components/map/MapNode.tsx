@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import LoopSprite from "../camp/LoopSprite";
 import { isNight } from "../../data/fishing";
+import { DUST_DEVIL_FRAMES, VULTURE_SHADOW_FRAMES } from "../../data/canyonFx";
 
 /** Lives in /public alongside the other world-map overlay art. */
 const FISH_SPLASH = "/assets/worldmap/fish_splash.png";
@@ -104,6 +105,30 @@ function NodeDecoration({ kind, paused }: { kind: MapNodeDef["kind"]; paused?: b
       <div className="pointer-events-none absolute inset-x-0 bottom-full flex items-end justify-center gap-1">
         <LoopSprite frames={BANNER_FRAMES} frameDuration={180} alt="" paused={paused} className="h-8 w-8" />
         <span className="animate-lantern h-3 w-3 rounded-full bg-lantern" />
+      </div>
+    );
+  }
+
+  if (kind === "canyon") {
+    // At map-marker scale the spec's own generated pack — the same one MiningAmbience reuses inside
+    // the zone itself — reads fine, unlike a spritesheet fighting a CSS ring for legibility: a dust
+    // devil drifting past the pin and a slow-swept vulture shadow are both real shapes worth the art.
+    return (
+      <div className="pointer-events-none absolute inset-x-0 bottom-full flex justify-center overflow-visible">
+        <motion.div
+          className="absolute -bottom-1"
+          animate={paused ? {} : { x: [-16, 16, -16] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <LoopSprite frames={DUST_DEVIL_FRAMES} frameDuration={140} alt="" paused={paused} className="h-6 w-5 opacity-80" />
+        </motion.div>
+        <motion.div
+          className="absolute -top-2"
+          animate={paused ? {} : { x: [-26, 26, -26], opacity: [0, 0.5, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+        >
+          <LoopSprite frames={VULTURE_SHADOW_FRAMES} frameDuration={220} alt="" paused={paused} className="h-5 w-7" style={{ mixBlendMode: "multiply" }} />
+        </motion.div>
       </div>
     );
   }

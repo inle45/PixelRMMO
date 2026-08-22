@@ -15,7 +15,7 @@ export interface WorldState {
  * save was written with the old list and would keep showing the new zone as locked forever, which
  * is exactly what happened when the cave was added. Any future starter location added here reaches
  * existing saves for free. */
-const ALWAYS_UNLOCKED = ["campement", "crypte", "cite", "mushroom_cave", "crater_lake"];
+const ALWAYS_UNLOCKED = ["campement", "crypte", "cite", "mushroom_cave", "crater_lake", "red_canyon"];
 
 const DEFAULT_STATE: WorldState = {
   currentNodeId: "campement",

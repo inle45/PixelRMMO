@@ -134,10 +134,10 @@ export default function MaterialsCompendium({ onViewMonster, requestedMaterialId
             <MaterialCard
               key={material.id}
               material={material}
-              monsterName={monsterNameById[material.provenance.monsterId] ?? "?"}
+              monsterName={material.provenance ? monsterNameById[material.provenance.monsterId] ?? "?" : undefined}
               isOpen={material.id === selectedId}
               onOpen={() => setSelectedId(material.id)}
-              onViewMonster={() => onViewMonster(material.provenance.monsterId)}
+              onViewMonster={material.provenance ? () => onViewMonster(material.provenance!.monsterId) : undefined}
             />
           ))}
         </div>
@@ -147,9 +147,9 @@ export default function MaterialsCompendium({ onViewMonster, requestedMaterialId
         {selected && (
           <MaterialModal
             material={selected}
-            monsterName={monsterNameById[selected.provenance.monsterId] ?? "?"}
+            monsterName={selected.provenance ? monsterNameById[selected.provenance.monsterId] ?? "?" : undefined}
             onClose={() => setSelectedId(null)}
-            onViewMonster={() => onViewMonster(selected.provenance.monsterId)}
+            onViewMonster={selected.provenance ? () => onViewMonster(selected.provenance!.monsterId) : undefined}
           />
         )}
       </AnimatePresence>

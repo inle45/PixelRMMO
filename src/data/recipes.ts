@@ -240,3 +240,105 @@ export function craftConsumable(recipe: ConsumableRecipe): boolean {
   addOwned("consumable", recipe.resultItemId, recipe.qty);
   return true;
 }
+
+/* ============================================================= Canyons Écarlates: métallurgie */
+
+/** A recipe that smelts raw ore into an intermediate MATERIAL (an ingot, a cut gem) rather than
+ * equipment or a consumable — the Fonderie's own output type, consumed downstream by the Forge's
+ * `AQUATIC_FORGE_RECIPES`-style equipment recipes below. */
+export interface MaterialRecipe {
+  id: string;
+  resultMaterialId: string;
+  qty: number;
+  materials: MaterialCost[];
+  ecus: number;
+  station: "foundry";
+}
+
+/** "Poussière Luminescente" in the spec resolves to the existing `spores_luminescents` — reusing the
+ * mushroom cave's own enchantment material rather than inventing a fourth near-identical one, the
+ * same call the fishing zone's baits already made for its own ingredients. */
+export const FOUNDRY_RECIPES: MaterialRecipe[] = [
+  {
+    id: "copper_ingot",
+    resultMaterialId: "copper_ingot",
+    qty: 1,
+    materials: [
+      { materialId: "copper_ore", qty: 3 },
+      { materialId: "coal", qty: 1 },
+    ],
+    ecus: 8,
+    station: "foundry",
+  },
+  {
+    id: "red_iron_ingot",
+    resultMaterialId: "red_iron_ingot",
+    qty: 1,
+    materials: [
+      { materialId: "red_iron_ore", qty: 3 },
+      { materialId: "coal", qty: 2 },
+    ],
+    ecus: 20,
+    station: "foundry",
+  },
+  {
+    id: "ardent_ruby_cut",
+    resultMaterialId: "ardent_ruby_cut",
+    qty: 1,
+    materials: [
+      { materialId: "ardent_ruby_rough", qty: 1 },
+      { materialId: "spores_luminescents", qty: 1 },
+    ],
+    ecus: 50,
+    station: "foundry",
+  },
+];
+
+/** Canyon-loot gear, filling the Forge's roster out with pieces the crypt/cave/lake materials can't
+ * make — smelted ingots rather than raw ore, so a piece always costs a Fonderie pass first. */
+export const CANYON_FORGE_RECIPES: ForgeRecipe[] = [
+  {
+    id: "chitin_scale_shield",
+    resultItemId: "chitin_scale_shield",
+    materials: [
+      { materialId: "chitin_carapace", qty: 4 },
+      { materialId: "copper_ingot", qty: 2 },
+    ],
+    ecus: 70,
+  },
+  {
+    id: "raider_pauldrons",
+    resultItemId: "raider_pauldrons",
+    materials: [
+      { materialId: "thick_leather", qty: 3 },
+      { materialId: "red_iron_ingot", qty: 2 },
+    ],
+    ecus: 160,
+  },
+  {
+    id: "scarlet_claymore",
+    resultItemId: "scarlet_claymore",
+    materials: [
+      { materialId: "red_iron_ingot", qty: 4 },
+      { materialId: "sandstone_heart", qty: 1 },
+      { materialId: "ardent_ruby_cut", qty: 1 },
+    ],
+    ecus: 700,
+  },
+];
+
+export function canCraftMaterial(recipe: MaterialRecipe): boolean {
+  const inv = getInventory();
+  if (inv.ecus < recipe.ecus) return false;
+  return recipe.materials.every((m) => (inv.materials[m.materialId] ?? 0) >= m.qty);
+}
+
+/** Same atomic all-or-nothing spend as `craftConsumable` — nothing is consumed unless the whole
+ * recipe can be paid for. */
+export function craftMaterial(recipe: MaterialRecipe): boolean {
+  if (!canCraftMaterial(recipe)) return false;
+  if (!spendEcus(recipe.ecus)) return false;
+  for (const m of recipe.materials) removeOwned("material", m.materialId, m.qty);
+  addOwned("material", recipe.resultMaterialId, recipe.qty);
+  return true;
+}

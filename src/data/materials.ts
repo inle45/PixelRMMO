@@ -15,7 +15,9 @@ interface RawMaterial {
   category: MaterialCategory;
   usage: string;
   lore: string;
-  provenance: { monsterId: string; dropChance: number };
+  /** Absent for a material that is only ever crafted (a smelted ingot, a cut gem) — it has no
+   * monster to link to, so the Codex's "voir le monstre" button is simply omitted for it. */
+  provenance?: { monsterId: string; dropChance: number };
   /** Base resale value in Écus. */
   value: number;
   /** Listable on the Cité's Marché C2C. Absent = not listable. */

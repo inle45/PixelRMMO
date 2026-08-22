@@ -506,5 +506,53 @@
       "critChance": 0.05
     },
     "damageType": "ice"
+  },
+  {
+    "id": "chitin_scale_shield",
+    "name": "Bouclier d'Écailles de Chitine",
+    "slot": "offhand",
+    "rarity": "uncommon",
+    "value": 110,
+    "classes": [
+      "knight"
+    ],
+    "lore": "Assemblé à partir des plaques d'un scorpion des crevasses, aussi léger que résistant.",
+    "stats": {
+      "def": 15,
+      "blockChance": 0.05
+    }
+  },
+  {
+    "id": "raider_pauldrons",
+    "name": "Spallières du Pillard",
+    "slot": "chest",
+    "rarity": "rare",
+    "value": 240,
+    "classes": [
+      "knight",
+      "archer",
+      "mage"
+    ],
+    "lore": "Prises sur un nomade du canyon, elles portent encore l'odeur de poussière et de cuir chaud.",
+    "stats": {
+      "def": 26,
+      "speed": 6
+    }
+  },
+  {
+    "id": "scarlet_claymore",
+    "name": "Claymore du Colosse Écarlate",
+    "slot": "weapon",
+    "rarity": "legendary",
+    "value": 950,
+    "classes": [
+      "knight"
+    ],
+    "lore": "Forgée dans le fer du canyon et sertie du cœur du golem, elle garde la chaleur des rubis ardents.",
+    "stats": {
+      "atk": 52,
+      "def": 4
+    },
+    "damageType": "fire"
   }
 ]

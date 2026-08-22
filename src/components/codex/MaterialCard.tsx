@@ -5,10 +5,11 @@ import ecuIcon from "../../assets/icons/ecu.png";
 
 interface MaterialCardProps {
   material: MaterialDef;
-  monsterName: string;
+  /** Both absent for a crafted-only material (an ingot, a cut gem) — it has no source monster. */
+  monsterName?: string;
   isOpen: boolean;
   onOpen: () => void;
-  onViewMonster: () => void;
+  onViewMonster?: () => void;
 }
 
 export default function MaterialCard({ material, monsterName, isOpen, onOpen, onViewMonster }: MaterialCardProps) {
@@ -49,17 +50,32 @@ export default function MaterialCard({ material, monsterName, isOpen, onOpen, on
 
         <p className="mt-2 line-clamp-2 text-[11px] italic leading-snug text-white/55">{material.lore}</p>
 
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewMonster();
-          }}
-          className="mt-3 flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/25 px-2.5 py-1.5 text-left transition-colors hover:border-lantern/40 hover:bg-black/35"
-        >
-          <span className="truncate text-[11px] font-medium text-white/70">{monsterName}</span>
-          <span className="flex-none text-[11px] font-bold text-lantern-glow">{material.provenance.dropChance}%</span>
-        </button>
+        {onViewMonster && material.provenance && (
+          // A span with role="button", not a real <button>: this card's own RarityFrame wrapper
+          // already renders as a <button> (see RarityFrame's onClick branch), and a button can
+          // never contain another interactive control — the exact trap already documented for
+          // MonsterCard's posture toggle, hit here in the opposite direction (outer stays a
+          // button, so the inner one has to give).
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              e.stopPropagation();
+              onViewMonster();
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                e.stopPropagation();
+                onViewMonster();
+              }
+            }}
+            className="mt-3 flex cursor-pointer items-center justify-between gap-2 rounded-lg border border-white/10 bg-black/25 px-2.5 py-1.5 text-left transition-colors hover:border-lantern/40 hover:bg-black/35"
+          >
+            <span className="truncate text-[11px] font-medium text-white/70">{monsterName}</span>
+            <span className="flex-none text-[11px] font-bold text-lantern-glow">{material.provenance.dropChance}%</span>
+          </span>
+        )}
 
         <div className="mt-2 flex items-center justify-center gap-1.5 rounded-lg bg-black/20 px-2 py-1.5">
           <img src={ecuIcon} alt="" className="h-4 w-4" style={{ imageRendering: "pixelated" }} />

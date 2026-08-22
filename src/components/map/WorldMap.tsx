@@ -26,6 +26,7 @@ interface WorldMapProps {
   onEnterTown?: () => void;
   onEnterCave?: () => void;
   onEnterLake?: () => void;
+  onEnterCanyon?: () => void;
 }
 
 // Zoomed all the way out, the box shrinks to well under the viewport's size — the Ocean layer (see
@@ -111,7 +112,7 @@ const OCEAN_SHIMMER = [
  * deer grazes into view every so often. */
 const DEER_SPOT = { x: 27, y: 80 };
 
-export default function WorldMap({ onClose, onEnterTown, onEnterCave, onEnterLake }: WorldMapProps) {
+export default function WorldMap({ onClose, onEnterTown, onEnterCave, onEnterLake, onEnterCanyon }: WorldMapProps) {
   const reduceMotion = useReducedMotion();
   const debugEnabled = useMemo(() => isDebugEnabled(), []);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -642,6 +643,16 @@ export default function WorldMap({ onClose, onEnterTown, onEnterCave, onEnterLak
           className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5 rounded-full border border-cyan-400/45 bg-black/60 px-3 py-1.5 text-xs font-bold text-cyan-300 backdrop-blur-md transition-colors hover:border-cyan-400/80 hover:bg-black/75"
         >
           Pêcher au Bassin
+        </button>
+      )}
+
+      {onEnterCanyon && currentNode?.kind === "canyon" && !activeDialogue && !travelingTo && (
+        <button
+          type="button"
+          onClick={onEnterCanyon}
+          className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5 rounded-full border border-orange-400/45 bg-black/60 px-3 py-1.5 text-xs font-bold text-orange-300 backdrop-blur-md transition-colors hover:border-orange-400/80 hover:bg-black/75"
+        >
+          Miner dans le Canyon
         </button>
       )}
 
