@@ -12,6 +12,7 @@ import InventoryScreen from "./components/inventory/InventoryScreen";
 import WorldMap from "./components/map/WorldMap";
 import TownScene from "./components/town/TownScene";
 import CraftingScreen from "./components/town/CraftingScreen";
+import MushroomCaveScene from "./components/gathering/MushroomCaveScene";
 import MarketStation from "./components/town/MarketStation";
 import type { TabId } from "./data/tabs";
 
@@ -27,6 +28,7 @@ export default function App() {
   // neither overlay can be owned by a single tab's subtree.
   const [mapOpen, setMapOpen] = useState(false);
   const [townOpen, setTownOpen] = useState(false);
+  const [caveOpen, setCaveOpen] = useState(false);
 
   // Still persisted for whoever needs it later — the Camp tab no longer displays it, since the tab
   // is scene-only now, so there's nothing to hold it in React state for.
@@ -45,6 +47,22 @@ export default function App() {
             onEnterTown={() => {
               setMapOpen(false);
               setTownOpen(true);
+            }}
+            onEnterCave={() => {
+              setMapOpen(false);
+              setCaveOpen(true);
+            }}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {caveOpen && (
+          <MushroomCaveScene
+            onClose={() => setCaveOpen(false)}
+            onBlackout={() => {
+              // Passing out dumps the player back at camp with the session's harvest voided.
+              setCaveOpen(false);
+              setActiveTab("camp");
             }}
           />
         )}

@@ -24,6 +24,7 @@ interface WorldMapProps {
   /** Only the city node currently has an actual scene to enter — omitted, the button below never
    * renders, same optional-prop-gates-a-feature pattern CampScreen/DungeonScreen use for onOpenMap. */
   onEnterTown?: () => void;
+  onEnterCave?: () => void;
 }
 
 // Zoomed all the way out, the box shrinks to well under the viewport's size — the Ocean layer (see
@@ -109,7 +110,7 @@ const OCEAN_SHIMMER = [
  * deer grazes into view every so often. */
 const DEER_SPOT = { x: 27, y: 80 };
 
-export default function WorldMap({ onClose, onEnterTown }: WorldMapProps) {
+export default function WorldMap({ onClose, onEnterTown, onEnterCave }: WorldMapProps) {
   const reduceMotion = useReducedMotion();
   const debugEnabled = useMemo(() => isDebugEnabled(), []);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -620,6 +621,16 @@ export default function WorldMap({ onClose, onEnterTown }: WorldMapProps) {
           className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5 rounded-full border border-lantern/45 bg-black/60 px-3 py-1.5 text-xs font-bold text-lantern-glow backdrop-blur-md transition-colors hover:border-lantern/80 hover:bg-black/75"
         >
           Entrer dans la Cité
+        </button>
+      )}
+
+      {onEnterCave && currentNode?.kind === "cave" && !activeDialogue && !travelingTo && (
+        <button
+          type="button"
+          onClick={onEnterCave}
+          className="absolute bottom-3 left-3 z-30 flex items-center gap-1.5 rounded-full border border-emerald-400/45 bg-black/60 px-3 py-1.5 text-xs font-bold text-emerald-300 backdrop-blur-md transition-colors hover:border-emerald-400/80 hover:bg-black/75"
+        >
+          Entrer dans la Grotte
         </button>
       )}
 

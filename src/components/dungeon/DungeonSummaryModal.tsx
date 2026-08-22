@@ -196,7 +196,7 @@ export default function DungeonSummaryModal({ result, onReplay, onReturnToCamp }
                         </div>
                         <p className="w-full truncate text-[9px] font-bold text-white">{card.name}</p>
                         <div className="flex items-center gap-1">
-                          <span className="text-[9px]">{CATEGORY_ICONS[card.category]}</span>
+                          <img src={CATEGORY_ICONS[card.category]} alt="" className="h-3 w-3" style={{ imageRendering: "pixelated" }} />
                           <span className="text-[9px] font-bold" style={{ color: RARITY_BY_ID[card.rarity].color }}>
                             x{card.count}
                           </span>

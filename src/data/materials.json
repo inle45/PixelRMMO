@@ -6,7 +6,10 @@
     "category": "forge",
     "usage": "Broyage en limaille",
     "lore": "Des fragments de métal corrodés par des siècles d'humidité, à peine bons pour la fonte.",
-    "provenance": { "monsterId": "skeleton_recruit", "dropChance": 95 },
+    "provenance": {
+      "monsterId": "skeleton_recruit",
+      "dropChance": 95
+    },
     "value": 1
   },
   {
@@ -16,7 +19,10 @@
     "category": "alchimie",
     "usage": "Cendres alchimiques",
     "lore": "Un ossement si fragile qu'il se réduit en poussière au moindre choc.",
-    "provenance": { "monsterId": "plague_rat", "dropChance": 90 },
+    "provenance": {
+      "monsterId": "plague_rat",
+      "dropChance": 90
+    },
     "value": 1
   },
   {
@@ -26,7 +32,10 @@
     "category": "forge",
     "usage": "Poignées de dagues",
     "lore": "Poli par le temps, cet éclat garde un tranchant surprenant malgré son âge.",
-    "provenance": { "monsterId": "skeleton_recruit", "dropChance": 80 },
+    "provenance": {
+      "monsterId": "skeleton_recruit",
+      "dropChance": 80
+    },
     "value": 3
   },
   {
@@ -36,7 +45,10 @@
     "category": "forge",
     "usage": "Forge & Sellerie",
     "lore": "Du cuir usé jusqu'à la corde, mais encore assez solide pour être retravaillé.",
-    "provenance": { "monsterId": "plague_rat", "dropChance": 75 },
+    "provenance": {
+      "monsterId": "plague_rat",
+      "dropChance": 75
+    },
     "value": 3
   },
   {
@@ -46,7 +58,10 @@
     "category": "forge",
     "usage": "Armures légères",
     "lore": "Une écaille robuste arrachée à la carapace d'un scarabée des cryptes.",
-    "provenance": { "monsterId": "crypt_beetle", "dropChance": 80 },
+    "provenance": {
+      "monsterId": "crypt_beetle",
+      "dropChance": 80
+    },
     "value": 4
   },
   {
@@ -56,7 +71,10 @@
     "category": "alchimie",
     "usage": "Potions d'agilité",
     "lore": "Fine et élastique, cette membrane conserve encore un peu de la vivacité de son propriétaire.",
-    "provenance": { "monsterId": "vampire_bat", "dropChance": 80 },
+    "provenance": {
+      "monsterId": "vampire_bat",
+      "dropChance": 80
+    },
     "value": 7
   },
   {
@@ -66,7 +84,10 @@
     "category": "forge",
     "usage": "Lances, arcs",
     "lore": "Un os taillé et durci au feu, prêt à devenir la hampe d'une arme redoutable.",
-    "provenance": { "monsterId": "bone_spearman", "dropChance": 70 },
+    "provenance": {
+      "monsterId": "bone_spearman",
+      "dropChance": 70
+    },
     "value": 9
   },
   {
@@ -76,7 +97,10 @@
     "category": "forge",
     "usage": "Lames d'acier",
     "lore": "Un lingot forgé selon des techniques oubliées, dense et étonnamment pur.",
-    "provenance": { "monsterId": "shield_skeleton", "dropChance": 65 },
+    "provenance": {
+      "monsterId": "shield_skeleton",
+      "dropChance": 65
+    },
     "value": 12
   },
   {
@@ -86,7 +110,10 @@
     "category": "alchimie",
     "usage": "Robes magiques & bandages",
     "lore": "Une soie spectrale tissée entre les sarcophages, froide au toucher.",
-    "provenance": { "monsterId": "tomb_spider", "dropChance": 60 },
+    "provenance": {
+      "monsterId": "tomb_spider",
+      "dropChance": 60
+    },
     "value": 20
   },
   {
@@ -96,7 +123,10 @@
     "category": "alchimie",
     "usage": "Poisons persistants",
     "lore": "Palpitante même après extraction, cette glande recèle un poison d'une rare puissance.",
-    "provenance": { "monsterId": "tomb_spider", "dropChance": 35 },
+    "provenance": {
+      "monsterId": "tomb_spider",
+      "dropChance": 35
+    },
     "value": 25
   },
   {
@@ -106,7 +136,10 @@
     "category": "forge",
     "usage": "Boucliers de rempart",
     "lore": "Gravée de runes protectrices à moitié effacées, cette plaque a résisté à d'innombrables coups.",
-    "provenance": { "monsterId": "shield_skeleton", "dropChance": 35 },
+    "provenance": {
+      "monsterId": "shield_skeleton",
+      "dropChance": 35
+    },
     "value": 30
   },
   {
@@ -116,7 +149,10 @@
     "category": "forge",
     "usage": "Armures de pierre vivante",
     "lore": "Un éclat de pierre vivante, encore chaud de la magie qui animait la gargouille.",
-    "provenance": { "monsterId": "crypt_gargoyle", "dropChance": 45 },
+    "provenance": {
+      "monsterId": "crypt_gargoyle",
+      "dropChance": 45
+    },
     "value": 50
   },
   {
@@ -126,7 +162,10 @@
     "category": "enchantement",
     "usage": "Potions de grand Mana",
     "lore": "Une brume magique capturée, qui continue de flotter et scintiller dans sa fiole.",
-    "provenance": { "monsterId": "will_o_wisp", "dropChance": 50 },
+    "provenance": {
+      "monsterId": "will_o_wisp",
+      "dropChance": 50
+    },
     "value": 55
   },
   {
@@ -136,7 +175,10 @@
     "category": "enchantement",
     "usage": "Infusion glaciale",
     "lore": "Une substance spectrale qui ne dégèle jamais, glaçant tout ce qu'elle touche.",
-    "provenance": { "monsterId": "wailing_spectre", "dropChance": 40 },
+    "provenance": {
+      "monsterId": "wailing_spectre",
+      "dropChance": 40
+    },
     "value": 65
   },
   {
@@ -146,7 +188,10 @@
     "category": "enchantement",
     "usage": "Affixes critiques dagues",
     "lore": "De l'obscurité condensée qui semble absorber la lumière environnante.",
-    "provenance": { "monsterId": "creeping_shadow", "dropChance": 30 },
+    "provenance": {
+      "monsterId": "creeping_shadow",
+      "dropChance": 30
+    },
     "value": 90
   },
   {
@@ -156,7 +201,10 @@
     "category": "enchantement",
     "usage": "Runes de réanimation",
     "lore": "Une page arrachée à un grimoire proscrit, ses runes murmurent encore des secrets funestes.",
-    "provenance": { "monsterId": "dark_necromancer", "dropChance": 25 },
+    "provenance": {
+      "monsterId": "dark_necromancer",
+      "dropChance": 25
+    },
     "value": 110
   },
   {
@@ -166,7 +214,10 @@
     "category": "forge",
     "usage": "Lames ignorant l'armure",
     "lore": "Un métal à demi-matériel, capable de trancher l'armure comme si elle n'existait pas.",
-    "provenance": { "monsterId": "animated_armor", "dropChance": 30 },
+    "provenance": {
+      "monsterId": "animated_armor",
+      "dropChance": 30
+    },
     "value": 130
   },
   {
@@ -176,7 +227,10 @@
     "category": "reliques",
     "usage": "Relique de combat (Stun massif)",
     "lore": "Forgée pour immobiliser les condamnés, cette chaîne maudite frappe encore avec la même cruauté.",
-    "provenance": { "monsterId": "cursed_executioner", "dropChance": 35 },
+    "provenance": {
+      "monsterId": "cursed_executioner",
+      "dropChance": 35
+    },
     "value": 220
   },
   {
@@ -186,7 +240,10 @@
     "category": "reliques",
     "usage": "Catalyseur de sorts suprêmes",
     "lore": "Un éclat de l'ancre magique qui liait une âme damnée à ce monde.",
-    "provenance": { "monsterId": "crypt_archlich", "dropChance": 30 },
+    "provenance": {
+      "monsterId": "crypt_archlich",
+      "dropChance": 30
+    },
     "value": 260
   },
   {
@@ -196,7 +253,49 @@
     "category": "reliques",
     "usage": "Composant unique de la \"Lame Spectrale Royale\" (Actif C2C à forte valeur)",
     "lore": "Le cœur qui n'a jamais cessé de battre, même après la chute du Roi Squelette. Un trésor que le marché s'arracherait à prix d'or.",
-    "provenance": { "monsterId": "skeleton_king_boss", "dropChance": 12 },
+    "provenance": {
+      "monsterId": "skeleton_king_boss",
+      "dropChance": 12
+    },
     "value": 500
+  },
+  {
+    "id": "mousse_caverne",
+    "name": "Mousse de Caverne",
+    "rarity": "common",
+    "category": "alchimie",
+    "usage": "Décoctions & cuisine",
+    "lore": "Une mousse spongieuse qui pousse sur la roche humide de la Grotte aux Champignons. Fade, mais elle tient au ventre.",
+    "provenance": {
+      "monsterId": "fungal_larva",
+      "dropChance": 70
+    },
+    "value": 4
+  },
+  {
+    "id": "spores_luminescents",
+    "name": "Spores Luminescents",
+    "rarity": "rare",
+    "category": "enchantement",
+    "usage": "Potions de mana & enchantements",
+    "lore": "Ces spores continuent de briller d'un bleu froid des heures après la coupe, comme si le champignon refusait de mourir.",
+    "provenance": {
+      "monsterId": "myconid_guard",
+      "dropChance": 55
+    },
+    "value": 24
+  },
+  {
+    "id": "fongus_toxique",
+    "name": "Fongus Toxique Royal",
+    "rarity": "epic",
+    "category": "alchimie",
+    "usage": "Poisons d'armes de haut niveau",
+    "lore": "Sa chair violette suinte un venin si concentré qu'une seule lame enduite suffit à faire tomber un homme en armure.",
+    "provenance": {
+      "monsterId": "spectral_myconid",
+      "dropChance": 40
+    },
+    "value": 70
   }
 ]

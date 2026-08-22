@@ -1,25 +1,125 @@
 {
   "biomes": [
-    { "index": 1, "id": "plaines-eveil", "name": "Plaines d'Éveil", "yBand": 92 },
-    { "index": 2, "id": "crique-doree", "name": "Crique Dorée", "yBand": 87 },
-    { "index": 3, "id": "collines-paisibles", "name": "Collines Paisibles", "yBand": 82 },
-    { "index": 4, "id": "oree-temperee", "name": "Orée Tempérée", "yBand": 76 },
-    { "index": 5, "id": "vallee-ossements", "name": "Vallée d'Ossements", "yBand": 70 },
-    { "index": 6, "id": "bassin-royal", "name": "Bassin Royal", "yBand": 64 },
-    { "index": 7, "id": "bois-ternes", "name": "Bois Ternes", "yBand": 58 },
-    { "index": 8, "id": "marais-pestilent", "name": "Marais Pestilent", "yBand": 52 },
-    { "index": 9, "id": "canyons-ecarlates", "name": "Canyons Écarlates", "yBand": 46 },
-    { "index": 10, "id": "foret-fongique", "name": "Forêt Fongique", "yBand": 41 },
-    { "index": 11, "id": "dunes-ardentes", "name": "Dunes Ardentes", "yBand": 36 },
-    { "index": 12, "id": "oasis-mirage", "name": "Oasis du Mirage", "yBand": 31 },
-    { "index": 13, "id": "taiga-gelee", "name": "Taïga Gelée", "yBand": 26 },
-    { "index": 14, "id": "cols-enneiges", "name": "Cols Enneigés", "yBand": 21 },
-    { "index": 15, "id": "grottes-cristal", "name": "Grottes de Cristal", "yBand": 16 },
-    { "index": 16, "id": "antre-glace", "name": "Antre de Glace", "yBand": 11 },
-    { "index": 17, "id": "cratere-soufre", "name": "Cratère de Soufre", "yBand": 7 },
-    { "index": 18, "id": "terres-maudites", "name": "Terres Maudites", "yBand": 4 },
-    { "index": 19, "id": "confins-astraux", "name": "Confins Astraux", "yBand": 2 },
-    { "index": 20, "id": "trone-anciens", "name": "Trône des Anciens", "yBand": 0 }
+    {
+      "index": 1,
+      "id": "plaines-eveil",
+      "name": "Plaines d'Éveil",
+      "yBand": 92
+    },
+    {
+      "index": 2,
+      "id": "crique-doree",
+      "name": "Crique Dorée",
+      "yBand": 87
+    },
+    {
+      "index": 3,
+      "id": "collines-paisibles",
+      "name": "Collines Paisibles",
+      "yBand": 82
+    },
+    {
+      "index": 4,
+      "id": "oree-temperee",
+      "name": "Orée Tempérée",
+      "yBand": 76
+    },
+    {
+      "index": 5,
+      "id": "vallee-ossements",
+      "name": "Vallée d'Ossements",
+      "yBand": 70
+    },
+    {
+      "index": 6,
+      "id": "bassin-royal",
+      "name": "Bassin Royal",
+      "yBand": 64
+    },
+    {
+      "index": 7,
+      "id": "bois-ternes",
+      "name": "Bois Ternes",
+      "yBand": 58
+    },
+    {
+      "index": 8,
+      "id": "marais-pestilent",
+      "name": "Marais Pestilent",
+      "yBand": 52
+    },
+    {
+      "index": 9,
+      "id": "canyons-ecarlates",
+      "name": "Canyons Écarlates",
+      "yBand": 46
+    },
+    {
+      "index": 10,
+      "id": "foret-fongique",
+      "name": "Forêt Fongique",
+      "yBand": 41
+    },
+    {
+      "index": 11,
+      "id": "dunes-ardentes",
+      "name": "Dunes Ardentes",
+      "yBand": 36
+    },
+    {
+      "index": 12,
+      "id": "oasis-mirage",
+      "name": "Oasis du Mirage",
+      "yBand": 31
+    },
+    {
+      "index": 13,
+      "id": "taiga-gelee",
+      "name": "Taïga Gelée",
+      "yBand": 26
+    },
+    {
+      "index": 14,
+      "id": "cols-enneiges",
+      "name": "Cols Enneigés",
+      "yBand": 21
+    },
+    {
+      "index": 15,
+      "id": "grottes-cristal",
+      "name": "Grottes de Cristal",
+      "yBand": 16
+    },
+    {
+      "index": 16,
+      "id": "antre-glace",
+      "name": "Antre de Glace",
+      "yBand": 11
+    },
+    {
+      "index": 17,
+      "id": "cratere-soufre",
+      "name": "Cratère de Soufre",
+      "yBand": 7
+    },
+    {
+      "index": 18,
+      "id": "terres-maudites",
+      "name": "Terres Maudites",
+      "yBand": 4
+    },
+    {
+      "index": 19,
+      "id": "confins-astraux",
+      "name": "Confins Astraux",
+      "yBand": 2
+    },
+    {
+      "index": 20,
+      "id": "trone-anciens",
+      "name": "Trône des Anciens",
+      "yBand": 0
+    }
   ],
   "nodes": [
     {
@@ -30,7 +130,10 @@
       "levelRecommended": 1,
       "x": 18,
       "y": 83,
-      "connectsTo": ["crypte", "cite"],
+      "connectsTo": [
+        "crypte",
+        "cite"
+      ],
       "dialogueId": "eclaireur"
     },
     {
@@ -52,7 +155,9 @@
       "levelRecommended": 1,
       "x": 83,
       "y": 72,
-      "connectsTo": [],
+      "connectsTo": [
+        "mushroom_cave"
+      ],
       "dialogueId": "capitaine"
     },
     {
@@ -63,6 +168,17 @@
       "levelRecommended": 20,
       "x": 15,
       "y": 9,
+      "connectsTo": [],
+      "dialogueId": null
+    },
+    {
+      "id": "mushroom_cave",
+      "biomeIndex": 7,
+      "kind": "cave",
+      "name": "Grotte aux Champignons",
+      "levelRecommended": 1,
+      "x": 62,
+      "y": 52,
       "connectsTo": [],
       "dialogueId": null
     }

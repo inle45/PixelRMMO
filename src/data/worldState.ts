@@ -11,7 +11,7 @@ export interface WorldState {
  * valley); the volcano and everything past it stay behind the fog for a future content drop. */
 const DEFAULT_STATE: WorldState = {
   currentNodeId: "campement",
-  unlockedNodeIds: ["campement", "crypte", "cite"],
+  unlockedNodeIds: ["campement", "crypte", "cite", "mushroom_cave"],
   seenDialogueNodeIds: [],
 };
 

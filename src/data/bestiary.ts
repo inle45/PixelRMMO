@@ -121,6 +121,8 @@ export const BESTIARY: MonsterDef[] = (rawBestiary as RawMonster[]).map((m) => (
   attackFrames: getFrames(attackFrameModules, m.id),
 }));
 
+export const MONSTER_BY_ID: Record<string, MonsterDef> = Object.fromEntries(BESTIARY.map((m) => [m.id, m]));
+
 export const FAMILY_LABELS: Record<MonsterFamily, string> = {
   vermin: "Vermines",
   skeleton: "Squelettes",

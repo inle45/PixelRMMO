@@ -1,5 +1,9 @@
 import rawMaterials from "./materials.json";
 import type { RarityId } from "./rarity";
+import forgeCatIcon from "../assets/inventory/filters/equipment.png";
+import potionCatIcon from "../assets/inventory/filters/potions.png";
+import enchantCatIcon from "../assets/icons/dungeon/skills.png";
+import reliqueCatIcon from "../assets/inventory/filters/relics.png";
 
 export type MaterialCategory = "forge" | "alchimie" | "enchantement" | "reliques";
 
@@ -42,9 +46,11 @@ export const CATEGORY_LABELS: Record<MaterialCategory, string> = {
   reliques: "Reliques",
 };
 
+/** Sprite paths, not emoji — the app's no-emoji rule applies to the Codex filters too. All four
+ * reuse icons already drawn for other screens rather than commissioning near-duplicates. */
 export const CATEGORY_ICONS: Record<MaterialCategory, string> = {
-  forge: "🔨",
-  alchimie: "🧪",
-  enchantement: "💎",
-  reliques: "👑",
+  forge: forgeCatIcon,
+  alchimie: potionCatIcon,
+  enchantement: enchantCatIcon,
+  reliques: reliqueCatIcon,
 };

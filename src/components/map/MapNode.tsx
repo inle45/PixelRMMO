@@ -80,6 +80,28 @@ function NodeDecoration({ kind, paused }: { kind: MapNodeDef["kind"]; paused?: b
     );
   }
 
+  if (kind === "cave") {
+    // Spore-green breathing glow. Reuses the crypt's mist loop tinted by the blend mode rather than
+    // commissioning a second haze sprite at map-marker scale.
+    return (
+      <div className="pointer-events-none absolute inset-x-0 bottom-full flex justify-center">
+        <LoopSprite
+          frames={MIST_FRAMES}
+          frameDuration={300}
+          alt=""
+          paused={paused}
+          className="h-9 w-9"
+          style={{ opacity: 0.45, mixBlendMode: "screen", filter: "blur(1.5px) hue-rotate(85deg) saturate(1.4)" }}
+        />
+        <motion.div
+          className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-400/40 blur-lg"
+          animate={paused ? {} : { opacity: [0.3, 0.7, 0.3] }}
+          transition={{ duration: 3.1, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </div>
+    );
+  }
+
   // volcano — a distant, mostly-fogged silhouette: just a slow reddish pulse, no sprite.
   return (
     <motion.div

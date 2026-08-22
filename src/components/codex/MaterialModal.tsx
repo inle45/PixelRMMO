@@ -37,7 +37,7 @@ export default function MaterialModal({ material, monsterName, onClose, onViewMo
 
             <div className="flex items-start justify-between gap-2 pr-8">
               <span className="rounded-full bg-black/30 px-2.5 py-1 text-[10px] font-bold text-white/60">
-                {CATEGORY_ICONS[material.category]} {CATEGORY_LABELS[material.category]}
+                <img src={CATEGORY_ICONS[material.category]} alt="" className="mr-1 inline h-3.5 w-3.5 align-[-3px]" style={{ imageRendering: "pixelated" }} />{CATEGORY_LABELS[material.category]}
               </span>
               <span
                 className="rounded-full px-2.5 py-1 text-[10px] font-bold"

@@ -1327,5 +1327,230 @@
       ],
       "inflicts": []
     }
+  },
+  {
+    "id": "fungal_larva",
+    "dungeonId": "grotte-champignons",
+    "name": "Larve Fongique",
+    "family": "vermin",
+    "level": "3",
+    "rarity": "normal",
+    "damageType": "physical",
+    "stats": {
+      "hp": 55,
+      "atk": 8,
+      "def": 2,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [],
+    "traits": [],
+    "skill": {
+      "name": "Morsure Spongieuse",
+      "icon": "",
+      "description": "Une morsure molle mais tenace qui laisse des spores dans la plaie."
+    },
+    "lore": "Elle se nourrit du mycélium sous la roche et n'émerge que lorsqu'on arrache ses champignons.",
+    "drops": [
+      {
+        "name": "Mousse de Caverne",
+        "chance": 70,
+        "materialId": "mousse_caverne"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 4,
+        "max": 9
+      }
+    ],
+    "combat": {
+      "typeLabel": "Nature / Vermine",
+      "combatTypes": [
+        "nature"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        },
+        {
+          "type": "ice",
+          "multiplier": 1.5
+        }
+      ],
+      "resistances": [
+        {
+          "type": "poison"
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "myconid_guard",
+    "dungeonId": "grotte-champignons",
+    "name": "Garde Myconide",
+    "family": "guardian",
+    "level": "12",
+    "rarity": "rare",
+    "damageType": "physical",
+    "stats": {
+      "hp": 180,
+      "atk": 18,
+      "def": 10,
+      "speedLabel": "Normale",
+      "speedValue": 3
+    },
+    "extraStats": [
+      {
+        "label": "Résistance aux Spores",
+        "value": 40,
+        "display": "40%"
+      }
+    ],
+    "traits": [],
+    "skill": {
+      "name": "Décharge de Spores",
+      "icon": "",
+      "description": "Libère un nuage empoisonné qui ronge les poumons sur plusieurs tours."
+    },
+    "lore": "Sculpté dans le bois mort et le mycélium, il veille sur les gisements bioluminescents depuis des siècles.",
+    "drops": [
+      {
+        "name": "Spores Luminescents",
+        "chance": 55,
+        "materialId": "spores_luminescents"
+      },
+      {
+        "name": "Mousse de Caverne",
+        "chance": 45,
+        "materialId": "mousse_caverne"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 18,
+        "max": 34
+      }
+    ],
+    "combat": {
+      "typeLabel": "Nature / Gardien",
+      "combatTypes": [
+        "nature"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        },
+        {
+          "type": "holy",
+          "multiplier": 1.5
+        }
+      ],
+      "resistances": [
+        {
+          "type": "poison"
+        },
+        {
+          "type": "shadow",
+          "percent": 30
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        }
+      ]
+    }
+  },
+  {
+    "id": "spectral_myconid",
+    "dungeonId": "grotte-champignons",
+    "name": "Ancien Myconide Spectral",
+    "family": "guardian",
+    "level": "22",
+    "rarity": "miniboss",
+    "damageType": "magic",
+    "stats": {
+      "hp": 420,
+      "atk": 30,
+      "def": 16,
+      "speedLabel": "Lente",
+      "speedValue": 2
+    },
+    "extraStats": [],
+    "traits": [
+      "Frappe de Zone"
+    ],
+    "skill": {
+      "name": "Souffle du Mycélium",
+      "icon": "",
+      "description": "Frappe toutes les cibles et empoisonne lourdement — le sol lui-même se met à respirer."
+    },
+    "lore": "Le premier myconide, mort depuis si longtemps que son corps n'est plus qu'un souvenir lumineux accroché à la roche.",
+    "drops": [
+      {
+        "name": "Fongus Toxique Royal",
+        "chance": 40,
+        "materialId": "fongus_toxique"
+      },
+      {
+        "name": "Spores Luminescents",
+        "chance": 65,
+        "materialId": "spores_luminescents"
+      },
+      {
+        "name": "Écus",
+        "chance": 100,
+        "currency": true,
+        "min": 60,
+        "max": 110
+      }
+    ],
+    "combat": {
+      "typeLabel": "Nature / Spectre",
+      "combatTypes": [
+        "nature",
+        "shadow"
+      ],
+      "weaknesses": [
+        {
+          "type": "fire",
+          "multiplier": 2.0
+        },
+        {
+          "type": "holy",
+          "multiplier": 2.0
+        }
+      ],
+      "resistances": [
+        {
+          "type": "poison"
+        },
+        {
+          "type": "physical",
+          "percent": 25
+        }
+      ],
+      "immunities": [],
+      "inflicts": [
+        {
+          "status": "poison"
+        },
+        {
+          "status": "blind"
+        }
+      ]
+    }
   }
 ]

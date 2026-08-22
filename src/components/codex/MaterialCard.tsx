@@ -25,7 +25,7 @@ export default function MaterialCard({ material, monsterName, isOpen, onOpen, on
       <div className="flex h-full flex-col rounded-2xl bg-white/[0.05] p-3 backdrop-blur-2xl">
         <div className="flex items-start justify-between gap-1">
           <span className="rounded-full bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/60">
-            {CATEGORY_ICONS[material.category]} {CATEGORY_LABELS[material.category]}
+            <img src={CATEGORY_ICONS[material.category]} alt="" className="mr-1 inline h-3 w-3 align-[-2px]" style={{ imageRendering: "pixelated" }} />{CATEGORY_LABELS[material.category]}
           </span>
           <span
             className="rounded-full px-2 py-0.5 text-[10px] font-bold"
