@@ -4,7 +4,7 @@ import { PERIOD_BY_ID, TIME_PERIODS, useTimeOfDay, type TimeOfDayId } from "../.
 import { CAMP_CONFIG, CAMP_SCENES, type CampConfig } from "../../data/campScene";
 import CampStage, { MapButton } from "./CampStage";
 import CampCalibrator from "./CampCalibrator";
-import type { ChestVisualState } from "./CampChest";
+import CampChest, { type ChestVisualState } from "./CampChest";
 import StorageModal from "../storage/StorageModal";
 
 interface CampDayCycleProps {
@@ -42,9 +42,6 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
         layout={config[period]}
         showGuides={calibratorOpen && showGuides}
         paused={calibratorOpen && paused}
-        chestVisual={chestVisual}
-        onChestActivate={() => setChestVisual("opening")}
-        onChestAnimationEnd={() => setChestVisual((v) => (v === "opening" ? "open" : v === "closing" ? "closed" : v))}
       />
 
       {/* ------------------------------------- top left — period badge + time selector, stacked */}
@@ -97,6 +94,15 @@ export default function CampDayCycle({ onOpenMap }: CampDayCycleProps) {
           <MapButton onClick={onOpenMap} />
         </div>
       )}
+
+      {/* ----------------------------------------------- bottom left — storage chest, alone */}
+      <div className="absolute bottom-3 left-3">
+        <CampChest
+          visual={chestVisual}
+          onActivate={() => setChestVisual("opening")}
+          onAnimationEnd={() => setChestVisual((v) => (v === "opening" ? "open" : v === "closing" ? "closed" : v))}
+        />
+      </div>
 
       {/* ------------------------------------------------- bottom centre — ambience */}
       <p
