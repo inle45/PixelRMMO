@@ -7,11 +7,19 @@ export interface WorldState {
   seenDialogueNodeIds: string[];
 }
 
-/** The camp, the crypt entrance and the city all ship pre-unlocked (biomes 1/5/6 — the starting
- * valley); the volcano and everything past it stay behind the fog for a future content drop. */
+/** Nodes that are open to everyone from the start — the camp, the crypt entrance, the city and the
+ * mushroom cave; the volcano and everything past it stay behind the fog for a future content drop.
+ *
+ * This is merged into whatever is stored on every read (see `readRaw`), not just used to seed a
+ * fresh save. Without that, adding a starter node only ever reaches *new* players: an existing
+ * save was written with the old list and would keep showing the new zone as locked forever, which
+ * is exactly what happened when the cave was added. Any future starter location added here reaches
+ * existing saves for free. */
+const ALWAYS_UNLOCKED = ["campement", "crypte", "cite", "mushroom_cave"];
+
 const DEFAULT_STATE: WorldState = {
   currentNodeId: "campement",
-  unlockedNodeIds: ["campement", "crypte", "cite", "mushroom_cave"],
+  unlockedNodeIds: [...ALWAYS_UNLOCKED],
   seenDialogueNodeIds: [],
 };
 
@@ -25,7 +33,9 @@ function readRaw(): WorldState {
     }
     return {
       currentNodeId: parsed.currentNodeId,
-      unlockedNodeIds: parsed.unlockedNodeIds,
+      // Union, so a save made before a starter node existed still sees it, while everything the
+      // player unlocked by actually travelling there is preserved.
+      unlockedNodeIds: [...new Set([...ALWAYS_UNLOCKED, ...parsed.unlockedNodeIds])],
       seenDialogueNodeIds: parsed.seenDialogueNodeIds,
     };
   } catch {
