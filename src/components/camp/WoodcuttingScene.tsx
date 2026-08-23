@@ -125,10 +125,16 @@ export default function WoodcuttingScene({ period }: { period: TimeOfDayId }) {
               className="absolute flex flex-col items-center"
               style={{ left: `${tree.x}%`, top: `${tree.y}%`, transform: "translate(-50%, -100%)" }}
             >
+              {/* Contact shadow: without it the sprite reads as pasted onto the backdrop rather
+                  than growing out of it. Sits at the sprite's foot, behind it. */}
+              <span
+                className="absolute bottom-4 left-1/2 h-2 w-12 -translate-x-1/2 rounded-[50%] blur-[3px]"
+                style={{ background: "rgba(12,26,14,0.55)", opacity: locked || regrowing ? 0.3 : 0.75 }}
+              />
               <motion.img
                 src={treeSprite(tree.tier)}
                 alt=""
-                className="h-14 w-14 object-contain"
+                className="relative h-16 w-16 object-contain"
                 style={{
                   imageRendering: "pixelated",
                   opacity: locked || regrowing ? 0.35 : 1,

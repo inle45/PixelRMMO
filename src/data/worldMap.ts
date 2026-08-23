@@ -11,6 +11,7 @@ import canyonNodeIcon from "../assets/bestiary/portraits/sandstone_golem.png";
 import eclaireurPortrait from "../assets/map/npc/eclaireur.png";
 import eruditPortrait from "../assets/map/npc/erudit.png";
 import capitainePortrait from "../assets/map/npc/capitaine.png";
+import { publicAsset } from "./publicAsset";
 
 export type NodeKind = "camp" | "dungeon" | "city" | "volcano" | "cave" | "lake" | "canyon";
 export type NodeStatus = "accessible" | "locked" | "current";
@@ -96,7 +97,7 @@ export const REVEALED_BIOME_CEILING = 6;
  * the app, and a plain public URL avoids Vite base64-inlining or hash-churn on an image nothing else
  * imports as a module — every other scene background in the app is small enough that the normal
  * src/assets + import.meta.glob convention doesn't have this tradeoff. */
-export const WORLD_MAP_BG = "/assets/maps/world_map_main.png";
+export const WORLD_MAP_BG = publicAsset("/assets/maps/world_map_main.png");
 
 /* ------------------------------------------------------------------------ vfx sprites */
 

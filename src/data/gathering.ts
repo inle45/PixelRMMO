@@ -1,5 +1,6 @@
 import { addOwned, applyRewards, spendEcus, removeOwned, getInventory } from "./inventory";
 import { MONSTER_BY_ID } from "./bestiary";
+import { publicAsset } from "./publicAsset";
 
 export type NodeTier = 1 | 2 | 3;
 
@@ -300,7 +301,7 @@ export function nodeSprite(tier: NodeTier): string {
   return entry?.[1] ?? "";
 }
 
-export const CAVE_BACKGROUND = "/assets/gathering/mushroom_cave_bg.png";
+export const CAVE_BACKGROUND = publicAsset("/assets/gathering/mushroom_cave_bg.png");
 export const CAVE_ASPECT = 384 / 680;
 
 /* ------------------------------------------------------------------------------- purifiers */

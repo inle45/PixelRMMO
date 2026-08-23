@@ -1,5 +1,6 @@
 import { addOwned, applyRewards, spendEcus, getInventory } from "./inventory";
 import { MONSTER_BY_ID } from "./bestiary";
+import { publicAsset } from "./publicAsset";
 
 /**
  * Le Bassin du Cratère — the second gathering zone, and a deliberate structural echo of
@@ -252,5 +253,5 @@ function asset(name: string): string {
 export const bobberIcon = asset("bobber");
 
 /** Lives in /public for the same single-large-consumer reason as the cave and town backdrops. */
-export const LAKE_BACKGROUND = "/assets/gathering/crater_lake_bg.png";
+export const LAKE_BACKGROUND = publicAsset("/assets/gathering/crater_lake_bg.png");
 export const LAKE_ASPECT = 384 / 680;

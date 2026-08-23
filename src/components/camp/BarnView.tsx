@@ -8,6 +8,7 @@ import {
   isReady,
   msUntilReady,
   formatCountdown,
+  TROUGH_CAPACITY,
   type AnimalInstance,
 } from "../../data/livestock";
 import { BARN_BACKGROUND, BARN_GRADE, BARN_LIGHTS, isNightPeriod } from "../../data/campPanels";
@@ -35,13 +36,23 @@ import BarnManagePanel from "./BarnManagePanel";
 /**
  * Open grass on the backdrop, in scene-box percentages.
  *
- * The x range is deliberately narrow. The scene box is sized `max(100cqw, 95cqh)`, so on the
- * portrait phone this is designed for it is ~1.4x the viewport wide and the outer ~15% of each side
- * is cropped off-screen — the first pass used x 10-88% and simply put animals where the player
- * could never see them. Anything interactive belongs in x 28-72%. Vertically the barn's roof
- * occupies the upper left, so nothing goes above y 70% or it stands on the tiles.
+ * Measured against a percentage grid over the artwork, not guessed — twice now.
+ *
+ * Horizontally: the scene box is `max(100cqw, 95cqh)`, roughly 2x the viewport width on the
+ * portrait phone this targets, so only scene x 25-75% is ever on screen.
+ *
+ * Vertically: the barn building runs down to y 72 and the fence line sits at y 65-75, so an animal
+ * placed anywhere above y 76 stands on the roof, the wall or the rails — which is exactly what
+ * happened on the first pass (a goose walking on the barn). The unbroken foreground grass strip is
+ * y 79-92; livestock goes there and nowhere else.
  */
-const PASTURE = { x0: 30, x1: 70, y0: 72, y1: 90 };
+const PASTURE = { x0: 33, x1: 70, y0: 80, y1: 92 };
+
+/** The hay pile the artwork already paints at x 33-42, y 68-73. The feeding trough marker anchors
+ * there rather than pasting a second feeder sprite onto the scene — the same "animate the object the
+ * backdrop already draws" rule the Cité's light sources follow. Players reported not being able to
+ * find the trough at all, because it only ever existed inside the Grange panel. */
+const FEEDER = { x: 38, y: 73 };
 
 export default function BarnView({ period }: { period: TimeOfDayId }) {
   const [version, setVersion] = useState(0);
@@ -117,6 +128,17 @@ export default function BarnView({ period }: { period: TimeOfDayId }) {
   const readyCount = state.animals.filter((a) => isReady(a, now)).length;
   const hungryCount = state.animals.filter((a) => a.fedAt === 0).length;
 
+  // Pooled trough fill across only the species actually owned — a flat average over all 15 would
+  // read as near-empty forever.
+  const ownedSpecies = [...new Set(state.animals.map((a) => a.speciesId))];
+  const troughPct = ownedSpecies.length
+    ? Math.round(
+        (ownedSpecies.reduce((sum, id) => sum + Math.min(TROUGH_CAPACITY, state.troughs[id] ?? 0), 0) /
+          (ownedSpecies.length * TROUGH_CAPACITY)) *
+          100
+      )
+    : 0;
+
   return (
     <div className="relative h-full w-full">
       <PanelStage
@@ -147,6 +169,37 @@ export default function BarnView({ period }: { period: TimeOfDayId }) {
           );
         })}
       </PanelStage>
+
+        {/* The feeding trough, on the painted hay. Shows the pooled fill across every species the
+            player actually owns, and opens the Grange where the per-species troughs live. */}
+        {state.animals.length > 0 && (
+          <button
+            type="button"
+            onClick={() => setPanelOpen(true)}
+            aria-label="Mangeoires"
+            className="absolute flex flex-col items-center"
+            style={{ left: `${FEEDER.x}%`, top: `${FEEDER.y}%`, transform: "translate(-50%, -100%)" }}
+          >
+            <motion.span
+              className="mb-0.5 whitespace-nowrap rounded-full border px-1.5 py-0.5 text-[8px] font-bold backdrop-blur-sm"
+              style={{
+                borderColor: troughPct >= 100 ? "rgba(52,211,153,0.6)" : "rgba(251,191,36,0.6)",
+                backgroundColor: "rgba(0,0,0,0.7)",
+                color: troughPct >= 100 ? "#6ee7b7" : "#fcd34d",
+              }}
+              animate={troughPct === 0 ? { opacity: [0.55, 1, 0.55] } : { opacity: 1 }}
+              transition={{ duration: 1.8, repeat: troughPct === 0 ? Infinity : 0, ease: "easeInOut" }}
+            >
+              Mangeoire {troughPct}%
+            </motion.span>
+            <span className="h-1.5 w-10 overflow-hidden rounded-full border border-black/50 bg-black/70">
+              <span
+                className="block h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-300"
+                style={{ width: `${troughPct}%` }}
+              />
+            </span>
+          </button>
+        )}
 
       {state.animals.length === 0 && (
         <p

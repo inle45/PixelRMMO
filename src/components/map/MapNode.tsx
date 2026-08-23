@@ -3,9 +3,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import LoopSprite from "../camp/LoopSprite";
 import { isNight } from "../../data/fishing";
 import { DUST_DEVIL_FRAMES, VULTURE_SHADOW_FRAMES } from "../../data/canyonFx";
+import { publicAsset } from "../../data/publicAsset";
 
 /** Lives in /public alongside the other world-map overlay art. */
-const FISH_SPLASH = "/assets/worldmap/fish_splash.png";
+const FISH_SPLASH = publicAsset("/assets/worldmap/fish_splash.png");
 import {
   BANNER_FRAMES,
   BAT_FRAMES,

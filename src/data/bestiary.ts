@@ -148,6 +148,18 @@ export const BESTIARY: MonsterDef[] = (rawBestiary as RawMonster[]).map((m) => (
 
 export const MONSTER_BY_ID: Record<string, MonsterDef> = Object.fromEntries(BESTIARY.map((m) => [m.id, m]));
 
+/** Everything the Bestiaire shows: creatures you can actually fight.
+ *
+ * The `faune` family (the 15 livestock species) stays in BESTIARY — that is what gives each one a
+ * sprite, an idle loop and lore without maintaining a second asset table — but it is filtered out
+ * here and presented by `LivestockCompendium` under its own Codex tab instead. Left in the
+ * Bestiaire they rendered as combat cards badged "Mini-Boss" with a "Production" attack, which
+ * reads as a bug rather than a catalogue. */
+export const MONSTERS: MonsterDef[] = BESTIARY.filter((m) => m.family !== "faune");
+
+/** The husbandry half of the same catalogue. */
+export const LIVESTOCK_CODEX: MonsterDef[] = BESTIARY.filter((m) => m.family === "faune");
+
 export const FAMILY_LABELS: Record<MonsterFamily, string> = {
   vermin: "Vermines",
   skeleton: "Squelettes",

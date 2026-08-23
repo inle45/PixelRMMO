@@ -75,8 +75,8 @@ export const TREES: TreeDef[] = [
       { materialId: "racines_comestibles", chance: 40, qty: 2 },
     ],
     xp: 22,
-    x: 33,
-    y: 82,
+    x: 31,
+    y: 77,
     accent: "#86efac",
   },
   {
@@ -96,8 +96,8 @@ export const TREES: TreeDef[] = [
       { materialId: "seve_ambree", chance: 30, qty: 1 },
     ],
     xp: 65,
-    x: 50,
-    y: 88,
+    x: 45,
+    y: 80,
     accent: "#fbbf24",
   },
   {
@@ -116,8 +116,8 @@ export const TREES: TreeDef[] = [
       { materialId: "seve_petrifiee", chance: 18, qty: 1 },
     ],
     xp: 150,
-    x: 67,
-    y: 78,
+    x: 58,
+    y: 75,
     accent: "#c084fc",
   },
 ];

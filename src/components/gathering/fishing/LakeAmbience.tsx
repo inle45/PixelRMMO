@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { mulberry32 } from "../../../data/seededRandom";
+import { publicAsset } from "../../../data/publicAsset";
 
 /** Where the water actually is on `crater_lake_bg.png`, as an ellipse in scene-box percentages.
  * Everything ambient is placed inside it — a ripple on the rocky shore or over the dock reads as a
@@ -11,7 +12,7 @@ const WATER = { cx: 50, cy: 53, rx: 33, ry: 23 };
  * pulse lives there instead. */
 const ABYSS_R = 0.42;
 
-const FISH_SPLASH = "/assets/worldmap/fish_splash.png";
+const FISH_SPLASH = publicAsset("/assets/worldmap/fish_splash.png");
 
 /** Point inside the water ellipse, biased to the readable mid-ring: `t` picks the radius band. */
 function waterPoint(rand: () => number): { x: number; y: number; r: number } {

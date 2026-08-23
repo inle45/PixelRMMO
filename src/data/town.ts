@@ -1,4 +1,5 @@
 import type { TownTimeId } from "../hooks/useTownTimeOfDay";
+import { publicAsset } from "./publicAsset";
 
 export type TownZoneId = "forge" | "enchant" | "tavern" | "guard" | "market";
 
@@ -44,7 +45,7 @@ export const TOWN_ZONE_BY_ID: Record<TownZoneId, TownZoneDef> = Object.fromEntri
  * version left above the artwork on a phone: a 9:16 image fills a 9:16 screen with no gap at all.
  * Lives in /public for the same single-large-consumer reason as the World Map's continent art.
  */
-export const TOWN_BACKGROUND = "/assets/town/town.png";
+export const TOWN_BACKGROUND = publicAsset("/assets/town/town.png");
 export const TOWN_ASPECT = 384 / 680;
 
 export interface TimeGrade {

@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { BESTIARY, FAMILY_LABELS, type MonsterFamily } from "../../data/bestiary";
+import { MONSTERS, FAMILY_LABELS, type MonsterFamily } from "../../data/bestiary";
 import { DUNGEONS } from "../../data/dungeons";
 import MonsterCard from "./MonsterCard";
 import MonsterModal from "./MonsterModal";
 
-type FilterId = "all" | MonsterFamily;
+/** The Bestiaire never shows the `faune` family — those 15 species have their own Codex tab — so
+ * its filter set deliberately excludes it rather than carrying a pill that always reads 0. */
+type BestiaryFamily = Exclude<MonsterFamily, "faune">;
+type FilterId = "all" | BestiaryFamily;
 
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: "all", label: "Tous" },
@@ -13,11 +16,10 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: "skeleton", label: FAMILY_LABELS.skeleton },
   { id: "spectre", label: FAMILY_LABELS.spectre },
   { id: "guardian", label: FAMILY_LABELS.guardian },
-  { id: "faune", label: FAMILY_LABELS.faune },
   { id: "boss", label: FAMILY_LABELS.boss },
 ];
 
-const FAMILY_ORDER: MonsterFamily[] = ["vermin", "skeleton", "spectre", "guardian", "faune", "boss"];
+const FAMILY_ORDER: BestiaryFamily[] = ["vermin", "skeleton", "spectre", "guardian", "boss"];
 
 interface BestiaryProps {
   /** Set by CodexHub when a material card's provenance link is clicked, to jump straight to that monster. */
@@ -42,14 +44,14 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
   }, []);
 
   const counts = useMemo(() => {
-    const c: Record<FilterId, number> = { all: BESTIARY.length, vermin: 0, skeleton: 0, spectre: 0, guardian: 0, faune: 0, boss: 0 };
-    for (const m of BESTIARY) c[m.family]++;
+    const c: Record<FilterId, number> = { all: MONSTERS.length, vermin: 0, skeleton: 0, spectre: 0, guardian: 0, boss: 0 };
+    for (const m of MONSTERS) if (m.family !== "faune") c[m.family as BestiaryFamily]++;
     return c;
   }, []);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return BESTIARY.filter((m) => {
+    return MONSTERS.filter((m) => {
       const matchesFamily = filter === "all" || m.family === filter;
       const matchesSearch = !q || m.name.toLowerCase().includes(q) || m.lore.toLowerCase().includes(q);
       return matchesFamily && matchesSearch;
@@ -69,7 +71,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
     [filtered]
   );
 
-  const selected = selectedId ? BESTIARY.find((m) => m.id === selectedId) ?? null : null;
+  const selected = selectedId ? MONSTERS.find((m) => m.id === selectedId) ?? null : null;
 
   return (
     <div className="w-full max-w-5xl">
@@ -79,7 +81,7 @@ export default function Bestiary({ requestedMonsterId, onRequestHandled, onViewM
         </span>
         <h1 className="text-2xl font-bold text-white sm:text-3xl">Bestiaire des Créatures</h1>
         <p className="max-w-md text-sm text-white/55">
-          {BESTIARY.length} créatures répertoriées dans le grimoire. Étudie-les avant de descendre.
+          {MONSTERS.length} créatures répertoriées dans le grimoire. Étudie-les avant de descendre.
         </p>
       </div>
 

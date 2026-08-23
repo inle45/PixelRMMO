@@ -17,15 +17,18 @@ function frames(modules: Record<string, string>, prefix: string): string[] {
 }
 
 const LANTERN_FRAMES = frames(propModules, "lantern");
-const BUTTERFLY_FRAMES = frames(propModules, "butterflies");
+/** The `butterflies` prop was drawn as a GROUND decoration — butterflies hovering over a tuft of
+ * grass — so flying it flew the grass with them. `farmfly-*` is that same loop cropped (locally,
+ * with PIL, one shared box across all frames) down to just the butterflies. */
+const BUTTERFLY_FRAMES = frames(propModules, "farmfly");
 const VANE_FRAMES = frames(propModules, "vane");
 const SMOKE_FRAMES = frames(vfxModules, "smoke");
 
 /** Where the barn's roof ridge and chimney actually sit on `barn_pasture_day_bg.png` — measured
  * against the artwork, not guessed, for the same reason the Cité's crowd placement had to be. */
-const CHIMNEY = { x: 17, y: 40 };
-const ROOF_PEAK = { x: 25.5, y: 33 };
-const LANTERN_HOOK = { x: 37, y: 52 };
+const CHIMNEY = { x: 14, y: 44 };
+const ROOF_PEAK = { x: 30, y: 41 };
+const LANTERN_HOOK = { x: 41, y: 57 };
 
 /**
  * The Domaine d'Élevage's five ambience layers: a swinging lantern, continuous chimney smoke,
@@ -58,8 +61,10 @@ export default function BarnAmbience({ night }: { night: boolean }) {
     return Array.from({ length: 5 }, (_, i) => ({
       id: i,
       // At night they gravitate to the lantern hook; by day they scatter over the pasture.
-      left: rand() * 100,
-      top: 50 + rand() * 35,
+      // Over the pasture only (see BarnView's PASTURE) — butterflies drifting across the barn roof
+      // or up into open sky read as floating stickers.
+      left: 30 + rand() * 42,
+      top: 74 + rand() * 16,
       duration: 7 + rand() * 6,
       delay: -rand() * 8,
     }));
@@ -88,10 +93,10 @@ export default function BarnAmbience({ night }: { night: boolean }) {
         <motion.div
           className="absolute"
           style={{ left: `${ROOF_PEAK.x}%`, top: `${ROOF_PEAK.y}%`, transform: "translate(-50%, -100%)" }}
-          animate={{ rotate: [-7, 7, -3, 5, -7] }}
-          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ scaleX: [1, 1, -1, -1, 1] }}
+          transition={{ duration: 13, repeat: Infinity, ease: "easeInOut", times: [0, 0.35, 0.4, 0.85, 1] }}
         >
-          <LoopSprite frames={VANE_FRAMES} frameDuration={300} alt="" className="h-6 w-6" />
+          <LoopSprite frames={VANE_FRAMES} frameDuration={300} alt="" className="h-5 w-5" />
         </motion.div>
       )}
 
@@ -157,10 +162,10 @@ export default function BarnAmbience({ night }: { night: boolean }) {
               key={b.id}
               className="absolute"
               style={{ left: `${b.left}%`, top: `${b.top}%` }}
-              animate={{ x: [0, 24, -14, 8, 0], y: [0, -18, -4, -22, 0] }}
+              animate={{ x: [0, 16, -10, 6, 0], y: [0, -9, -2, -12, 0] }}
               transition={{ duration: b.duration, delay: b.delay, repeat: Infinity, ease: "easeInOut" }}
             >
-              <LoopSprite frames={BUTTERFLY_FRAMES} frameDuration={160} alt="" className="h-5 w-5 opacity-85" />
+              <LoopSprite frames={BUTTERFLY_FRAMES} frameDuration={160} alt="" className="h-4 w-6 opacity-85" />
             </motion.div>
           )
         )

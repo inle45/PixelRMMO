@@ -1,5 +1,6 @@
 import { addOwned, applyRewards, spendEcus, removeOwned, getInventory } from "./inventory";
 import { MONSTER_BY_ID } from "./bestiary";
+import { publicAsset } from "./publicAsset";
 
 /**
  * Les Canyons Écarlates — the third gathering zone, and a third distinct pressure model on the same
@@ -251,7 +252,7 @@ export function nodeGuardian(node: MiningNodeDef) {
 
 /* ------------------------------------------------------------------------------- scene assets */
 
-export const CANYON_BACKGROUND = "/assets/gathering/red_canyon_bg.png";
+export const CANYON_BACKGROUND = publicAsset("/assets/gathering/red_canyon_bg.png");
 export const CANYON_ASPECT = 384 / 680;
 
 /** 06h–21h — the heat-shimmer window (the "night" complement of the lake's own day/night gate). */

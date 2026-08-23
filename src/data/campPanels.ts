@@ -1,4 +1,5 @@
 import type { TimeOfDayId } from "../hooks/useTimeOfDay";
+import { publicAsset } from "./publicAsset";
 
 /**
  * The two new camp panels' scene data — the Lisière Sylvestre (left) and the Domaine d'Élevage
@@ -19,8 +20,8 @@ import type { TimeOfDayId } from "../hooks/useTimeOfDay";
  * panels needed anyway for their five animated ambience layers each.
  */
 
-export const FOREST_BACKGROUND = "/assets/camp/forest_edge_day_bg.png";
-export const BARN_BACKGROUND = "/assets/camp/barn_pasture_day_bg.png";
+export const FOREST_BACKGROUND = publicAsset("/assets/camp/forest_edge_day_bg.png");
+export const BARN_BACKGROUND = publicAsset("/assets/camp/barn_pasture_day_bg.png");
 
 /** Exact colour of each backdrop's top pixel row, sampled from the PNG with PIL. The sky-extension gradient's final stop and the stage's base background both use it, so the join between painted
  * art and painted-on sky can never flash a seam under sub-pixel rounding. */
@@ -56,28 +57,28 @@ export const FOREST_GRADE: Record<TimeOfDayId, PanelGrade> = {
   morning: {
     filter: "brightness(1.08) saturate(1.05)",
     wash: "linear-gradient(180deg, rgba(255,224,160,0.18) 0%, rgba(255,240,200,0.04) 60%, rgba(0,0,0,0) 100%)",
-    sky: `linear-gradient(180deg, #7fb3d5 0%, #b9d9c0 55%, #395235 100%)`,
+    sky: "linear-gradient(180deg, rgba(127,179,213,0.72) 0%, rgba(150,190,190,0.34) 55%, rgba(14,47,28,0) 100%)",
     seam: "#395235",
     glow: 0.15,
   },
   noon: {
     filter: "brightness(1.15) saturate(1.1) contrast(1.02)",
     wash: "linear-gradient(180deg, rgba(255,250,220,0.12) 0%, rgba(255,255,255,0) 70%)",
-    sky: `linear-gradient(180deg, #6ec6f0 0%, #a9d8b8 60%, #284d34 100%)`,
+    sky: "linear-gradient(180deg, rgba(110,198,240,0.70) 0%, rgba(150,205,200,0.30) 55%, rgba(14,47,28,0) 100%)",
     seam: "#284d34",
     glow: 0,
   },
   sunset: {
     filter: "brightness(0.92) saturate(1.15) sepia(0.18) hue-rotate(-8deg)",
     wash: "linear-gradient(180deg, rgba(255,140,60,0.22) 0%, rgba(120,40,80,0.14) 100%)",
-    sky: `linear-gradient(180deg, #f2905a 0%, #a4547a 50%, #45401f 100%)`,
+    sky: "linear-gradient(180deg, rgba(242,144,90,0.72) 0%, rgba(164,84,122,0.38) 55%, rgba(14,47,28,0) 100%)",
     seam: "#45401f",
     glow: 0.55,
   },
   night: {
     filter: "brightness(0.52) saturate(0.75) contrast(1.08) hue-rotate(-18deg)",
     wash: "linear-gradient(180deg, rgba(14,22,60,0.6) 0%, rgba(6,10,32,0.68) 100%)",
-    sky: `linear-gradient(180deg, #05081f 0%, #0a1230 55%, #0a1326 100%)`,
+    sky: "linear-gradient(180deg, rgba(5,8,31,0.92) 0%, rgba(10,18,48,0.62) 55%, rgba(6,14,30,0.18) 100%)",
     seam: "#0a1326",
     glow: 1,
   },
@@ -87,28 +88,28 @@ export const BARN_GRADE: Record<TimeOfDayId, PanelGrade> = {
   morning: {
     filter: "brightness(1.05) saturate(1.05) sepia(0.08)",
     wash: "linear-gradient(180deg, rgba(255,214,150,0.16) 0%, rgba(255,240,210,0.04) 70%)",
-    sky: `linear-gradient(180deg, #ffb27a 0%, #9fd9f5 55%, #84e9ee 100%)`,
+    sky: "linear-gradient(180deg, rgba(255,178,122,0.66) 0%, rgba(159,217,245,0.30) 55%, rgba(95,224,251,0) 100%)",
     seam: "#84e9ee",
     glow: 0.2,
   },
   noon: {
     filter: "brightness(1.12) saturate(1.08)",
     wash: "linear-gradient(180deg, rgba(255,255,240,0.1) 0%, rgba(255,255,255,0) 70%)",
-    sky: `linear-gradient(180deg, #3fb8f5 0%, #7fd4fb 60%, #71fdfe 100%)`,
+    sky: "linear-gradient(180deg, rgba(63,184,245,0.62) 0%, rgba(127,212,251,0.26) 55%, rgba(95,224,251,0) 100%)",
     seam: "#71fdfe",
     glow: 0,
   },
   sunset: {
     filter: "brightness(0.95) saturate(1.2) sepia(0.2) hue-rotate(-10deg)",
     wash: "linear-gradient(180deg, rgba(255,130,50,0.24) 0%, rgba(110,40,90,0.16) 100%)",
-    sky: `linear-gradient(180deg, #ff9a4d 0%, #b05a86 45%, #89c7b0 100%)`,
+    sky: "linear-gradient(180deg, rgba(255,154,77,0.70) 0%, rgba(176,90,134,0.36) 55%, rgba(95,224,251,0) 100%)",
     seam: "#89c7b0",
     glow: 0.6,
   },
   night: {
     filter: "brightness(0.42) saturate(0.65) contrast(1.12) hue-rotate(205deg)",
     wash: "linear-gradient(180deg, rgba(10,16,52,0.62) 0%, rgba(5,8,28,0.7) 100%)",
-    sky: `linear-gradient(180deg, #04061a 0%, #080f2c 55%, #2c2633 100%)`,
+    sky: "linear-gradient(180deg, rgba(4,6,26,0.92) 0%, rgba(8,15,44,0.62) 55%, rgba(8,15,44,0.16) 100%)",
     seam: "#2c2633",
     glow: 1,
   },
@@ -130,15 +131,18 @@ export interface LightSource {
 }
 
 export const FOREST_LIGHTS: LightSource[] = [
-  { x: 14, y: 46, radius: 16, color: "rgba(122,255,160,0.55)", flicker: false },
-  { x: 33, y: 62, radius: 12, color: "rgba(122,255,160,0.45)", flicker: false },
-  { x: 78, y: 40, radius: 15, color: "rgba(140,230,255,0.4)", flicker: false },
+  // Phosphorescent bark fungus on the clearing's cut stumps — the trunks big enough to carry it
+  // sit at x<22 and x>78, which the horizontal crop never shows.
+  { x: 31, y: 83, radius: 9, color: "rgba(122,255,160,0.55)", flicker: false },
+  { x: 55, y: 85, radius: 8, color: "rgba(122,255,160,0.45)", flicker: false },
+  { x: 44, y: 79, radius: 7, color: "rgba(150,255,190,0.4)", flicker: false },
 ];
 
 export const BARN_LIGHTS: LightSource[] = [
-  { x: 22, y: 52, radius: 18, color: "rgba(255,178,80,0.7)", flicker: true },
-  { x: 37, y: 58, radius: 14, color: "rgba(255,190,110,0.6)", flicker: true },
-  { x: 68, y: 62, radius: 13, color: "rgba(255,178,80,0.5)", flicker: true },
+  // The barn's own painted windows and doorway (x 12-40, y 50-70), plus the hung lantern.
+  { x: 30, y: 58, radius: 11, color: "rgba(255,178,80,0.7)", flicker: true },
+  { x: 36, y: 63, radius: 9, color: "rgba(255,190,110,0.6)", flicker: true },
+  { x: 41, y: 60, radius: 8, color: "rgba(255,178,80,0.55)", flicker: true },
 ];
 
 /* ------------------------------------------------------------------------------ panel identity */

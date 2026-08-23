@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import LoopSprite from "./LoopSprite";
 import { mulberry32 } from "../../data/seededRandom";
 
-const birdModules = import.meta.glob("../../assets/camp/props/bird-*.png", { eager: true, import: "default" }) as Record<string, string>;
+const birdModules = import.meta.glob("../../assets/map/vfx/bird-fly-*.png", { eager: true, import: "default" }) as Record<string, string>;
 const fireflyModules = import.meta.glob("../../assets/camp/props/fireflies-*.png", { eager: true, import: "default" }) as Record<string, string>;
 const batModules = import.meta.glob("../../assets/map/vfx/bat-*.png", { eager: true, import: "default" }) as Record<string, string>;
 
@@ -17,7 +17,9 @@ function frames(modules: Record<string, string>, prefix: string): string[] {
   return out;
 }
 
-const BIRD_FRAMES = frames(birdModules, "bird");
+/** `map/vfx/bird-fly`, NOT `camp/props/bird`: the camp prop is a bird sitting on a post, and
+ * animating it across the sky flew the post along with it. */
+const BIRD_FRAMES = frames(birdModules, "bird-fly");
 const FIREFLY_FRAMES = frames(fireflyModules, "fireflies");
 const BAT_FRAMES = frames(batModules, "bat");
 

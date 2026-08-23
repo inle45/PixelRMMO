@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { publicAsset } from "../../data/publicAsset";
 
 export type ChestVisualState = "closed" | "opening" | "open" | "closing";
 
 /** Lives in /public rather than src/assets, same call as the World Map's continent background —
  * a single-consumer sprite sheet gains nothing from Vite's import.meta.glob/base64-inlining path. */
-const CHEST_SPRITESHEET = "/assets/camp/chest_spritesheet.png";
+const CHEST_SPRITESHEET = publicAsset("/assets/camp/chest_spritesheet.png");
 const FRAME_COUNT = 6;
 const OPEN_DURATION_MS = 700;
 

@@ -1,3 +1,5 @@
+import { publicAsset } from "./publicAsset";
+
 /**
  * The Canyons Écarlates' shared ambient sprite pack. Lives in `/public/assets/worldmap/` rather than
  * `src/assets` + `import.meta.glob` — the one deliberate exception this codebase already makes for
@@ -7,7 +9,7 @@
  * static generation; frames 1+ are the animated ones from `animate_image`.
  */
 function frames(prefix: string, count: number): string[] {
-  return Array.from({ length: count }, (_, i) => `/assets/worldmap/${prefix}-${i}.png`);
+  return Array.from({ length: count }, (_, i) => publicAsset(`/assets/worldmap/${prefix}-${i}.png`));
 }
 
 export const DUST_DEVIL_FRAMES = frames("canyon_dust_devil", 5);
