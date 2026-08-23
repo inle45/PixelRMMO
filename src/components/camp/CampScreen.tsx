@@ -119,24 +119,19 @@ function EdgeArrow({ side, label, onClick }: { side: "left" | "right"; label: st
       onClick={onClick}
       aria-label={`Aller vers ${label}`}
       className={
-        "absolute top-1/2 z-30 -translate-y-1/2 rounded-lg border border-white/20 bg-black/40 px-1.5 py-4 backdrop-blur-sm " +
-        (side === "left" ? "left-1" : "right-1")
+        "absolute top-1/2 z-30 flex h-11 w-9 -translate-y-1/2 items-center justify-center rounded-xl border border-white/30 bg-black/55 text-2xl font-bold leading-none text-white shadow-[0_2px_10px_rgba(0,0,0,0.5)] backdrop-blur-sm " +
+        (side === "left" ? "left-2 justify-start pl-1.5" : "right-2 justify-end pr-1.5")
       }
-      animate={{ opacity: [0.35, 0.8, 0.35] }}
-      transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-      whileTap={{ scale: 0.92 }}
+      style={{ textShadow: "0 0 6px rgba(0,0,0,0.9)" }}
+      animate={{ opacity: [0.65, 1, 0.65] }}
+      transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+      whileTap={{ scale: 0.9 }}
     >
-      {/* Chunky pixel-art chevron drawn as blocks — a crisp 3px-step arrow reads as pixel art where
-          a font glyph or an SVG curve would be the only smooth thing on a pixel-art screen. */}
-      <span className="flex flex-col gap-[2px]">
-        {[0, 1, 2, 1, 0].map((inset, i) => (
-          <span
-            key={i}
-            className="block h-[3px] w-[3px] bg-white/85"
-            style={{ marginLeft: side === "left" ? inset * 3 : (2 - inset) * 3 }}
-          />
-        ))}
-      </span>
+      {/* `←`/`→` are the project's own whitelisted non-emoji glyphs (see CLAUDE.md's "purely
+          typographic UI glyphs" list) — a hand-rolled 3px pixel-dot chevron was tried first and was
+          too small/low-contrast to notice at all against a bright sky backdrop; a bold glyph at
+          real size reads unambiguously as an arrow from across the screen instead. */}
+      {side === "left" ? "←" : "→"}
     </motion.button>
   );
 }
