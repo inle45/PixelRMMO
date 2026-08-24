@@ -33,7 +33,10 @@ export interface PanelGrade {
   filter: string;
   /** Alpha wash laid over the graded image. */
   wash: string;
-  /** Gradient painted in the empty band above the scene box; its LAST stop must be `seam`. */
+  /** Gradient painted in the empty band above the scene box; its LAST stop must be `seam`.
+   * OPAQUE, no alpha — see the note on `PanelStage`'s sky layer for why: a translucent wash over a
+   * blurred copy of the backdrop was tried first and read as a blotchy smear rather than sky, since
+   * these backdrops' top edges are dense canopy / a thin strip, not open sky to begin with. */
   sky: string;
   /**
    * The backdrop's top pixel row AS RENDERED — i.e. after this period's own `filter` and `wash`.
@@ -57,28 +60,28 @@ export const FOREST_GRADE: Record<TimeOfDayId, PanelGrade> = {
   morning: {
     filter: "brightness(1.08) saturate(1.05)",
     wash: "linear-gradient(180deg, rgba(255,224,160,0.18) 0%, rgba(255,240,200,0.04) 60%, rgba(0,0,0,0) 100%)",
-    sky: "linear-gradient(180deg, rgba(127,179,213,0.72) 0%, rgba(150,190,190,0.34) 55%, rgba(14,47,28,0) 100%)",
+    sky: "linear-gradient(180deg, #b9aab4 0%, #d2c4c4 45%, #395235 100%)",
     seam: "#395235",
     glow: 0.15,
   },
   noon: {
     filter: "brightness(1.15) saturate(1.1) contrast(1.02)",
     wash: "linear-gradient(180deg, rgba(255,250,220,0.12) 0%, rgba(255,255,255,0) 70%)",
-    sky: "linear-gradient(180deg, rgba(110,198,240,0.70) 0%, rgba(150,205,200,0.30) 55%, rgba(14,47,28,0) 100%)",
+    sky: "linear-gradient(180deg, #0763c4 0%, #0f9fe4 50%, #284d34 100%)",
     seam: "#284d34",
     glow: 0,
   },
   sunset: {
     filter: "brightness(0.92) saturate(1.15) sepia(0.18) hue-rotate(-8deg)",
     wash: "linear-gradient(180deg, rgba(255,140,60,0.22) 0%, rgba(120,40,80,0.14) 100%)",
-    sky: "linear-gradient(180deg, rgba(242,144,90,0.72) 0%, rgba(164,84,122,0.38) 55%, rgba(14,47,28,0) 100%)",
+    sky: "linear-gradient(180deg, #150120 0%, #250236 50%, #45401f 100%)",
     seam: "#45401f",
     glow: 0.55,
   },
   night: {
     filter: "brightness(0.52) saturate(0.75) contrast(1.08) hue-rotate(-18deg)",
     wash: "linear-gradient(180deg, rgba(14,22,60,0.6) 0%, rgba(6,10,32,0.68) 100%)",
-    sky: "linear-gradient(180deg, rgba(5,8,31,0.92) 0%, rgba(10,18,48,0.62) 55%, rgba(6,14,30,0.18) 100%)",
+    sky: "linear-gradient(180deg, #01010a 0%, #020317 55%, #0a1326 100%)",
     seam: "#0a1326",
     glow: 1,
   },
@@ -88,28 +91,28 @@ export const BARN_GRADE: Record<TimeOfDayId, PanelGrade> = {
   morning: {
     filter: "brightness(1.05) saturate(1.05) sepia(0.08)",
     wash: "linear-gradient(180deg, rgba(255,214,150,0.16) 0%, rgba(255,240,210,0.04) 70%)",
-    sky: "linear-gradient(180deg, rgba(255,178,122,0.66) 0%, rgba(159,217,245,0.30) 55%, rgba(95,224,251,0) 100%)",
+    sky: "linear-gradient(180deg, #b9aab4 0%, #d2c4c4 45%, #84e9ee 100%)",
     seam: "#84e9ee",
     glow: 0.2,
   },
   noon: {
     filter: "brightness(1.12) saturate(1.08)",
     wash: "linear-gradient(180deg, rgba(255,255,240,0.1) 0%, rgba(255,255,255,0) 70%)",
-    sky: "linear-gradient(180deg, rgba(63,184,245,0.62) 0%, rgba(127,212,251,0.26) 55%, rgba(95,224,251,0) 100%)",
+    sky: "linear-gradient(180deg, #0763c4 0%, #0f9fe4 50%, #71fdfe 100%)",
     seam: "#71fdfe",
     glow: 0,
   },
   sunset: {
     filter: "brightness(0.95) saturate(1.2) sepia(0.2) hue-rotate(-10deg)",
     wash: "linear-gradient(180deg, rgba(255,130,50,0.24) 0%, rgba(110,40,90,0.16) 100%)",
-    sky: "linear-gradient(180deg, rgba(255,154,77,0.70) 0%, rgba(176,90,134,0.36) 55%, rgba(95,224,251,0) 100%)",
+    sky: "linear-gradient(180deg, #150120 0%, #250236 50%, #89c7b0 100%)",
     seam: "#89c7b0",
     glow: 0.6,
   },
   night: {
     filter: "brightness(0.42) saturate(0.65) contrast(1.12) hue-rotate(205deg)",
     wash: "linear-gradient(180deg, rgba(10,16,52,0.62) 0%, rgba(5,8,28,0.7) 100%)",
-    sky: "linear-gradient(180deg, rgba(4,6,26,0.92) 0%, rgba(8,15,44,0.62) 55%, rgba(8,15,44,0.16) 100%)",
+    sky: "linear-gradient(180deg, #01010a 0%, #020317 55%, #2c2633 100%)",
     seam: "#2c2633",
     glow: 1,
   },

@@ -56,27 +56,16 @@ export default function PanelStage({
       }}
     >
       {/* Layer 0 — the band above the artwork.
-          A flat colour gradient here read as a dead wash of green (forest) or cyan (barn) filling
-          the top half of a phone screen — called out directly. Instead it is a blurred, scaled copy
-          of the SAME backdrop, graded identically: the band now reads as an out-of-focus
-          continuation of the scene rather than painted-on filler. Same trick MiningScene already
-          uses behind its portrait backdrop. The seam colour still backs it so nothing can flash
-          through, and the stars/clouds sit on top. */}
+          A blurred, mirrored copy of the backdrop was tried here first (the same trick MiningScene
+          uses behind its portrait background) and looked worse, not better: this backdrop's top
+          edge is dense tree canopy / a thin sky strip, not open sky, so blurring it produced a
+          murky, blotchy smear rather than a continuation of the scene — called out directly a
+          second time. `CampStage`'s original campfire panel had already solved this with a plain
+          OPAQUE gradient (real sky tones down to the exact seam colour, no transparency, no
+          photographic content to go blotchy) plus clouds/stars on top, and that panel was never
+          the one getting complaints — so this now reuses that exact recipe instead of reinventing
+          one. */}
       <div className="pointer-events-none absolute inset-x-0 top-0 overflow-hidden" style={{ height: SKY_HEIGHT }}>
-        <div className="absolute inset-0 transition-[background-color] duration-1000" style={{ backgroundColor: grade.seam }} />
-        {/* Vertically MIRRORED, which is what kills the seam: flipping maps the artwork's row 0 to
-            the bottom edge of this box, so the band's last row is pixel-for-pixel the backdrop's
-            first row and the join has no colour step to give it away. The blur is deliberately
-            heavy and over-scaled: at a light blur the flipped artwork stays recognisable and reads
-            as a water reflection hanging in the sky, so only broad colour fields may survive. */}
-        <img
-          src={background}
-          alt=""
-          aria-hidden
-          draggable={false}
-          className="absolute inset-0 h-full w-full object-cover transition-[filter] duration-1000"
-          style={{ filter: `${grade.filter} blur(44px)`, transform: "scaleY(-1) scale(1.7)" }}
-        />
         <div className="absolute inset-0 transition-[background] duration-1000" style={{ background: grade.sky }} />
         {night ? <StarField /> : <Clouds />}
       </div>
